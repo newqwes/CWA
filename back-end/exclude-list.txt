@@ -1,0 +1,8 @@
+.git
+docker-compose.yml
+ecosystem.config.js
+exclude-list.txt
+node_modules
+.env
+yarn-error.log
+.gitignore

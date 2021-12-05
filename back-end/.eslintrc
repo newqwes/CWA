@@ -1,0 +1,42 @@
+{
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "requireConfigFile": false
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": ["airbnb/base"],
+  "rules": {
+    "strict": 0,
+    "no-alert": "off",
+    "class-methods-use-this": "off",
+    "implicit-arrow-linebreak": 0,
+    "comma-dangle": 0,
+    "function-paren-newline": 0,
+    "object-curly-newline": 0,
+    "consistent-return": 0,
+    "no-useless-escape": 0,
+    "no-unused-expressions": 0,
+    "no-console": 0,
+    "operator-linebreak": [
+      "error",
+      "after",
+      {
+        "overrides": {
+          "?": "before",
+          ":": "before",
+          "&&": "ignore",
+          "||": "ignore"
+        }
+      }
+    ],
+    "no-duplicate-imports": "error",
+    "import/extensions": 0,
+    "no-useless-constructor": "error",
+    "import/prefer-default-export": 0,
+    "arrow-parens": 0
+  }
+}
