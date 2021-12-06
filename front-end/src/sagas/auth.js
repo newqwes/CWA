@@ -1,12 +1,28 @@
-import { takeEvery, all } from 'redux-saga/effects';
+import { takeEvery, all, call, put } from 'redux-saga/effects';
 
-import { SET_AUTH_DATA } from '../actions';
+import { loadingPending, loadingSuccess } from '../actionCreators';
+import { authFailure, authSuccess } from '../actionCreators/auth';
+import { authAPI } from '../api';
 
-export function* saveAuthDataToSession({ payload }) {
-  yield sessionStorage.setItem('username', payload.username);
-  yield sessionStorage.setItem('password', payload.password);
+import { AUTH_PENDING } from '../actions';
+import { AUTH_TOKEN } from '../constants/authModal';
+
+function* login({ payload }) {
+  try {
+    yield put(loadingPending());
+
+    const token = call(authAPI.login, payload);
+    yield call(sessionStorage.setItem, AUTH_TOKEN, token);
+
+    yield put(authSuccess());
+
+    yield put(loadingSuccess());
+  } catch ({ response }) {
+    yield put(authFailure(response));
+    yield put(loadingSuccess());
+  }
 }
 
 export function authSaga() {
-  return all([takeEvery(SET_AUTH_DATA, saveAuthDataToSession)]);
+  return all([takeEvery(AUTH_PENDING, login)]);
 }

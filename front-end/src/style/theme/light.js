@@ -83,7 +83,6 @@ const light = {
       info: COLORS.darkishPurple,
     },
   },
-
   icon: {
     color: {
       default: COLORS.lightGrayishBlue,

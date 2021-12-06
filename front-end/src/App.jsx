@@ -3,8 +3,9 @@ import { Layout } from 'antd';
 
 import { AppWrapper, Logo } from './style/AppWrapper';
 import SideMenu from './components/SideMenu';
+import HeaderContainer from './containers/HeaderContainer';
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 class App extends React.Component {
   state = {
@@ -25,7 +26,7 @@ class App extends React.Component {
           <SideMenu />
         </Sider>
         <Layout>
-          <Header />
+          <HeaderContainer />
           <Content style={{ margin: '0 16px' }}>
             <div className='site-layout-background' style={{ padding: 24, minHeight: 360 }}>
               Здесь будет статистика.
