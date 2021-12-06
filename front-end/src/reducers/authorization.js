@@ -10,6 +10,7 @@ import {
 
 const initialState = {
   authorized: false,
+  loading: false,
   error: '',
 };
 

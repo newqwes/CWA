@@ -1,17 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEqual } from 'lodash/fp';
-import { Button, Form as FormAntd, Input, Modal } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
-import {
-  AUTH_MODAL_WIDTH,
-  KEYWORD,
-  AUTH_INPUT_RULE,
-  AUTH_MADAL_NAME,
-  AUTH_MADAL_TITLE,
-  AUTH_FIELDS,
-} from '../../constants/authModal';
+import { MADALS_NAME } from '../../constants/modal';
+import { AUTH_INPUT_RULE, AUTH_MADAL_TITLE, AUTH_FIELDS } from '../../constants/authModal';
+
+import AuthModal from '../AuthModal';
+import AuthButtons from './AuthButtons';
 
 import { Space, HeaderWrapper } from './styled';
 
@@ -20,61 +15,67 @@ class Header extends React.Component {
     setAuthData: PropTypes.func.isRequired,
     setNotificationForm: PropTypes.func.isRequired,
     initialAuthData: PropTypes.object,
+    loading: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
     initialAuthData: {},
   };
 
-  formRef = React.createRef();
-
   state = {
-    modalVisible: false,
+    authModalVisible: false,
+    registrationModalVisible: false,
   };
 
-  handleShow = () => {
-    const { modalVisible } = this.state;
+  handleShowAuth = () => {
+    const { authModalVisible } = this.state;
 
-    this.setState({ modalVisible: !modalVisible });
+    this.setState({ authModalVisible: !authModalVisible });
   };
 
-  handleKeyUp = ({ keyCode }) => {
-    if (isEqual(keyCode, KEYWORD.enter)) {
-      this.formRef.current.submit();
-      this.handleShow();
-    }
+  handleShowRegistration = () => {
+    const { registrationModalVisible } = this.state;
+
+    this.setState({ registrationModalVisible: !registrationModalVisible });
   };
 
   render() {
-    const { modalVisible } = this.state;
-    const { setAuthData, initialAuthData, setNotificationForm } = this.props;
+    const { authModalVisible } = this.state;
+    const { setAuthData, initialAuthData, setNotificationForm, loading } = this.props;
+
+    const authFormItems = [
+      {
+        name: AUTH_FIELDS.username,
+        rules: AUTH_INPUT_RULE,
+        placeholder: 'почта',
+        prefix: <UserOutlined />,
+      },
+      {
+        name: AUTH_FIELDS.password,
+        rules: AUTH_INPUT_RULE,
+        placeholder: 'пароль',
+        prefix: <LockOutlined />,
+      },
+    ];
 
     return (
       <HeaderWrapper>
         <Space>
-          <Button onClick={this.handleShow} icon={<UserOutlined />} />
-          <FormAntd
-            name={AUTH_MADAL_NAME}
+          <AuthButtons
+            handleShowAuth={this.handleShowAuth}
+            handleShowRegistration={this.handleShowRegistration}
+          />
+          <AuthModal
+            modalName={MADALS_NAME.authModal}
             initialValues={initialAuthData}
             onFinish={setAuthData}
-            onKeyUp={this.handleKeyUp}
-            ref={this.formRef}
-            onFinishFailed={setNotificationForm}>
-            <Modal
-              title={AUTH_MADAL_TITLE}
-              visible={modalVisible}
-              width={AUTH_MODAL_WIDTH}
-              onOk={this.handleShow}
-              onCancel={this.handleShow}
-              okButtonProps={{ htmlType: 'submit', form: AUTH_MADAL_NAME }}>
-              <FormAntd.Item name={AUTH_FIELDS.username} rules={AUTH_INPUT_RULE}>
-                <Input placeholder='почта' prefix={<UserOutlined />} />
-              </FormAntd.Item>
-              <FormAntd.Item name={AUTH_FIELDS.password} rules={AUTH_INPUT_RULE}>
-                <Input.Password placeholder='пароль' prefix={<LockOutlined />} />
-              </FormAntd.Item>
-            </Modal>
-          </FormAntd>
+            setNotificationForm={setNotificationForm}
+            title={AUTH_MADAL_TITLE}
+            visible={authModalVisible}
+            handleShow={this.handleShowAuth}
+            formItems={authFormItems}
+            loading={loading}
+          />
         </Space>
       </HeaderWrapper>
     );

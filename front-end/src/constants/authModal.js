@@ -1,5 +1,3 @@
-export const AUTH_MODAL_WIDTH = '350px';
-
 export const KEYWORD = {
   enter: 13,
 };
@@ -11,7 +9,6 @@ export const AUTH_INPUT_RULE = [
   },
 ];
 
-export const AUTH_MADAL_NAME = 'auth-modal';
 export const AUTH_MADAL_TITLE = 'авторизация';
 
 export const AUTH_FIELDS = {

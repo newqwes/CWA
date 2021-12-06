@@ -11,9 +11,10 @@ axios.interceptors.request.use(config => ({
 
 export const authAPI = {
   login: async body => {
-    const respons = await axios.post('auth/login', body);
+    console.log('body', body);
+    // const respons = await axios.post('auth/login', body);
 
-    return extractResponsData(respons);
+    // return extractResponsData(respons);
   },
 
   registration: async body => {

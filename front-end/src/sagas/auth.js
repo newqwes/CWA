@@ -10,8 +10,9 @@ import { AUTH_TOKEN } from '../constants/authModal';
 function* login({ payload }) {
   try {
     yield put(loadingPending());
-
     const token = call(authAPI.login, payload);
+
+    console.log('token', token);
     yield call(sessionStorage.setItem, AUTH_TOKEN, token);
 
     yield put(authSuccess());
