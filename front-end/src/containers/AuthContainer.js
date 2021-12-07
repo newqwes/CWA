@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 
-import { authPending } from '../actionCreators/auth';
+import { authPendingAC, registrationPendingAC } from '../actionCreators/auth';
 import {
-  setNotificationForm,
-  handleShowAuthModal,
-  handleShowRegistrationModal,
+  setNotificationFormAC,
+  handleShowAuthModalAC,
+  handleShowRegistrationModalAC,
 } from '../actionCreators/aplication';
-import { authFormItems, initialAuthData } from '../configuration/authConfig';
+import { authModalConfig, registrationModalConfig } from '../configuration/authConfig';
 
 import { isLoading, isAuthModalVisible, isRegistrationModalVisible } from '../selectors/aplication';
 import { isAuthorized } from '../selectors/authorization';
@@ -18,17 +18,50 @@ const mapStateToProps = state => ({
   loading: isLoading(state),
   authModalVisible: isAuthModalVisible(state),
   registrationModalVisible: isRegistrationModalVisible(state),
-
-  // configuration
-  authFormItems,
-  initialAuthData,
 });
 
 const mapDispatchToProps = {
-  setAuthData: authPending,
-  setNotificationForm,
-  handleShowAuthModal,
-  handleShowRegistrationModal,
+  setAuthData: authPendingAC,
+  setRegistrationData: registrationPendingAC,
+  setNotificationForm: setNotificationFormAC,
+  handleShowAuthModal: handleShowAuthModalAC,
+  handleShowRegistrationModal: handleShowRegistrationModalAC,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthComponent);
+const mergeProps = (
+  { authModalVisible, registrationModalVisible, loading },
+  {
+    setAuthData,
+    setRegistrationData,
+    handleShowAuthModal,
+    handleShowRegistrationModal,
+    setNotificationForm,
+  },
+  ownProps,
+) => {
+  const modalsConfig = [
+    {
+      ...authModalConfig,
+      onFinish: setAuthData,
+      visible: authModalVisible,
+      handleShow: handleShowAuthModal,
+    },
+    {
+      ...registrationModalConfig,
+      onFinish: setRegistrationData,
+      visible: registrationModalVisible,
+      handleShow: handleShowRegistrationModal,
+    },
+  ];
+
+  return {
+    ...ownProps,
+    modalsConfig,
+    loading,
+    setNotificationForm,
+    handleShowAuthModal,
+    handleShowRegistrationModal,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(AuthComponent);

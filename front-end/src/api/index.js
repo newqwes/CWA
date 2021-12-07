@@ -5,28 +5,34 @@ import { getToken } from '../utils/localStore';
 
 axios.interceptors.request.use(config => ({
   ...config,
-  baseURL: 'http://localhost:3005/api/',
+  baseURL: 'http://localhost:3008/api/',
   headers: { Authorization: getToken() },
 }));
 
 export const authAPI = {
-  login: async body => {
+  /**
+   * @returns {object} email, id, login, token, type
+   */
+  login: async ({ email, password }) => {
     try {
-      const respons = await axios.post('auth/login', body);
+      const respons = await axios.post('auth/login', { email, password });
 
       return extractResponsData(respons);
-    } catch (error) {
-      return error;
+    } catch ({ response: { data } }) {
+      return data;
     }
   },
 
-  registration: async body => {
+  /**
+   * @returns {object} email, id, login, token, type
+   */
+  registration: async ({ email, password, login }) => {
     try {
-      const respons = await axios.post('auth/register', body);
+      const respons = await axios.post('auth/register', { email, password, login });
 
       return extractResponsData(respons);
-    } catch (error) {
-      return error;
+    } catch ({ response: { data } }) {
+      return data;
     }
   },
 };

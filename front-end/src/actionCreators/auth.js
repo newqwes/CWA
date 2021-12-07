@@ -7,32 +7,32 @@ import {
   REGISTRATION_SUCCESS,
 } from '../actions';
 
-export const authPending = authData => ({
+export const authPendingAC = authData => ({
   type: AUTH_PENDING,
   payload: authData,
 });
 
-export const authFailure = error => ({
+export const authFailureAC = error => ({
   type: AUTH_FAILURE,
   payload: error,
 });
 
-export const authSuccess = data => ({
+export const authSuccessAC = data => ({
   type: AUTH_SUCCESS,
   payload: data,
 });
 
-export const registrationPending = registrationData => ({
+export const registrationPendingAC = registrationData => ({
   type: REGISTRATION_PENDING,
   payload: registrationData,
 });
 
-export const registrationFailure = error => ({
+export const registrationFailureAC = error => ({
   type: REGISTRATION_FAILURE,
   payload: error,
 });
 
-export const registrationSuccess = data => ({
+export const registrationSuccessAC = data => ({
   type: REGISTRATION_SUCCESS,
   payload: data,
 });

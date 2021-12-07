@@ -5,29 +5,35 @@ import {
   SET_NOTIFICATION_FORM,
   HANDLE_SHOW_AUTH_MODAL,
   HANDLE_SHOW_REGISTRATION_MODAL,
+  SET_NOTIFICATION,
 } from '../actions';
 
-export const loadingPending = () => ({
+export const loadingPendingAC = () => ({
   type: GET_LOADING_PENDING,
 });
 
-export const loadingSuccess = () => ({
+export const loadingSuccessAC = () => ({
   type: GET_LOADING_SUCCESS,
 });
 
-export const handleCollapseSideMenu = () => ({
+export const handleCollapseSideMenuAC = () => ({
   type: HANDLE_COLLAPSE_SIDE_MENU,
 });
 
-export const setNotificationForm = ({ errorFields }) => ({
+export const setNotificationFormAC = ({ errorFields }) => ({
   type: SET_NOTIFICATION_FORM,
   payload: errorFields,
 });
 
-export const handleShowAuthModal = () => ({
+export const setNotificationAC = ({ message, type }) => ({
+  type: SET_NOTIFICATION,
+  payload: { message, type },
+});
+
+export const handleShowAuthModalAC = () => ({
   type: HANDLE_SHOW_AUTH_MODAL,
 });
 
-export const handleShowRegistrationModal = () => ({
+export const handleShowRegistrationModalAC = () => ({
   type: HANDLE_SHOW_REGISTRATION_MODAL,
 });

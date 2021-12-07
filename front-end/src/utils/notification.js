@@ -11,7 +11,7 @@ import { NOTIFICATION_TYPE, NOTIFICATION_MESSAGE_PLACEMENT } from '../constants/
  * @param {string} type - Type of alert
  * @returns {void}
  */
-export const getNotification = (message, type = NOTIFICATION_TYPE.error) => {
+export const getNotification = ({ message, type = NOTIFICATION_TYPE.error }) => {
   notification[type]({ message, placement: NOTIFICATION_MESSAGE_PLACEMENT.topRight });
 };
 
@@ -24,5 +24,5 @@ export const getNotification = (message, type = NOTIFICATION_TYPE.error) => {
 export const setNotificationForm = errorFields => {
   const message = compose(get('errors'), head)(errorFields);
 
-  getNotification(message, NOTIFICATION_TYPE.warning);
+  getNotification({ message, type: NOTIFICATION_TYPE.warning });
 };

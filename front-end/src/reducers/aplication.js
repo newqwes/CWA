@@ -5,6 +5,7 @@ import {
   HANDLE_COLLAPSE_SIDE_MENU,
   HANDLE_SHOW_AUTH_MODAL,
   HANDLE_SHOW_REGISTRATION_MODAL,
+  REGISTRATION_SUCCESS,
 } from '../actions';
 
 const initialState = {
@@ -34,6 +35,10 @@ const aplication = (state = initialState, { type }) => {
 
     case HANDLE_SHOW_REGISTRATION_MODAL: {
       return assoc(['registrationModalVisible'], !state.registrationModalVisible, state);
+    }
+
+    case REGISTRATION_SUCCESS: {
+      return assoc(['registrationModalVisible'], false, state);
     }
 
     default:

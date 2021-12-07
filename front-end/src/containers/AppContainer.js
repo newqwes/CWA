@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import { handleCollapseSideMenu } from '../actionCreators/aplication';
+import { handleCollapseSideMenuAC } from '../actionCreators/aplication';
 
 import { isLoading, getCollapsedSideMenu } from '../selectors/aplication';
 import { isAuthorized } from '../selectors/authorization';
@@ -14,7 +14,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  handleCollapseSideMenu,
+  handleCollapseSideMenu: handleCollapseSideMenuAC,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

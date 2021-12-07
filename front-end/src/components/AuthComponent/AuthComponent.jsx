@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { MADALS_NAME } from '../../constants/modal';
-import { AUTH_MADAL_TITLE } from '../../constants/authModal';
+import { map } from 'lodash/fp';
 
 import AuthModal from './AuthModal';
 import AuthButtons from './AuthButtons';
@@ -11,32 +9,41 @@ import { Space } from './styled';
 
 class AuthComponent extends React.Component {
   static propTypes = {
-    setAuthData: PropTypes.func.isRequired,
-    setNotificationForm: PropTypes.func.isRequired,
-    handleShowAuthModal: PropTypes.func.isRequired,
+    modalsConfig: PropTypes.array.isRequired,
     handleShowRegistrationModal: PropTypes.func.isRequired,
-    initialAuthData: PropTypes.object,
+    handleShowAuthModal: PropTypes.func.isRequired,
+    setNotificationForm: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    authModalVisible: PropTypes.bool.isRequired,
-    registrationModalVisible: PropTypes.bool.isRequired,
-    authFormItems: PropTypes.array.isRequired,
   };
 
   static defaultProps = {
     initialAuthData: {},
   };
 
+  authModals() {
+    const { modalsConfig, loading, setNotificationForm } = this.props;
+
+    return map(
+      ({ modalName, initialValues, onFinish, title, visible, handleShow, formItems }) => (
+        <AuthModal
+          key={modalName}
+          loading={loading}
+          setNotificationForm={setNotificationForm}
+          modalName={modalName}
+          initialValues={initialValues}
+          onFinish={onFinish}
+          title={title}
+          visible={visible}
+          handleShow={handleShow}
+          formItems={formItems}
+        />
+      ),
+      modalsConfig,
+    );
+  }
+
   render() {
-    const {
-      handleShowAuthModal,
-      handleShowRegistrationModal,
-      setAuthData,
-      initialAuthData,
-      setNotificationForm,
-      loading,
-      authModalVisible,
-      authFormItems,
-    } = this.props;
+    const { handleShowAuthModal, handleShowRegistrationModal } = this.props;
 
     return (
       <Space>
@@ -44,17 +51,7 @@ class AuthComponent extends React.Component {
           handleShowAuthModal={handleShowAuthModal}
           handleShowRegistrationModal={handleShowRegistrationModal}
         />
-        <AuthModal
-          modalName={MADALS_NAME.authModal}
-          initialValues={initialAuthData}
-          onFinish={setAuthData}
-          setNotificationForm={setNotificationForm}
-          title={AUTH_MADAL_TITLE}
-          visible={authModalVisible}
-          handleShow={handleShowAuthModal}
-          formItems={authFormItems}
-          loading={loading}
-        />
+        {this.authModals()}
       </Space>
     );
   }
