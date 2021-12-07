@@ -12,8 +12,5 @@ export const getToken = () => {
 };
 
 export const setSession = (fieldName, value) => {
-  console.log('fieldName', fieldName);
-  console.log('value', value);
-
   sessionStorage.setItem(toString(fieldName), toString(value));
 };
