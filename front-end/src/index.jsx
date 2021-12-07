@@ -5,10 +5,10 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
 import store from './store/configureStore';
-import App from './App.jsx';
 import GlobalStyle from './style/GlobalStyle';
 import theme from './style/theme';
 import { DEFAULT_THEME } from './constants/theme';
+import AppContainer from './containers/AppContainer';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,7 +16,7 @@ ReactDOM.render(
       <ThemeProvider theme={theme[DEFAULT_THEME]}>
         <GlobalStyle />
         <BrowserRouter>
-          <Route path='/' component={App} />
+          <Route path='/' component={AppContainer} />
         </BrowserRouter>
       </ThemeProvider>
     </Provider>

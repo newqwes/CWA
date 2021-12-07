@@ -1,18 +1,22 @@
 import { takeEvery, all, call, put } from 'redux-saga/effects';
 
-import { loadingPending, loadingSuccess } from '../actionCreators';
-import { authFailure, authSuccess } from '../actionCreators/auth';
+import { loadingPending, loadingSuccess } from '../actionCreators/aplication';
+import {
+  authFailure,
+  authSuccess,
+  registrationFailure,
+  registrationSuccess,
+} from '../actionCreators/auth';
 import { authAPI } from '../api';
 
-import { AUTH_PENDING } from '../actions';
+import { AUTH_PENDING, REGISTRATION_PENDING } from '../actions';
 import { AUTH_TOKEN } from '../constants/authModal';
 
 function* login({ payload }) {
   try {
     yield put(loadingPending());
-    const token = call(authAPI.login, payload);
+    const token = yield call(authAPI.login, payload);
 
-    console.log('token', token);
     yield call(sessionStorage.setItem, AUTH_TOKEN, token);
 
     yield put(authSuccess());
@@ -24,6 +28,22 @@ function* login({ payload }) {
   }
 }
 
+function* registration({ payload }) {
+  try {
+    yield put(loadingPending());
+    const token = yield call(authAPI.registration, payload);
+
+    yield call(sessionStorage.setItem, AUTH_TOKEN, token);
+
+    yield put(registrationSuccess());
+
+    yield put(loadingSuccess());
+  } catch ({ response }) {
+    yield put(registrationFailure(response));
+    yield put(loadingSuccess());
+  }
+}
+
 export function authSaga() {
-  return all([takeEvery(AUTH_PENDING, login)]);
+  return all([takeEvery(AUTH_PENDING, login), takeEvery(REGISTRATION_PENDING, registration)]);
 }

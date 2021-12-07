@@ -2,8 +2,8 @@ import React from 'react';
 import { isEqual, map } from 'lodash/fp';
 import { Form as FormAntd, Input, Modal } from 'antd';
 
-import { KEYWORD } from '../../constants/authModal';
-import { HTML_TYPE, MODAL_WIDTH } from '../../constants/modal';
+import { KEYWORD } from '../../../constants/keyword';
+import { HTML_TYPE, MODAL_WIDTH } from '../../../constants/modal';
 
 import propTypes from './propTypes';
 

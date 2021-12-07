@@ -18,11 +18,10 @@ export const getNotification = (message, type = NOTIFICATION_TYPE.error) => {
 /**
  * @description Calls the GetNotification method only for the first error field,
  * for its further output to the user screen
- * @param {Object} param
- * @param {[{errors: [string]}]} param.errorFields - All errors from the form
+ * @param {[{errors: [string]}]} errorFields - All errors from the form
  * @returns {void}
  */
-export const setNotificationForm = ({ errorFields }) => {
+export const setNotificationForm = errorFields => {
   const message = compose(get('errors'), head)(errorFields);
 
   getNotification(message, NOTIFICATION_TYPE.warning);

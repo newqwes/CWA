@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { MADALS_NAME_FOR_PROPTYPE } from '../../constants/modal';
+import { MADALS_NAME_FOR_PROPTYPE } from '../../../constants/modal';
 
 const formItemsType = PropTypes.arrayOf(
   PropTypes.shape({

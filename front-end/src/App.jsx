@@ -1,32 +1,35 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Layout } from 'antd';
 
 import { AppWrapper, Logo } from './style/AppWrapper';
 import SideMenu from './components/SideMenu';
-import HeaderContainer from './containers/HeaderContainer';
+import Header from './components/Header';
+import AuthContainer from './containers/AuthContainer';
 
 const { Content, Sider } = Layout;
 
 class App extends React.Component {
-  state = {
-    collapsed: false,
-  };
-
-  onCollapse = collapsed => {
-    this.setState({ collapsed });
+  static propTypes = {
+    handleCollapseSideMenu: PropTypes.func.isRequired,
+    collapsedSideMenu: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
+    authorized: PropTypes.bool.isRequired,
   };
 
   render() {
-    const { collapsed } = this.state;
+    const { handleCollapseSideMenu, collapsedSideMenu } = this.props;
 
     return (
       <AppWrapper>
-        <Sider collapsible collapsed={collapsed} onCollapse={this.onCollapse}>
+        <Sider collapsible collapsed={collapsedSideMenu} onCollapse={handleCollapseSideMenu}>
           <Logo>CWA Logo</Logo>
           <SideMenu />
         </Sider>
         <Layout>
-          <HeaderContainer />
+          <Header>
+            <AuthContainer />
+          </Header>
           <Content style={{ margin: '0 16px' }}>
             <div className='site-layout-background' style={{ padding: 24, minHeight: 360 }}>
               Здесь будет статистика.
