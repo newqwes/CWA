@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Layout } from 'antd';
 
+import { SketchOutlined } from '@ant-design/icons';
 import { AppWrapper, Logo } from './style/AppWrapper';
 import SideMenu from './components/SideMenu';
 import Header from './components/Header';
@@ -31,7 +32,10 @@ class App extends React.Component {
     return (
       <AppWrapper>
         <Sider collapsible collapsed={collapsedSideMenu} onCollapse={handleCollapseSideMenu}>
-          <Logo>CWA Logo</Logo>
+          <Logo collapsedSideMenu={collapsedSideMenu}>
+            <SketchOutlined />
+            <p>CryptoWalletAnalytics</p>
+          </Logo>
           <SideMenu />
         </Sider>
         <Layout>

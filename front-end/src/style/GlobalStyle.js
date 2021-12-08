@@ -8,7 +8,6 @@ ${normalize}
 html {
   width: 100vw;
   overflow-x: hidden;
-  font-family: 'Ubuntu', Verdana, sans-serif;
 }
 
 ul {
