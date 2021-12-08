@@ -3,17 +3,14 @@ import { isEqual, map } from 'lodash/fp';
 import { Form as FormAntd, Input, Modal } from 'antd';
 
 import { KEYWORD } from '../../../constants/keyword';
-import { HTML_TYPE, MODAL_WIDTH } from '../../../constants/modal';
 
-import propTypes from './propTypes';
+import authModalTypes from './propTypes';
 
 class AuthModal extends React.Component {
-  static propTypes = propTypes;
+  static propTypes = authModalTypes;
 
   static defaultProps = {
     initialAuthData: {},
-    htmlType: HTML_TYPE,
-    width: MODAL_WIDTH,
   };
 
   formRef = React.createRef();
@@ -59,6 +56,8 @@ class AuthModal extends React.Component {
       width,
       handleShow,
       htmlType,
+      okText,
+      cancelText,
     } = this.props;
 
     const okButtonProps = { htmlType, form: modalName };
@@ -77,6 +76,8 @@ class AuthModal extends React.Component {
           width={width}
           onCancel={handleShow}
           confirmLoading={loading}
+          okText={okText}
+          cancelText={cancelText}
           okButtonProps={okButtonProps}>
           {this.renderFormItems()}
         </Modal>

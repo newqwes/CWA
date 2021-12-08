@@ -19,6 +19,8 @@ export default {
   visible: PropTypes.bool.isRequired,
   handleShow: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
+  okText: PropTypes.string,
+  cancelText: PropTypes.string,
   width: PropTypes.string,
   htmlType: PropTypes.string,
   formItems: formItemsType,

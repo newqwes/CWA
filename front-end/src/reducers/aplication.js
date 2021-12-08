@@ -1,5 +1,6 @@
 import { assoc } from 'lodash/fp';
 import {
+  AUTH_SUCCESS,
   GET_LOADING_PENDING,
   GET_LOADING_SUCCESS,
   HANDLE_COLLAPSE_SIDE_MENU,
@@ -39,6 +40,10 @@ const aplication = (state = initialState, { type }) => {
 
     case REGISTRATION_SUCCESS: {
       return assoc(['registrationModalVisible'], false, state);
+    }
+
+    case AUTH_SUCCESS: {
+      return assoc(['authModalVisible'], false, state);
     }
 
     default:

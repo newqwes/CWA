@@ -12,7 +12,11 @@ import { NOTIFICATION_TYPE, NOTIFICATION_MESSAGE_PLACEMENT } from '../constants/
  * @returns {void}
  */
 export const getNotification = ({ message, type = NOTIFICATION_TYPE.error }) => {
-  notification[type]({ message, placement: NOTIFICATION_MESSAGE_PLACEMENT.topRight });
+  notification[type]({
+    message,
+    placement: NOTIFICATION_MESSAGE_PLACEMENT.topRight,
+    duration: 1,
+  });
 };
 
 /**

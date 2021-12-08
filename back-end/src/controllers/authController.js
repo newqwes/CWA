@@ -11,3 +11,9 @@ export const register = async (req, res) => {
 
   res.status(result.status).json(result);
 };
+
+export const getStatus = async (req, res) => {
+  const result = await authService.status(req);
+
+  res.status(result.status).json(result);
+};

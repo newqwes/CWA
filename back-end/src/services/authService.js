@@ -6,6 +6,7 @@ import {
   setUserDataWithPassword,
   createUserData,
   createResponseUserData,
+  getUserId,
 } from '../utils/user';
 
 import userService from './userService';
@@ -57,6 +58,20 @@ class AuthService {
       const responseUserDataWithToken = setUserDataWithToken(responseUserData);
 
       return createResponse(201, 'Successfully!', responseUserDataWithToken);
+    } catch (error) {
+      return createResponse(500, 'Server Error', error);
+    }
+  }
+
+  async status(req) {
+    try {
+      const userId = getUserId(req);
+
+      if (userId) {
+        return createResponse(200, 'Successfully!', true);
+      }
+
+      return createResponse(403, 'Incorrect token!', false);
     } catch (error) {
       return createResponse(500, 'Server Error', error);
     }

@@ -8,6 +8,8 @@ import {
 import {
   authFailureAC,
   authSuccessAC,
+  getAuthorizationStatusFailureAC,
+  getAuthorizationStatusSuccessAC,
   registrationFailureAC,
   registrationSuccessAC,
 } from '../actionCreators/auth';
@@ -17,25 +19,25 @@ import {
   AUTH_FAILURE,
   AUTH_PENDING,
   AUTH_SUCCESS,
+  GET_AUTHORIZATION_STATUS_PENDING,
   REGISTRATION_FAILURE,
   REGISTRATION_PENDING,
   REGISTRATION_SUCCESS,
 } from '../actions';
 import { AUTH_TOKEN } from '../constants/authModal';
-import { setSession } from '../utils/localStore';
+import { setSession, getToken } from '../utils/localStore';
 import { NOTIFICATION_TYPE } from '../constants/notification';
 
 function* authorization({ payload }) {
   try {
     yield put(loadingPendingAC());
+
     const data = yield call(authAPI.login, payload);
 
     if (data.token) {
       yield call(setSession, AUTH_TOKEN, data.token);
 
       yield put(authSuccessAC(data));
-
-      yield put(loadingSuccessAC());
     } else {
       yield put(authFailureAC(data));
     }
@@ -105,6 +107,31 @@ function* registrationFailure({ payload }) {
   );
 }
 
+function* authorizationStatus() {
+  try {
+    yield put(loadingPendingAC());
+    const token = yield call(getToken);
+
+    if (token) {
+      const authorized = yield call(authAPI.status);
+
+      if (authorized) {
+        yield put(getAuthorizationStatusSuccessAC());
+        yield put(loadingSuccessAC());
+
+        return;
+      }
+    }
+
+    yield call(setSession, AUTH_TOKEN);
+    yield put(getAuthorizationStatusFailureAC());
+    yield put(loadingSuccessAC());
+  } catch (e) {
+    yield put(getAuthorizationStatusFailureAC());
+    yield put(loadingSuccessAC());
+  }
+}
+
 export function authSaga() {
   return all([
     takeEvery(AUTH_PENDING, authorization),
@@ -113,5 +140,6 @@ export function authSaga() {
     takeEvery(AUTH_FAILURE, authFailure),
     takeEvery(REGISTRATION_SUCCESS, registrationSuccess),
     takeEvery(REGISTRATION_FAILURE, registrationFailure),
+    takeEvery(GET_AUTHORIZATION_STATUS_PENDING, authorizationStatus),
   ]);
 }

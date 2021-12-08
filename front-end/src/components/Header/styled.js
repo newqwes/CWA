@@ -5,4 +5,5 @@ const { Header } = Layout;
 
 export const HeaderWrapper = styled(Header)`
   display: flex;
+  justify-content: flex-end;
 `;

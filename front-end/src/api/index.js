@@ -35,4 +35,14 @@ export const authAPI = {
       return data;
     }
   },
+
+  status: async () => {
+    try {
+      const respons = await axios.get('auth/status');
+
+      return extractResponsData(respons);
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
 };

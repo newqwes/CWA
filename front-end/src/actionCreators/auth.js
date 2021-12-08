@@ -1,10 +1,14 @@
 import {
+  AUTH_LOGOUT,
   AUTH_PENDING,
   AUTH_FAILURE,
   AUTH_SUCCESS,
   REGISTRATION_PENDING,
   REGISTRATION_FAILURE,
   REGISTRATION_SUCCESS,
+  GET_AUTHORIZATION_STATUS_PENDING,
+  GET_AUTHORIZATION_STATUS_FAILURE,
+  GET_AUTHORIZATION_STATUS_SUCCESS,
 } from '../actions';
 
 export const authPendingAC = authData => ({
@@ -35,4 +39,20 @@ export const registrationFailureAC = error => ({
 export const registrationSuccessAC = data => ({
   type: REGISTRATION_SUCCESS,
   payload: data,
+});
+
+export const getAuthorizationStatusAC = () => ({
+  type: GET_AUTHORIZATION_STATUS_PENDING,
+});
+
+export const getAuthorizationStatusSuccessAC = () => ({
+  type: GET_AUTHORIZATION_STATUS_SUCCESS,
+});
+
+export const getAuthorizationStatusFailureAC = () => ({
+  type: GET_AUTHORIZATION_STATUS_FAILURE,
+});
+
+export const authLogoutAC = () => ({
+  type: AUTH_LOGOUT,
 });

@@ -9,7 +9,7 @@ import { Space } from './styled';
 
 class AuthComponent extends React.Component {
   static propTypes = {
-    modalsConfig: PropTypes.array.isRequired,
+    modalsConfig: PropTypes.arrayOf(PropTypes.object).isRequired,
     handleShowRegistrationModal: PropTypes.func.isRequired,
     handleShowAuthModal: PropTypes.func.isRequired,
     setNotificationForm: PropTypes.func.isRequired,
@@ -24,18 +24,12 @@ class AuthComponent extends React.Component {
     const { modalsConfig, loading, setNotificationForm } = this.props;
 
     return map(
-      ({ modalName, initialValues, onFinish, title, visible, handleShow, formItems }) => (
+      config => (
         <AuthModal
-          key={modalName}
+          key={config.modalName}
           loading={loading}
           setNotificationForm={setNotificationForm}
-          modalName={modalName}
-          initialValues={initialValues}
-          onFinish={onFinish}
-          title={title}
-          visible={visible}
-          handleShow={handleShow}
-          formItems={formItems}
+          {...config}
         />
       ),
       modalsConfig,
