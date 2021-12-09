@@ -3,9 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 import sequelize from '..';
 
-class Order extends Model {}
+class Token extends Model {}
 
-Order.init(
+Token.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -27,25 +27,16 @@ Order.init(
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
-    name: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
-    price: {
-      type: DataTypes.DOUBLE,
-      allowNull: false,
-    },
-    count: {
-      type: DataTypes.DOUBLE,
+    refreshToken: {
+      type: DataTypes.STRING(500),
       allowNull: false,
     },
   },
   {
     sequelize,
-    tableName: 'order',
+    tableName: 'token',
     timestamps: false,
-    underscored: true,
   },
 );
 
-export default Order;
+export default Token;

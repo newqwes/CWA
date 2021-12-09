@@ -7,6 +7,7 @@ module.exports = {
         type: DataTypes.UUID,
         primaryKey: true,
         allowNull: false,
+        unique: true,
         defaultValue: uuidv4(),
       },
       login: {
@@ -20,10 +21,18 @@ module.exports = {
       email: {
         type: DataTypes.STRING(50),
         allowNull: false,
+        unique: true,
       },
       type: {
         type: DataTypes.STRING(50),
         allowNull: false,
+      },
+      isActivated: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      activationLink: {
+        type: DataTypes.STRING(100),
       },
     });
   },

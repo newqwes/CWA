@@ -1,13 +1,8 @@
-import {
-  getUserId,
-  setUserDataWithToken,
-  setUserDataWithPassword,
-  createUserData,
-  createResponseUserData,
-} from '../utils/user';
+import { getUserId, createUserData, createResponseUserData } from '../utils/user';
 import createResponse from '../utils/createResponse';
 
 import User from '../database/models/user';
+import tokenService from './tokenService';
 
 class UserService {
   async findByEmail(email) {
@@ -25,7 +20,7 @@ class UserService {
       });
 
       const responseUserData = createResponseUserData(user);
-      const responseUserDataWithToken = setUserDataWithToken(responseUserData);
+      const responseUserDataWithToken = tokenService.setUserDataWithToken(responseUserData);
 
       return createResponse(200, 'Successfully!', responseUserDataWithToken);
     } catch (error) {
@@ -54,7 +49,7 @@ class UserService {
       const { password } = body;
 
       if (password) {
-        userData = setUserDataWithPassword(userData, password);
+        userData = tokenService.setUserDataWithPassword(userData, password);
       }
 
       const user = await User.update(userData, {
@@ -64,7 +59,7 @@ class UserService {
       });
 
       const responseUserData = createResponseUserData(user);
-      const responseUserDataWithToken = setUserDataWithToken(responseUserData);
+      const responseUserDataWithToken = tokenService.setUserDataWithToken(responseUserData);
 
       return createResponse(200, 'Successfully!', responseUserDataWithToken);
     } catch (error) {

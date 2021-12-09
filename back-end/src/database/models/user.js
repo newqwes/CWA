@@ -12,6 +12,7 @@ User.init(
       type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
+      unique: true,
       defaultValue: () => uuidv4(),
     },
     login: {
@@ -24,12 +25,20 @@ User.init(
     },
     email: {
       type: DataTypes.STRING(50),
+      unique: true,
       allowNull: false,
     },
     type: {
       type: DataTypes.STRING(50),
       defaultValue: USER_ROLES.user,
       allowNull: false,
+    },
+    isActivated: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    activationLink: {
+      type: DataTypes.STRING(100),
     },
   },
   {

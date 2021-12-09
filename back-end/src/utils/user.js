@@ -1,6 +1,5 @@
 import { getOr } from 'lodash/fp';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+
 import { omit } from 'lodash';
 
 import { extractDataFromResponseDB } from './extractData';
@@ -11,41 +10,6 @@ import { extractDataFromResponseDB } from './extractData';
  * @returns {(string|null)}
  */
 export const getUserId = req => getOr(null, ['user', 'id'], req);
-
-/**
- * @description Returns the user data including token
- * @param {Object} data - ready user data
- * @returns {Object}
- */
-export const setUserDataWithToken = data => {
-  const token = jwt.sign({ id: data.id }, process.env.ACCESS_TOKEN_SECRET);
-
-  const dataWithToken = {
-    ...data,
-    token: `Bearer ${token}`,
-  };
-
-  return dataWithToken;
-};
-
-/**
- * @description Returns the user data including password
- * @param {Object} userData - ready user data
- * @param {string} password - new password entered by the user
- * @returns {Object}
- */
-export const setUserDataWithPassword = (userData, password) => {
-  const salt = bcrypt.genSaltSync();
-
-  const hashPassword = bcrypt.hashSync(password, salt);
-
-  const userDataWithPassword = {
-    ...userData,
-    password: hashPassword,
-  };
-
-  return userDataWithPassword;
-};
 
 /**
  * @description Returns creates secure user data to write to the database
