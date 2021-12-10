@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 
 import sequelize from './database';
 import mwPassport from './middleware/passport';
+import errorMiddleware from './middleware/errorMiddleware';
 
 import authRoute from './routes/authRoute';
 import orderRoute from './routes/orderRoute';
@@ -20,7 +21,12 @@ const app = express();
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.CLIENT_URL,
+  }),
+);
 
 app.use(passport.initialize());
 mwPassport(passport);
@@ -28,6 +34,8 @@ mwPassport(passport);
 app.use('/api/auth', authRoute);
 app.use('/api/order', orderRoute);
 app.use('/api/user', userRoute);
+
+app.use(errorMiddleware);
 
 const start = async () => {
   try {

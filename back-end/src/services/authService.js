@@ -1,12 +1,13 @@
 import bcrypt from 'bcrypt';
 
+import User from '../database/models/user';
+
 import createResponse from '../utils/createResponse';
-import { createUserData, createResponseUserData, getUserId } from '../utils/user';
+import { createResponseUserData } from '../utils/user';
 
 import tokenService from './tokenService';
 import userService from './userService';
 import mailService from './mailService';
-import User from '../database/models/user';
 
 class AuthService {
   async login({ email, password }) {
@@ -31,14 +32,11 @@ class AuthService {
   }
 
   /**
-   * @param {Object} body - ready user data
-   * @param {string} body.login
-   * @param {string} body.password
-   * @param {string} body.email
-   * @returns {Object} all user data form database without password
+   * @param {import('../constants/requestBody.js').RegistationRequestBody} registerBody
+   * @returns {Object} user data form database without password
    */
-  async create(body) {
-    const { email, password } = body;
+  async create(registerBody) {
+    const { email } = registerBody;
 
     const foundUser = await userService.findByEmail(email);
 
@@ -46,11 +44,9 @@ class AuthService {
       return createResponse(409, 'email already exists!');
     }
 
-    const userData = createUserData(body);
+    const userDataWithHashPassword = tokenService.setUserDataWithPassword(registerBody);
 
-    const userDataWithPassword = tokenService.setUserDataWithPassword(userData, password);
-
-    const user = await User.create(userDataWithPassword);
+    const user = await User.create(userDataWithHashPassword);
 
     const responseUserData = createResponseUserData(user);
 
@@ -58,24 +54,12 @@ class AuthService {
 
     const responseUserDataWithToken = tokenService.setUserDataWithToken(responseUserData);
 
-    const tokenData = await tokenService.saveToken({
-      id: responseUserDataWithToken.id,
+    await tokenService.saveToken({
+      userId: responseUserDataWithToken.id,
       refreshToken: responseUserDataWithToken.refreshToken,
     });
 
-    console.log('______________________________', tokenData);
-
     return createResponse(201, 'Successfully!', responseUserDataWithToken);
-  }
-
-  async status(req) {
-    const userId = getUserId(req);
-
-    if (userId) {
-      return createResponse(200, 'Successfully!', true);
-    }
-
-    return createResponse(403, 'Incorrect token!', false);
   }
 }
 

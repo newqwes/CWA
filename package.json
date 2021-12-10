@@ -1,0 +1,22 @@
+{
+  "name": "cwa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/newqwes/CWA.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/newqwes/CWA/issues"
+  },
+  "homepage": "https://github.com/newqwes/CWA#readme",
+  "devDependencies": {
+    "lodash": "^4.17.21"
+  }
+}

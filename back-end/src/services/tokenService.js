@@ -11,14 +11,14 @@ class TokenService {
    * @returns {Object}
    */
   setUserDataWithToken(data) {
-    const { id } = data;
+    const { id, login } = data;
 
-    const accessToken = jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET, {
+    const accessToken = jwt.sign({ id, login }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: '30m',
     });
 
-    const refreshToken = jwt.sign({ id }, process.env.REFRESH_TOKEN_SECRET, {
-      expiresIn: '30m',
+    const refreshToken = jwt.sign({ id, login }, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: '30d',
     });
 
     const dataWithToken = {
@@ -31,38 +31,33 @@ class TokenService {
   }
 
   /**
-   * @description Returns the user data including password
-   * @param {Object} userData - ready user data
-   * @param {string} password - new password entered by the user
-   * @returns {Object}
+   * @param {import('../constants/requestBody.js').RegistationRequestBody} registerBody
+   * @returns {Object} user data form database without password
    */
-  setUserDataWithPassword(userData, password) {
+  setUserDataWithPassword(registerBody) {
     const salt = bcrypt.genSaltSync();
 
-    const hashPassword = bcrypt.hashSync(password, salt);
+    const hashPassword = bcrypt.hashSync(registerBody.password, salt);
 
     const activationLink = v4();
 
-    const userDataWithPassword = {
-      ...userData,
+    const userDataWithHashPassword = {
+      ...registerBody,
       activationLink,
       password: hashPassword,
     };
 
-    return userDataWithPassword;
+    return userDataWithHashPassword;
   }
 
-  async saveToken({ id, refreshToken }) {
-    const tokenData = await Token.findOne({ where: { userId: id } });
+  async saveToken({ userId, refreshToken }) {
+    const tokenData = await Token.findOne({ where: { userId } });
 
     if (tokenData) {
-      return Token.update(
-        { refreshToken },
-        { where: { userId: id }, returning: true, plain: true },
-      );
+      return Token.update({ refreshToken }, { where: { userId }, returning: true, plain: true });
     }
 
-    return Token.create({ userId: id, refreshToken });
+    return Token.create({ userId, refreshToken });
   }
 }
 
