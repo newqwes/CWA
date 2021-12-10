@@ -1,3 +1,0 @@
-# CWA
-
-## Crypto Wallet Analytics
