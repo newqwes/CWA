@@ -13,6 +13,10 @@ class ApiError extends Error {
     return new ApiError(401, 'Пользователь не авторизован!');
   }
 
+  static AlreadyExists(message) {
+    return new ApiError(409, message);
+  }
+
   static BadRequest(message, errors = []) {
     return new ApiError(400, message, errors);
   }

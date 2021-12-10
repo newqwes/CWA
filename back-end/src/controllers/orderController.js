@@ -1,11 +1,5 @@
 import orderService from '../services/orderService';
 
-export const createOrder = async (req, res) => {
-  const result = await orderService.createOrder(req);
-
-  res.status(result.status).json(result);
-};
-
 export const getUserOrders = async (req, res) => {
   const result = await orderService.getUserOrders(req);
 

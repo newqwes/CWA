@@ -19,3 +19,5 @@ export const AUTHORIZATION_REQUEST_BODY = {
   email: 'email',
   password: 'password',
 };
+
+export const LINK_REQUEST_PARAM = 'link';

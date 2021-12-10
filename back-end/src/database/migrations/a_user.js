@@ -31,8 +31,8 @@ module.exports = {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
-      activationLink: {
-        type: DataTypes.STRING(500),
+      activationHash: {
+        type: DataTypes.STRING(100),
       },
     });
   },

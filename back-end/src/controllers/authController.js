@@ -1,6 +1,10 @@
 import { validationResult } from 'express-validator';
-import { pick, values, omit } from 'lodash/fp';
-import { REGISTRATION_REQUEST_BODY, AUTHORIZATION_REQUEST_BODY } from '../constants/requestBody';
+import { pick, values, omit, get } from 'lodash/fp';
+import {
+  REGISTRATION_REQUEST_BODY,
+  AUTHORIZATION_REQUEST_BODY,
+  LINK_REQUEST_PARAM,
+} from '../constants/requestBody';
 
 import ApiError from '../exceptions/apiError';
 import authService from '../services/authService';
@@ -36,6 +40,18 @@ export const registration = async (req, res, next) => {
     });
 
     return res.status('201').json(omit(['refreshToken'], userData));
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const activate = async (req, res, next) => {
+  try {
+    const activationHash = get(['params', LINK_REQUEST_PARAM], req);
+
+    await authService.activate(activationHash);
+
+    return res.redirect(process.env.CLIENT_URL);
   } catch (e) {
     next(e);
   }

@@ -29,13 +29,11 @@ export const parseUserData = registationBody => {
 
   const hashPassword = bcrypt.hashSync(registationBody.password, salt);
 
-  const activationLink = `${process.env.API_URL}/api/activate/${v4()}`;
-
-  console.log(activationLink);
+  const activationHash = v4();
 
   const userDataWithHashPassword = {
     ...registationBody,
-    activationLink,
+    activationHash,
     password: hashPassword,
   };
 

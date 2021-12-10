@@ -4,7 +4,6 @@ import User from '../database/models/user';
 import ApiError from '../exceptions/apiError';
 import UserDto from '../dto/userDto';
 
-import createResponse from '../utils/createResponse';
 import { parseUserData } from '../utils/user';
 import { generateTokens } from '../utils/token';
 
@@ -18,10 +17,10 @@ class AuthService {
    * @returns {Object} user data form database without password
    */
   async login({ email, password }) {
-    const user = await userService.findByEmail(email);
+    const user = await userService.findByKey(email, 'email');
 
-    if (user) {
-      throw ApiError.BadRequest(`Пользователь с почтовым адресом ${email} уже существует`);
+    if (!user) {
+      throw ApiError.BadRequest(`Пользователь с почтовым адресом ${email} не существует`);
     }
 
     const { password: hashPassword } = user;
@@ -32,7 +31,6 @@ class AuthService {
       throw ApiError.BadRequest('Неверный пароль');
     }
 
-    // TODO: check dto parser data from DB
     const userDto = new UserDto(user);
     const userData = { ...userDto };
 
@@ -53,10 +51,10 @@ class AuthService {
   async create(registationBody) {
     const { email } = registationBody;
 
-    const foundUser = await userService.findByEmail(email);
+    const foundUser = await userService.findByKey(email, 'email');
 
     if (foundUser) {
-      return createResponse(409, 'email already exists!');
+      throw ApiError.AlreadyExists('Пользователь с таким email-ом уже существует');
     }
 
     const userDataWithHashPassword = parseUserData(registationBody);
@@ -66,7 +64,9 @@ class AuthService {
     const userDto = new UserDto(user);
     const userData = { ...userDto };
 
-    await mailService.sendActivationMail(userData.email, userDataWithHashPassword.activationLink);
+    const activationLink = `${process.env.API_URL}/api/auth/activate/${userDataWithHashPassword.activationHash}`;
+
+    await mailService.sendActivationMail(userData.email, activationLink);
 
     const tokens = generateTokens({ id: userData.login, login: userData.login });
 
@@ -76,6 +76,17 @@ class AuthService {
     });
 
     return { ...userData, ...tokens };
+  }
+
+  async activate(activationHash) {
+    const user = await userService.findByKey(activationHash, 'activationHash');
+
+    if (!user) {
+      throw ApiError.BadRequest('Неккоректная ссылка активации');
+    }
+
+    user.isActivated = true;
+    await user.save();
   }
 }
 

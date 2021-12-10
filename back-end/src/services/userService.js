@@ -1,10 +1,8 @@
 import User from '../database/models/user';
 
 class UserService {
-  async findByEmail(email) {
-    const foundUser = await User.findOne({ where: { email } });
-
-    if (foundUser) return foundUser.toJSON();
+  async findByKey(value, key) {
+    return User.findOne({ where: { [key]: value } });
   }
 }
 
