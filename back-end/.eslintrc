@@ -36,6 +36,7 @@
     "no-duplicate-imports": "error",
     "import/extensions": 0,
     "no-useless-constructor": "error",
+    "import/prefer-default-export": 0,
     "arrow-parens": 0
   }
 }

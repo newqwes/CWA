@@ -1,42 +1,57 @@
 import bcrypt from 'bcrypt';
 
 import User from '../database/models/user';
+import ApiError from '../exceptions/apiError';
+import UserDto from '../dto/userDto';
 
 import createResponse from '../utils/createResponse';
-import { createResponseUserData } from '../utils/user';
+import { parseUserData } from '../utils/user';
+import { generateTokens } from '../utils/token';
 
 import tokenService from './tokenService';
 import userService from './userService';
 import mailService from './mailService';
 
 class AuthService {
+  /**
+   * @param {import('../constants/requestBody.js').AuthorizationRequestBody} authorizationBody
+   * @returns {Object} user data form database without password
+   */
   async login({ email, password }) {
-    const foundUser = await userService.findByEmail(email);
+    const user = await userService.findByEmail(email);
 
-    if (!foundUser) {
-      return createResponse(401, 'Incorrect email or password!');
+    if (user) {
+      throw ApiError.BadRequest(`Пользователь с почтовым адресом ${email} уже существует`);
     }
 
-    const { password: userPassword } = foundUser;
+    const { password: hashPassword } = user;
 
-    const isPasswordEqual = bcrypt.compareSync(password, userPassword);
+    const passwordEqual = bcrypt.compareSync(password, hashPassword);
 
-    if (isPasswordEqual) {
-      const responseUserData = createResponseUserData(foundUser);
-      const responseUserDataWithToken = tokenService.setUserDataWithToken(responseUserData);
-
-      return createResponse(200, 'Successfully!', responseUserDataWithToken);
+    if (!passwordEqual) {
+      throw ApiError.BadRequest('Неверный пароль');
     }
 
-    return createResponse(401, 'Incorrect email or password!');
+    // TODO: check dto parser data from DB
+    const userDto = new UserDto(user);
+    const userData = { ...userDto };
+
+    const tokens = generateTokens(userData);
+
+    await tokenService.saveToken({
+      userId: userData.id,
+      refreshToken: tokens.refreshToken,
+    });
+
+    return { ...userData, ...tokens };
   }
 
   /**
-   * @param {import('../constants/requestBody.js').RegistationRequestBody} registerBody
+   * @param {import('../constants/requestBody.js').RegistationRequestBody} registationBody
    * @returns {Object} user data form database without password
    */
-  async create(registerBody) {
-    const { email } = registerBody;
+  async create(registationBody) {
+    const { email } = registationBody;
 
     const foundUser = await userService.findByEmail(email);
 
@@ -44,22 +59,23 @@ class AuthService {
       return createResponse(409, 'email already exists!');
     }
 
-    const userDataWithHashPassword = tokenService.setUserDataWithPassword(registerBody);
+    const userDataWithHashPassword = parseUserData(registationBody);
 
     const user = await User.create(userDataWithHashPassword);
 
-    const responseUserData = createResponseUserData(user);
+    const userDto = new UserDto(user);
+    const userData = { ...userDto };
 
-    await mailService.sendActivationMail(responseUserData.email, responseUserData.activationLink);
+    await mailService.sendActivationMail(userData.email, userDataWithHashPassword.activationLink);
 
-    const responseUserDataWithToken = tokenService.setUserDataWithToken(responseUserData);
+    const tokens = generateTokens({ id: userData.login, login: userData.login });
 
     await tokenService.saveToken({
-      userId: responseUserDataWithToken.id,
-      refreshToken: responseUserDataWithToken.refreshToken,
+      userId: userData.id,
+      refreshToken: tokens.refreshToken,
     });
 
-    return createResponse(201, 'Successfully!', responseUserDataWithToken);
+    return { ...userData, ...tokens };
   }
 }
 

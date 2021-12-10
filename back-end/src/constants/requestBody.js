@@ -10,6 +10,12 @@ export const REGISTRATION_REQUEST_BODY = {
   password: 'password',
 };
 
+/**
+ * @typedef {Object} AuthorizationRequestBody
+ * @property {string} email
+ * @property {string} password
+ */
 export const AUTHORIZATION_REQUEST_BODY = {
   email: 'email',
+  password: 'password',
 };

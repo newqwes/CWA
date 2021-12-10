@@ -32,7 +32,7 @@ module.exports = {
         defaultValue: false,
       },
       activationLink: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(500),
       },
     });
   },

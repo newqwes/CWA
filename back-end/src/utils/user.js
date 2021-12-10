@@ -1,8 +1,6 @@
-import { getOr } from 'lodash/fp';
-
-import { omit } from 'lodash';
-
-import { extractDataFromResponseDB } from './extractData';
+import { getOr, omit } from 'lodash/fp';
+import bcrypt from 'bcrypt';
+import { v4 } from 'uuid';
 
 /**
  * @description Returns the user id if authorized else return null
@@ -17,20 +15,29 @@ export const getUserId = req => getOr(null, ['user', 'id'], req);
  * @returns {Object}
  */
 export const createUserData = body => {
-  const userData = omit(body, ['password', 'id', 'type']);
+  const userData = omit(['password', 'id', 'type'], body);
 
   return userData;
 };
 
 /**
- * @description Returns parses the object in such a way that there is no password in the response
- * @param {Object} userData - data came from database
- * @returns {Object}
+ * @param {import('../constants/requestBody.js').RegistationRequestBody} registationBody
+ * @returns {Object} user data form database without password
  */
-export const createResponseUserData = userData => {
-  const extractedData = extractDataFromResponseDB(userData);
+export const parseUserData = registationBody => {
+  const salt = bcrypt.genSaltSync();
 
-  const responseUserData = omit(extractedData, 'password');
+  const hashPassword = bcrypt.hashSync(registationBody.password, salt);
 
-  return responseUserData;
+  const activationLink = `${process.env.API_URL}/api/activate/${v4()}`;
+
+  console.log(activationLink);
+
+  const userDataWithHashPassword = {
+    ...registationBody,
+    activationLink,
+    password: hashPassword,
+  };
+
+  return userDataWithHashPassword;
 };

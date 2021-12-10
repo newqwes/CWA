@@ -1,21 +1,23 @@
 import { validationResult } from 'express-validator';
-import { pick, values } from 'lodash/fp';
-import { REGISTRATION_REQUEST_BODY } from '../constants/requestBody';
+import { pick, values, omit } from 'lodash/fp';
+import { REGISTRATION_REQUEST_BODY, AUTHORIZATION_REQUEST_BODY } from '../constants/requestBody';
 
 import ApiError from '../exceptions/apiError';
 import authService from '../services/authService';
 
 export const login = async (req, res, next) => {
   try {
-    const result = await authService.login(req.body);
+    const authBody = pick(values(AUTHORIZATION_REQUEST_BODY), req.body);
 
-    return res.status(result.status).json(result);
+    const userData = await authService.login(authBody);
+
+    return res.status('200').json(omit(['refreshToken'], userData));
   } catch (e) {
     next(e);
   }
 };
 
-export const register = async (req, res, next) => {
+export const registration = async (req, res, next) => {
   try {
     const errors = validationResult(req);
 
@@ -23,17 +25,17 @@ export const register = async (req, res, next) => {
       return next(ApiError.BadRequest('Ошибка при валидации', errors.array()));
     }
 
-    const registerBody = pick(values(REGISTRATION_REQUEST_BODY), req.body);
+    const registrationBody = pick(values(REGISTRATION_REQUEST_BODY), req.body);
 
-    const result = await authService.create(registerBody);
+    const userData = await authService.create(registrationBody);
 
-    res.cookie('refreshToken', result.refreshToken, {
+    res.cookie('refreshToken', userData.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
       // secure: true // if have https
     });
 
-    return res.status(result.status).json(result);
+    return res.status('201').json(omit(['refreshToken'], userData));
   } catch (e) {
     next(e);
   }
