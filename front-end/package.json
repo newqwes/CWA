@@ -53,7 +53,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext=js --ext=jsx .",
-    "deploy": "react-scripts build && scp -r /home/qwes/Documents/github/CWA/frontend/build/ root@185.20.227.11:../home/deploy/CWA/frontend/"
+    "deploy": "react-scripts build && scp -r /home/qwes/Documents/github/CWA/front-end/build/ root@185.20.227.11:../home/deploy/CWA/front-end/"
   },
   "eslintConfig": {
     "extends": [

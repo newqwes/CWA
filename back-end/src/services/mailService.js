@@ -17,7 +17,7 @@ class MailService {
     await this.transporter.sendMail({
       from: process.env.SMTP_USER,
       to,
-      subject: `Crypto Wallet Analytics. Активация аккаунта на ${process.env.API_URL}`,
+      subject: `Crypto Wallet Analytics. Активация аккаунта на ${process.env.CLIENT_URL}`,
       text: '',
       html: `
                 <div>

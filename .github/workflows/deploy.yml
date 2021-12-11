@@ -1,0 +1,81 @@
+name: Check and deploy project
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  lint-backend:
+    runs-on: ubuntu-latest
+    container:
+      image: node:16.13.1-alpine
+    defaults:
+      run:
+        working-directory: ./back-end
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm install
+      - name: Run lint
+        run: npm run lint
+
+  deploy-backend:
+    needs: [lint-backend]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./back-end
+    steps:
+      - uses: actions/checkout@v2
+      # Setup key
+      - name: Setup key
+        run: |
+          set -eu
+          mkdir "$HOME/.ssh"
+          echo "${{ secrets.KEY }}" > "$HOME/.ssh/key"
+          chmod 600 "$HOME/.ssh/key"
+      # Deploy
+      - name: Deploy
+        run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --delete --exclude-from 'exclude-list.txt' . root@185.20.227.11:/home/deploy/CWA/back-end/
+      - name: Restart cwa pm2
+        uses: appleboy/ssh-action@master
+        with:
+          host: '185.20.227.11'
+          username: root
+          key: ${{ secrets.KEY }}
+          script: |
+            pushd /home/deploy/CWA/back-end/
+            yarn
+            pm2 restart cwa
+            popd
+
+  deploy-frontend:
+    # needs: [deploy-backend]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./front-end
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm install
+      - name: Run build
+        run: CI=false npm run build
+      # Setup key
+      - name: Setup key
+        run: |
+          set -eu
+          mkdir "$HOME/.ssh"
+          echo "${{ secrets.KEY }}" > "$HOME/.ssh/key"
+          chmod 600 "$HOME/.ssh/key"
+      # Deploy
+      - name: Deploy
+        run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete build/ root@185.20.227.11:/home/deploy/CWA/front-end/build/
