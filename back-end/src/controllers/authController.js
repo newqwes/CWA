@@ -36,7 +36,7 @@ export const registration = async (req, res, next) => {
     res.cookie('refreshToken', userData.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      // secure: true // if have https
+      secure: true, // if have https
     });
 
     return res.status('201').json(omit(['refreshToken'], userData));
