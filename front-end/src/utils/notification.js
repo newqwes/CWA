@@ -2,20 +2,31 @@ import { notification } from 'antd';
 import { head } from 'lodash';
 import { compose, get } from 'lodash/fp';
 
-import { NOTIFICATION_TYPE, NOTIFICATION_MESSAGE_PLACEMENT } from '../constants/notification';
+import {
+  NOTIFICATION_TYPE,
+  NOTIFICATION_MESSAGE_PLACEMENT,
+  NOTIFICATION_DURATION,
+  NOTIFICATION_ERROR_MESSAGE,
+} from '../constants/notification';
 
 /**
- * @description This method causes a notification method from the AntD library
- * and transmits it to the message parameter, placement - message placement
- * @param {string} message - notification message
- * @param {string} type - Type of alert
+ * @param {Object} data
+ * @param {string} data.message
+ * @param {string} data.type
+ * @param {string} data.placement
+ * @param {number} data.duration
  * @returns {void}
  */
-export const getNotification = ({ message, type = NOTIFICATION_TYPE.error }) => {
+export const getNotification = ({
+  message = NOTIFICATION_ERROR_MESSAGE,
+  type = NOTIFICATION_TYPE.error,
+  placement = NOTIFICATION_MESSAGE_PLACEMENT.topRight,
+  duration = NOTIFICATION_DURATION,
+}) => {
   notification[type]({
     message,
-    placement: NOTIFICATION_MESSAGE_PLACEMENT.topRight,
-    duration: 1,
+    placement,
+    duration,
   });
 };
 

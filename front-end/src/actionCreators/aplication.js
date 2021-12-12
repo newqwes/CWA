@@ -25,9 +25,9 @@ export const setNotificationFormAC = ({ errorFields }) => ({
   payload: errorFields,
 });
 
-export const setNotificationAC = ({ message, type }) => ({
+export const setNotificationAC = payload => ({
   type: SET_NOTIFICATION,
-  payload: { message, type },
+  payload,
 });
 
 export const handleShowAuthModalAC = () => ({

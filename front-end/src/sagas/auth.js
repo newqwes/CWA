@@ -26,7 +26,7 @@ import {
 } from '../actions';
 import { AUTH_TOKEN } from '../constants/authModal';
 import { setSession, getToken } from '../utils/localStore';
-import { NOTIFICATION_TYPE } from '../constants/notification';
+import { NOTIFICATION_MESSAGE_PLACEMENT, NOTIFICATION_TYPE } from '../constants/notification';
 
 function* authorization({ payload }) {
   try {
@@ -34,8 +34,8 @@ function* authorization({ payload }) {
 
     const data = yield call(authAPI.login, payload);
 
-    if (data.token) {
-      yield call(setSession, AUTH_TOKEN, data.token);
+    if (data.accessToken) {
+      yield call(setSession, AUTH_TOKEN, data.accessToken);
 
       yield put(authSuccessAC(data));
     } else {
@@ -76,6 +76,7 @@ function* authSuccess({ payload }) {
     setNotificationAC({
       message: `С возвращением ${payload.login}`,
       type: NOTIFICATION_TYPE.success,
+      placement: NOTIFICATION_MESSAGE_PLACEMENT.bottomRight,
     }),
   );
 }

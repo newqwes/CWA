@@ -11,3 +11,7 @@ export const NOTIFICATION_MESSAGE_PLACEMENT = {
   bottomLeft: 'bottomLeft',
   bottomRight: 'bottomRight',
 };
+
+export const NOTIFICATION_DURATION = 2;
+
+export const NOTIFICATION_ERROR_MESSAGE = 'Ошибка!';

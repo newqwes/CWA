@@ -1,11 +1,13 @@
 import axios from 'axios';
 
-import { extractResponsData } from '../utils/preparationData';
 import { getToken } from '../utils/localStore';
 
 axios.interceptors.request.use(config => ({
   ...config,
-  baseURL: 'api/',
+
+  // NOTE: When deploying to the server, this REACT_APP_API_URL
+  // variable is not needed. No need to change at release
+  baseURL: `${process.env.REACT_APP_API_URL || ''}api/`,
   headers: { Authorization: getToken() },
 }));
 
@@ -15,9 +17,9 @@ export const authAPI = {
    */
   login: async ({ email, password }) => {
     try {
-      const respons = await axios.post('auth/login', { email, password });
+      const { data } = await axios.post('auth/login', { email, password });
 
-      return extractResponsData(respons);
+      return data;
     } catch ({ response: { data } }) {
       return data;
     }
@@ -28,9 +30,9 @@ export const authAPI = {
    */
   registration: async ({ email, password, login }) => {
     try {
-      const respons = await axios.post('auth/registration', { email, password, login });
+      const { data } = await axios.post('auth/registration', { email, password, login });
 
-      return extractResponsData(respons);
+      return data;
     } catch ({ response: { data } }) {
       return data;
     }
@@ -38,9 +40,9 @@ export const authAPI = {
 
   status: async () => {
     try {
-      const respons = await axios.get('auth/status');
+      const { data } = await axios.get('auth/status');
 
-      return extractResponsData(respons);
+      return data;
     } catch ({ response: { data } }) {
       return data;
     }
