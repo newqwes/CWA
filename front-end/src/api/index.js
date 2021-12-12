@@ -13,7 +13,7 @@ axios.interceptors.request.use(config => ({
 
 export const authAPI = {
   /**
-   * @returns {object} email, id, login, token, type
+   * @returns {object} email, id, login, accessToken, type
    */
   login: async ({ email, password }) => {
     try {
@@ -26,7 +26,7 @@ export const authAPI = {
   },
 
   /**
-   * @returns {object} email, id, login, token, type
+   * @returns {object} email, id, login, accessToken, type
    */
   registration: async ({ email, password, login }) => {
     try {

@@ -54,8 +54,8 @@ function* registration({ payload }) {
     yield put(loadingPendingAC());
     const data = yield call(authAPI.registration, payload);
 
-    if (data.token) {
-      yield call(setSession, AUTH_TOKEN, data.token);
+    if (data.accessToken) {
+      yield call(setSession, AUTH_TOKEN, data.accessToken);
 
       yield put(registrationSuccessAC(data));
 
