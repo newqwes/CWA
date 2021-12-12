@@ -7,6 +7,7 @@ const formItemsType = PropTypes.arrayOf(
     rules: PropTypes.array,
     placeholder: PropTypes.string,
     prefix: PropTypes.element,
+    customInput: PropTypes.object,
   }),
 );
 

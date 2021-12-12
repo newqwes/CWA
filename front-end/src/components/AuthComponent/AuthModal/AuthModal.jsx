@@ -23,14 +23,15 @@ class AuthModal extends React.Component {
   renderFormItems() {
     const { formItems } = this.props;
 
-    const items = map(
-      ({ name, rules, placeholder, prefix }) => (
+    const items = map(({ name, rules, placeholder, prefix, customInput }) => {
+      const Field = customInput || Input;
+
+      return (
         <FormAntd.Item name={name} rules={rules} key={name}>
-          <Input placeholder={placeholder} prefix={prefix} />
+          <Field placeholder={placeholder} prefix={prefix} />
         </FormAntd.Item>
-      ),
-      formItems,
-    );
+      );
+    }, formItems);
 
     return items;
   }

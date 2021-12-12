@@ -5,6 +5,8 @@ import {
   MailOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
+import { Input } from 'antd';
+
 import {
   AUTH_INPUT_RULE,
   AUTH_FIELDS,
@@ -28,6 +30,7 @@ export const authFormItems = [
     rules: AUTH_INPUT_RULE,
     placeholder: 'пароль',
     prefix: <LockOutlined />,
+    customInput: Input.Password,
   },
 ];
 
@@ -49,6 +52,7 @@ export const registrationFormItems = [
     rules: PASSWORD_RULE,
     placeholder: 'пароль',
     prefix: <LockOutlined />,
+    customInput: Input.Password,
   },
 ];
 
