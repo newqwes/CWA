@@ -58,6 +58,7 @@ class AuthModal extends React.Component {
       handleShow,
       htmlType,
       okText,
+      googleAuth,
       cancelText,
     } = this.props;
 
@@ -81,6 +82,8 @@ class AuthModal extends React.Component {
           cancelText={cancelText}
           okButtonProps={okButtonProps}>
           {this.renderFormItems()}
+          <button onClick={googleAuth}>Google</button>
+          <a href='http://localhost:3015/api/auth/google'>google</a>
         </Modal>
       </FormAntd>
     );

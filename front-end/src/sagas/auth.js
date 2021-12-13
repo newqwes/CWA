@@ -10,6 +10,8 @@ import {
   authSuccessAC,
   getAuthorizationStatusFailureAC,
   getAuthorizationStatusSuccessAC,
+  googleAuthFailureAC,
+  googleAuthSuccessAC,
   registrationFailureAC,
   registrationSuccessAC,
 } from '../actionCreators/auth';
@@ -20,6 +22,7 @@ import {
   AUTH_PENDING,
   AUTH_SUCCESS,
   GET_AUTHORIZATION_STATUS_PENDING,
+  GET_GOOGLE_AUTHORIZATION_PENDING,
   REGISTRATION_FAILURE,
   REGISTRATION_PENDING,
   REGISTRATION_SUCCESS,
@@ -133,6 +136,27 @@ function* authorizationStatus() {
   }
 }
 
+function* getGoogleAuthorization() {
+  try {
+    yield put(loadingPendingAC());
+
+    const data = yield call(authAPI.googleAuth);
+
+    if (data.accessToken) {
+      yield call(setSession, AUTH_TOKEN, data.accessToken);
+
+      yield put(googleAuthSuccessAC(data));
+    } else {
+      yield put(googleAuthFailureAC(data));
+    }
+
+    yield put(loadingSuccessAC());
+  } catch ({ response: { data } }) {
+    yield put(googleAuthFailureAC(data));
+    yield put(loadingSuccessAC());
+  }
+}
+
 export function authSaga() {
   return all([
     takeEvery(AUTH_PENDING, authorization),
@@ -142,5 +166,6 @@ export function authSaga() {
     takeEvery(REGISTRATION_SUCCESS, registrationSuccess),
     takeEvery(REGISTRATION_FAILURE, registrationFailure),
     takeEvery(GET_AUTHORIZATION_STATUS_PENDING, authorizationStatus),
+    takeEvery(GET_GOOGLE_AUTHORIZATION_PENDING, getGoogleAuthorization),
   ]);
 }

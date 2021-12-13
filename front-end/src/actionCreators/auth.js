@@ -9,6 +9,9 @@ import {
   GET_AUTHORIZATION_STATUS_PENDING,
   GET_AUTHORIZATION_STATUS_FAILURE,
   GET_AUTHORIZATION_STATUS_SUCCESS,
+  GET_GOOGLE_AUTHORIZATION_PENDING,
+  GET_GOOGLE_AUTHORIZATION_FAILURE,
+  GET_GOOGLE_AUTHORIZATION_SUCCESS,
 } from '../actions';
 
 export const authPendingAC = authData => ({
@@ -55,4 +58,18 @@ export const getAuthorizationStatusFailureAC = () => ({
 
 export const authLogoutAC = () => ({
   type: AUTH_LOGOUT,
+});
+
+export const googleAuthPendingAC = () => ({
+  type: GET_GOOGLE_AUTHORIZATION_PENDING,
+});
+
+export const googleAuthFailureAC = error => ({
+  type: GET_GOOGLE_AUTHORIZATION_FAILURE,
+  payload: error,
+});
+
+export const googleAuthSuccessAC = data => ({
+  type: GET_GOOGLE_AUTHORIZATION_SUCCESS,
+  payload: data,
 });

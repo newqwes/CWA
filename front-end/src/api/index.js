@@ -38,6 +38,16 @@ export const authAPI = {
     }
   },
 
+  googleAuth: async () => {
+    try {
+      const { data } = await axios.get('auth/google');
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+
   status: async () => {
     try {
       const { data } = await axios.get('auth/status');

@@ -15,6 +15,7 @@ export default {
   modalName: PropTypes.oneOf(MADALS_NAME_FOR_PROPTYPE).isRequired,
   initialValues: PropTypes.objectOf(PropTypes.string),
   onFinish: PropTypes.func.isRequired,
+  googleAuth: PropTypes.func.isRequired,
   setNotificationForm: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   visible: PropTypes.bool.isRequired,

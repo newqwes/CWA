@@ -1,7 +1,14 @@
 import express from 'express';
 import { body } from 'express-validator';
 
-import { login, registration, activate } from '../controllers/authController';
+import {
+  login,
+  registration,
+  activate,
+  google,
+  googleCallback,
+  failure,
+} from '../controllers/authController';
 import { LINK_REQUEST_PARAM, REGISTRATION_REQUEST_BODY } from '../constants/requestBody';
 
 const authRoute = express.Router();
@@ -17,5 +24,10 @@ authRoute.post(
 );
 
 authRoute.get(`/activate/:${LINK_REQUEST_PARAM}`, activate);
+
+authRoute.get('/google', google);
+authRoute.get('/google/callback', googleCallback);
+
+authRoute.get('/failure', failure);
 
 export default authRoute;

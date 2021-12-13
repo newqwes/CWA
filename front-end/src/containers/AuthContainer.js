@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import { authPendingAC, registrationPendingAC } from '../actionCreators/auth';
+import { authPendingAC, googleAuthPendingAC, registrationPendingAC } from '../actionCreators/auth';
 import {
   setNotificationFormAC,
   handleShowAuthModalAC,
@@ -22,6 +22,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   setAuthData: authPendingAC,
+  googleAuth: googleAuthPendingAC,
   setRegistrationData: registrationPendingAC,
   setNotificationForm: setNotificationFormAC,
   handleShowAuthModal: handleShowAuthModalAC,
@@ -36,18 +37,21 @@ const mergeProps = (
     handleShowAuthModal,
     handleShowRegistrationModal,
     setNotificationForm,
+    googleAuth,
   },
   ownProps,
 ) => {
   const modalsConfig = [
     {
       ...authModalConfig,
+      googleAuth,
       onFinish: setAuthData,
       visible: authModalVisible,
       handleShow: handleShowAuthModal,
     },
     {
       ...registrationModalConfig,
+      googleAuth,
       onFinish: setRegistrationData,
       visible: registrationModalVisible,
       handleShow: handleShowRegistrationModal,
