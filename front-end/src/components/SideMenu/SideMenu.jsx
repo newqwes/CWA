@@ -1,11 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { map } from 'lodash/fp';
 import { Menu } from 'antd';
 
 import { DEFAULT_THEME } from '../../constants/theme';
-import { DEFAULT_MODE_MENU, DEFAULT_SELECTED_MENU, MENU } from '../../constants/menu';
+import { DEFAULT_MODE_MENU, DEFAULT_SELECTED_MENU } from '../../constants/menu';
 
-const SideMenu = () => {
+const SideMenu = ({ menuItems }) => {
   const handleOnSelect = ({ key }) => {
     console.log(key);
   };
@@ -17,7 +18,7 @@ const SideMenu = () => {
           {title}
         </Menu.Item>
       ),
-      MENU,
+      menuItems,
     );
 
   return (
@@ -29,6 +30,10 @@ const SideMenu = () => {
       {getMainMenu()}
     </Menu>
   );
+};
+
+SideMenu.propTypes = {
+  menuItems: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default SideMenu;
