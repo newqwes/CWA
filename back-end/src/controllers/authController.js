@@ -1,8 +1,6 @@
 import { validationResult } from 'express-validator';
 import { pick, values, omit, get } from 'lodash/fp';
-import passport from 'passport';
 
-import { CLIENT_URL } from '../constants';
 import {
   REGISTRATION_REQUEST_BODY,
   AUTHORIZATION_REQUEST_BODY,
@@ -55,21 +53,6 @@ export const activate = async (req, res, next) => {
     await authService.activate(activationHash);
 
     return res.redirect(process.env.CLIENT_URL);
-  } catch (e) {
-    next(e);
-  }
-};
-
-export const google = passport.authenticate('google', { scope: ['email', 'profile'] });
-
-export const googleCallback = passport.authenticate('google', {
-  successRedirect: CLIENT_URL,
-  failureRedirect: '/api/auth/failure',
-});
-
-export const failure = async (req, res, next) => {
-  try {
-    return next(ApiError.BadRequest('Ошибка авторизации'));
   } catch (e) {
     next(e);
   }

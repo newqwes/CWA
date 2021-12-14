@@ -6,6 +6,8 @@ import { KEYWORD } from '../../../constants/keyword';
 
 import authModalTypes from './propTypes';
 
+import { GoogleOutlined } from './styled';
+
 class AuthModal extends React.Component {
   static propTypes = authModalTypes;
 
@@ -82,8 +84,7 @@ class AuthModal extends React.Component {
           cancelText={cancelText}
           okButtonProps={okButtonProps}>
           {this.renderFormItems()}
-          <button onClick={googleAuth}>Google</button>
-          <a href='http://localhost:3015/api/auth/google'>google</a>
+          <GoogleOutlined type='dark' onClick={googleAuth} />
         </Modal>
       </FormAntd>
     );

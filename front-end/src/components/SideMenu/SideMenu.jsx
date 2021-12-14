@@ -33,7 +33,7 @@ const SideMenu = ({ menuItems }) => {
 };
 
 SideMenu.propTypes = {
-  menuItems: PropTypes.arrayOf(PropTypes.string).isRequired,
+  menuItems: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default SideMenu;

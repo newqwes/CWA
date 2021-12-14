@@ -1,4 +1,5 @@
 import User from '../database/models/user';
+import createResponse from '../utils/createResponse';
 
 class UserService {
   async findByKey(value, key) {
@@ -6,9 +7,13 @@ class UserService {
   }
 
   async findOrCreateByEmail(email, defaults) {
-    const [user, created] = await User.findOrCreate({ where: { email }, defaults });
+    try {
+      const [user, created] = await User.findOrCreate({ where: { email }, defaults });
 
-    return { user, created };
+      return { user, created };
+    } catch (error) {
+      createResponse(500, 'Server Error findOrCreateByEmail', error);
+    }
   }
 }
 

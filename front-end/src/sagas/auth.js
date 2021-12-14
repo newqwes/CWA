@@ -1,6 +1,7 @@
 import { takeEvery, all, call, put } from 'redux-saga/effects';
 
 import {
+  closeAuthorizationModalsAC,
   loadingPendingAC,
   loadingSuccessAC,
   setNotificationAC,
@@ -11,7 +12,6 @@ import {
   getAuthorizationStatusFailureAC,
   getAuthorizationStatusSuccessAC,
   googleAuthFailureAC,
-  googleAuthSuccessAC,
   registrationFailureAC,
   registrationSuccessAC,
 } from '../actionCreators/auth';
@@ -140,16 +140,9 @@ function* getGoogleAuthorization() {
   try {
     yield put(loadingPendingAC());
 
-    const data = yield call(authAPI.googleAuth);
+    yield call(authAPI.googleAuth);
 
-    if (data.accessToken) {
-      yield call(setSession, AUTH_TOKEN, data.accessToken);
-
-      yield put(googleAuthSuccessAC(data));
-    } else {
-      yield put(googleAuthFailureAC(data));
-    }
-
+    yield put(closeAuthorizationModalsAC());
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(googleAuthFailureAC(data));

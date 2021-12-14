@@ -6,6 +6,7 @@ import {
   HANDLE_SHOW_AUTH_MODAL,
   HANDLE_SHOW_REGISTRATION_MODAL,
   SET_NOTIFICATION,
+  CLOSE_AUTHORIZATION_MODALS,
 } from '../actions';
 
 export const loadingPendingAC = () => ({
@@ -36,4 +37,8 @@ export const handleShowAuthModalAC = () => ({
 
 export const handleShowRegistrationModalAC = () => ({
   type: HANDLE_SHOW_REGISTRATION_MODAL,
+});
+
+export const closeAuthorizationModalsAC = () => ({
+  type: CLOSE_AUTHORIZATION_MODALS,
 });

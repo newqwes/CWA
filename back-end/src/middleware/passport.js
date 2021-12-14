@@ -65,7 +65,7 @@ export const googlePassport = passport => {
             await MailService.sendPasswordMail(email, randomPassword);
           }
 
-          tokens ? done(null, user) : done(null, false);
+          tokens ? done(null, userData) : done(null, false);
           return userData;
         } catch (error) {
           return createResponse(500, 'Server Error', error);
@@ -75,10 +75,12 @@ export const googlePassport = passport => {
   );
 
   passport.serializeUser((user, done) => {
+    console.log('serializeUser: ', user);
     done(null, user);
   });
 
   passport.deserializeUser((user, done) => {
+    console.log('deserializeUser: ', user);
     done(null, user);
   });
 };
