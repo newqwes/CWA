@@ -9,6 +9,7 @@ import GlobalStyle from './style/GlobalStyle';
 import theme from './style/theme';
 import { DEFAULT_THEME } from './constants/theme';
 import AppContainer from './containers/AppContainer';
+import LoginSuccess from './components/AuthComponent/LoginSuccess';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,7 +17,11 @@ ReactDOM.render(
       <ThemeProvider theme={theme[DEFAULT_THEME]}>
         <GlobalStyle />
         <BrowserRouter>
-          <Route path='/' component={AppContainer} />
+          <Route exact path='/' component={AppContainer} />
+          <Route exact path='/login/success' component={LoginSuccess} />
+          <Route exact path='/login/failure'>
+            Ошибка авторизации
+          </Route>
         </BrowserRouter>
       </ThemeProvider>
     </Provider>

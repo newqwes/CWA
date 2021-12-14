@@ -39,3 +39,25 @@ export const parseUserData = registationBody => {
 
   return userDataWithHashPassword;
 };
+
+/**
+ * @description
+ * @param {Object} googleProfile
+ * @param {string} googleProfile.email
+ * @param {string} googleProfile.name
+ * @returns {Object} { defaults, randomPassword }
+ */
+export const createUserDataByGoogle = ({ email, displayName }) => {
+  const randomPassword = v4();
+
+  const registationBody = {
+    email,
+    login: displayName,
+    password: randomPassword,
+    isActivated: true,
+  };
+
+  const defaults = parseUserData(registationBody);
+
+  return { defaults, randomPassword };
+};

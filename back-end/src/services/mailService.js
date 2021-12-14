@@ -27,6 +27,21 @@ class MailService {
             `,
     });
   }
+
+  async sendPasswordMail(to, password) {
+    await this.transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to,
+      subject: `Crypto Wallet Analytics. Вы зарегистрировались на ${process.env.CLIENT_URL}`,
+      text: '',
+      html: `
+                <div>
+                    <h1>Мы сгененрировали для Вас пароль.</h1>
+                    <h4>Ваш пароль: ${password}</h4>
+                </div>
+            `,
+    });
+  }
 }
 
 export default new MailService();

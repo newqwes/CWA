@@ -1,10 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Layout } from 'antd';
-import { get } from 'lodash/fp';
-
-export const AppWrapper = styled(Layout)`
-  min-height: 100vh;
-`;
+import { get, isEqual } from 'lodash/fp';
 
 const logoIcon = css`
   padding-right: 10px;
@@ -15,7 +11,7 @@ const logoParagraph = css`
   display: none;
 `;
 
-export const Logo = styled(Layout)`
+export const Logo = styled.div`
   font-family: 'Inter';
   height: 28px;
   margin: 16px;
@@ -31,14 +27,14 @@ export const Logo = styled(Layout)`
     font-weight: 500;
     letter-spacing: 0.2px;
     margin: 0;
-    ${({ collapsedSideMenu }) => collapsedSideMenu && logoParagraph}
+    ${({ collapsed }) => collapsed && logoParagraph}
   }
 
   span {
     transition: 0.3s;
     padding-right: 10px;
     margin-left: 50px;
-    ${({ collapsedSideMenu }) => collapsedSideMenu && logoIcon}
+    ${({ collapsed }) => collapsed && logoIcon}
   }
 
   &:hover {
@@ -48,4 +44,27 @@ export const Logo = styled(Layout)`
       color: ${get(['theme', 'accent'])};
     }
   }
+`;
+
+export const Owerlay = styled.div`
+  display: none;
+`;
+
+const appLoading = css`
+  opacity: 0.8;
+
+  ${Owerlay} {
+    display: block;
+    position: absolute;
+    z-index: 100000;
+    height: 100vh;
+    width: 100vw;
+    cursor: wait;
+  }
+`;
+
+export const AppWrapper = styled(Layout)`
+  min-height: 100vh;
+  transition: 0.5s;
+  ${({ loading }) => isEqual(loading, 'true') && appLoading};
 `;

@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Layout } from 'antd';
-
 import { SketchOutlined } from '@ant-design/icons';
-import { AppWrapper, Logo } from './style/AppWrapper';
-import SideMenu from './components/SideMenu';
-import Header from './components/Header';
+
+import SideMenuContainer from './containers/SideMenuContainer';
 import AuthContainer from './containers/AuthContainer';
 import LogoutContainer from './containers/LogoutContainer';
+
+import Header from './components/Header';
+
+import { AppWrapper, Logo, Owerlay } from './style/AppWrapper';
 
 const { Content, Sider } = Layout;
 
@@ -27,25 +29,26 @@ class App extends React.Component {
   }
 
   render() {
-    const { handleCollapseSideMenu, collapsedSideMenu, authorized } = this.props;
+    const { handleCollapseSideMenu, collapsedSideMenu, authorized, loading } = this.props;
 
     return (
-      <AppWrapper>
+      <AppWrapper loading={loading.toString()}>
         <Sider collapsible collapsed={collapsedSideMenu} onCollapse={handleCollapseSideMenu}>
-          <Logo collapsedSideMenu={collapsedSideMenu}>
+          <Logo collapsed={collapsedSideMenu}>
             <SketchOutlined />
             <p>CryptoWalletAnalytics</p>
           </Logo>
-          <SideMenu />
+          <SideMenuContainer />
         </Sider>
         <Layout>
           <Header>{authorized ? <LogoutContainer /> : <AuthContainer />}</Header>
           <Content style={{ margin: '0 16px' }}>
-            <div className='site-layout-background' style={{ padding: 24, minHeight: 360 }}>
-              Здесь будет статистика.
+            <div style={{ padding: 24, minHeight: 360 }}>
+              {authorized ? 'Авторизован!' : 'Нет доступа!'}
             </div>
           </Content>
         </Layout>
+        <Owerlay />
       </AppWrapper>
     );
   }

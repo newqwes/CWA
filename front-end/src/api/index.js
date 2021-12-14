@@ -38,6 +38,29 @@ export const authAPI = {
     }
   },
 
+  googleAuth: async () => {
+    try {
+      let timer = null;
+      const googleLoginURL = 'http://localhost:3015/api/auth/google';
+      const newWindow = window.open(googleLoginURL, '_blank', 'width=500,height=600');
+
+      if (newWindow) {
+        timer = setInterval(() => {
+          if (newWindow.closed) {
+            console.log('Окно гугл закрыто!)');
+            // Здесь колбэк
+
+            if (timer) {
+              clearInterval(timer);
+            }
+          }
+        }, 500);
+      }
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+
   status: async () => {
     try {
       const { data } = await axios.get('auth/status');

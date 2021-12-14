@@ -1,5 +1,6 @@
 import { validationResult } from 'express-validator';
 import { pick, values, omit, get } from 'lodash/fp';
+
 import {
   REGISTRATION_REQUEST_BODY,
   AUTHORIZATION_REQUEST_BODY,

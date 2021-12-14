@@ -1,6 +1,7 @@
 import { takeEvery, all, call, put } from 'redux-saga/effects';
 
 import {
+  closeAuthorizationModalsAC,
   loadingPendingAC,
   loadingSuccessAC,
   setNotificationAC,
@@ -10,6 +11,7 @@ import {
   authSuccessAC,
   getAuthorizationStatusFailureAC,
   getAuthorizationStatusSuccessAC,
+  googleAuthFailureAC,
   registrationFailureAC,
   registrationSuccessAC,
 } from '../actionCreators/auth';
@@ -20,6 +22,7 @@ import {
   AUTH_PENDING,
   AUTH_SUCCESS,
   GET_AUTHORIZATION_STATUS_PENDING,
+  GET_GOOGLE_AUTHORIZATION_PENDING,
   REGISTRATION_FAILURE,
   REGISTRATION_PENDING,
   REGISTRATION_SUCCESS,
@@ -133,6 +136,20 @@ function* authorizationStatus() {
   }
 }
 
+function* getGoogleAuthorization() {
+  try {
+    yield put(loadingPendingAC());
+
+    yield call(authAPI.googleAuth);
+
+    yield put(closeAuthorizationModalsAC());
+    yield put(loadingSuccessAC());
+  } catch ({ response: { data } }) {
+    yield put(googleAuthFailureAC(data));
+    yield put(loadingSuccessAC());
+  }
+}
+
 export function authSaga() {
   return all([
     takeEvery(AUTH_PENDING, authorization),
@@ -142,5 +159,6 @@ export function authSaga() {
     takeEvery(REGISTRATION_SUCCESS, registrationSuccess),
     takeEvery(REGISTRATION_FAILURE, registrationFailure),
     takeEvery(GET_AUTHORIZATION_STATUS_PENDING, authorizationStatus),
+    takeEvery(GET_GOOGLE_AUTHORIZATION_PENDING, getGoogleAuthorization),
   ]);
 }

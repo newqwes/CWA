@@ -6,7 +6,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 import sequelize from './database';
-import mwPassport from './middleware/passport';
+import mwPassport, { googlePassport } from './middleware/passport';
 import errorMiddleware from './middleware/errorMiddleware';
 
 import authRoute from './routes/authRoute';
@@ -30,6 +30,7 @@ app.use(
 
 app.use(passport.initialize());
 mwPassport(passport);
+googlePassport(passport);
 
 app.use('/api/auth', authRoute);
 app.use('/api/order', orderRoute);

@@ -1,6 +1,7 @@
-import { assoc } from 'lodash/fp';
+import { assoc, compose } from 'lodash/fp';
 import {
   AUTH_SUCCESS,
+  CLOSE_AUTHORIZATION_MODALS,
   GET_LOADING_PENDING,
   GET_LOADING_SUCCESS,
   HANDLE_COLLAPSE_SIDE_MENU,
@@ -10,7 +11,7 @@ import {
 } from '../actions';
 
 const initialState = {
-  loading: false,
+  loading: true,
   collapsedSideMenu: false,
   authModalVisible: false,
   registrationModalVisible: false,
@@ -44,6 +45,13 @@ const aplication = (state = initialState, { type }) => {
 
     case AUTH_SUCCESS: {
       return assoc(['authModalVisible'], false, state);
+    }
+
+    case CLOSE_AUTHORIZATION_MODALS: {
+      return compose(
+        assoc(['authModalVisible'], false),
+        assoc(['registrationModalVisible'], false),
+      )(state);
     }
 
     default:
