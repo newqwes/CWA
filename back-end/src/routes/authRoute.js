@@ -4,7 +4,7 @@ import passport from 'passport';
 
 import { LINK_REQUEST_PARAM, REGISTRATION_REQUEST_BODY } from '../constants/requestBody';
 
-import { login, registration, activate } from '../controllers/authController';
+import { login, registration, activate, status } from '../controllers/authController';
 import authMiddleware from '../middleware/authMiddleware';
 
 const authRoute = express.Router();
@@ -32,7 +32,6 @@ authRoute.get(
   }),
   (req, res) => {
     console.log('Callback google SUCCESS user: ', req.user);
-    res.send('Спасибо за авторизацию!');
 
     res.cookie('refreshToken', req.user.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -45,6 +44,19 @@ authRoute.get(
 authRoute.get('/protected', authMiddleware, (req, res) => {
   console.log('/protected ', req.user);
   res.send('Только авторизованные!');
+});
+
+authRoute.get('/status', authMiddleware, status);
+
+authRoute.get('/logout', (req, res) => {
+  try {
+    // TODO: One of method d't work
+    req.logOut();
+    req.session.destroy();
+    return res.status('202');
+  } catch (e) {
+    return res.status('203').json(e);
+  }
 });
 
 export default authRoute;

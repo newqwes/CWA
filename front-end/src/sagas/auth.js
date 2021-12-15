@@ -19,6 +19,7 @@ import { authAPI } from '../api';
 
 import {
   AUTH_FAILURE,
+  AUTH_LOGOUT,
   AUTH_PENDING,
   AUTH_SUCCESS,
   GET_AUTHORIZATION_STATUS_PENDING,
@@ -28,7 +29,7 @@ import {
   REGISTRATION_SUCCESS,
 } from '../actions';
 import { AUTH_TOKEN } from '../constants/authModal';
-import { setSession, getToken } from '../utils/localStore';
+import { setSession } from '../utils/localStore';
 import { NOTIFICATION_MESSAGE_PLACEMENT, NOTIFICATION_TYPE } from '../constants/notification';
 
 function* authorization({ payload }) {
@@ -44,6 +45,19 @@ function* authorization({ payload }) {
     } else {
       yield put(authFailureAC(data));
     }
+
+    yield put(loadingSuccessAC());
+  } catch ({ response: { data } }) {
+    yield put(authFailureAC(data));
+    yield put(loadingSuccessAC());
+  }
+}
+
+function* logout() {
+  try {
+    yield put(loadingPendingAC());
+
+    yield call(authAPI.logout);
 
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
@@ -114,17 +128,14 @@ function* registrationFailure({ payload }) {
 function* authorizationStatus() {
   try {
     yield put(loadingPendingAC());
-    const token = yield call(getToken);
 
-    if (token) {
-      const authorized = yield call(authAPI.status);
+    const { email } = yield call(authAPI.status);
 
-      if (authorized) {
-        yield put(getAuthorizationStatusSuccessAC());
-        yield put(loadingSuccessAC());
+    if (email) {
+      yield put(getAuthorizationStatusSuccessAC());
+      yield put(loadingSuccessAC());
 
-        return;
-      }
+      return;
     }
 
     yield call(setSession, AUTH_TOKEN);
@@ -160,5 +171,6 @@ export function authSaga() {
     takeEvery(REGISTRATION_FAILURE, registrationFailure),
     takeEvery(GET_AUTHORIZATION_STATUS_PENDING, authorizationStatus),
     takeEvery(GET_GOOGLE_AUTHORIZATION_PENDING, getGoogleAuthorization),
+    takeEvery(AUTH_LOGOUT, logout),
   ]);
 }

@@ -9,6 +9,7 @@ const baseURL = `${process.env.REACT_APP_API_URL || ''}api/`;
 axios.interceptors.request.use(config => ({
   ...config,
   baseURL,
+  withCredentials: true,
   headers: { Authorization: getToken() },
 }));
 
@@ -71,6 +72,14 @@ export const authAPI = {
       const { data } = await axios.get('auth/status');
 
       return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+
+  logout: async () => {
+    try {
+      await axios.get('auth/logout');
     } catch ({ response: { data } }) {
       return data;
     }

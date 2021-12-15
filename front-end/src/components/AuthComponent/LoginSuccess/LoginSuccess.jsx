@@ -4,7 +4,7 @@ const LoginSuccess = () => {
   useEffect(() => {
     setTimeout(() => {
       window.close();
-    }, 1000);
+    }, 100000);
   }, []);
 
   return <div>Успешно авторизованы!</div>;
