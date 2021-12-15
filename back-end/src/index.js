@@ -44,6 +44,7 @@ const start = async () => {
       console.log(`Server is listening on port ${SERVER_PORT}...`);
       await sequelize.authenticate();
       console.log('Database Connected!');
+      console.log('GOOGLE_CALLBACK_URL: ', process.env.GOOGLE_CALLBACK_URL);
     });
   } catch (e) {
     console.log(e);
