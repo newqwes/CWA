@@ -42,11 +42,7 @@ export const authAPI = {
   googleAuth: async () => {
     try {
       let timer = null;
-
-      const googleLoginURL = process.env.REACT_APP_API_URL
-        ? `${baseURL}auth/google`
-        : 'https://www.coinlitics.ru/api/auth/google';
-
+      const googleLoginURL = `${baseURL}auth/google`;
       const newWindow = window.open(googleLoginURL, '_blank', 'width=500,height=600');
 
       if (newWindow) {
