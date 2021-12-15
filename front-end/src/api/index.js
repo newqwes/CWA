@@ -2,12 +2,13 @@ import axios from 'axios';
 
 import { getToken } from '../utils/localStore';
 
+// NOTE: When deploying to the server, this REACT_APP_API_URL
+// variable is not needed. No need to change at release
+const baseURL = `${process.env.REACT_APP_API_URL || ''}api/`;
+
 axios.interceptors.request.use(config => ({
   ...config,
-
-  // NOTE: When deploying to the server, this REACT_APP_API_URL
-  // variable is not needed. No need to change at release
-  baseURL: `${process.env.REACT_APP_API_URL || ''}api/`,
+  baseURL,
   headers: { Authorization: getToken() },
 }));
 
@@ -41,7 +42,7 @@ export const authAPI = {
   googleAuth: async () => {
     try {
       let timer = null;
-      const googleLoginURL = 'http://localhost:3015/api/auth/google';
+      const googleLoginURL = `${baseURL}auth/google`;
       const newWindow = window.open(googleLoginURL, '_blank', 'width=500,height=600');
 
       if (newWindow) {
