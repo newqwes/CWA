@@ -81,10 +81,14 @@ export const googlePassport = passport => {
       done(err, null);
     });
 
-    const userDto = new UserDto(user);
-    const userData = { ...userDto };
+    if (user) {
+      const userDto = new UserDto(user);
+      const userData = { ...userDto };
 
-    if (user) done(null, userData);
+      done(null, userData);
+    }
+
+    done(null, false);
   });
 };
 

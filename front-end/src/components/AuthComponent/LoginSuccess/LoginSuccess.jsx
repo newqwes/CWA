@@ -5,10 +5,10 @@ const LoginSuccess = ({ userName }) => {
   useEffect(() => {
     setTimeout(() => {
       window.close();
-    }, 100000);
+    }, 1000);
   }, []);
 
-  return <h2>{userName} успешно авторизованы</h2>;
+  return <h2>{userName} успешно авторизованы!</h2>;
 };
 
 LoginSuccess.propTypes = {
