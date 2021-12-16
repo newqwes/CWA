@@ -8,7 +8,7 @@ export const baseURL = `${process.env.REACT_APP_API_URL || ''}api/`;
 
 export const googleLoginURL = process.env.REACT_APP_API_URL
   ? `${baseURL}auth/google`
-  : 'https://www.coinlitics.ru/api/auth/google';
+  : '/api/auth/google';
 
 axios.interceptors.request.use(config => ({
   ...config,
