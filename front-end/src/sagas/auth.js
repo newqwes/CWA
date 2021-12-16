@@ -60,6 +60,7 @@ function* logout() {
   try {
     yield put(loadingPendingAC());
 
+    yield call(setSession, AUTH_TOKEN);
     yield call(authAPI.logout);
 
     yield put(getAuthorizationStatusAC());

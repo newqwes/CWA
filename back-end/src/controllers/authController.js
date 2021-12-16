@@ -9,6 +9,7 @@ import {
 
 import ApiError from '../exceptions/apiError';
 import authService from '../services/authService';
+import UserDto from '../dto/userDto';
 
 export const login = async (req, res, next) => {
   try {
@@ -58,9 +59,12 @@ export const activate = async (req, res, next) => {
   }
 };
 
-export const status = async (req, res, next) => {
+export const status = (req, res, next) => {
   try {
-    return res.status('200').json(req.user);
+    const userDto = new UserDto(req.user);
+    const userData = { ...userDto };
+
+    return res.status('200').json(userData);
   } catch (e) {
     next(e);
   }

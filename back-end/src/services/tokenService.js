@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-
 import Token from '../database/models/token';
 
 class TokenService {
@@ -15,7 +14,8 @@ class TokenService {
 
   validateAccessToken(token) {
     try {
-      const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+      const userData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
       return userData;
     } catch (e) {
       return null;
@@ -24,7 +24,8 @@ class TokenService {
 
   validateRefreshToken(token) {
     try {
-      const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+      const userData = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+
       return userData;
     } catch (e) {
       return null;
@@ -33,11 +34,13 @@ class TokenService {
 
   async removeToken(refreshToken) {
     const tokenData = await Token.deleteOne({ refreshToken });
+
     return tokenData;
   }
 
   async findToken(refreshToken) {
     const tokenData = await Token.findOne({ refreshToken });
+
     return tokenData;
   }
 }
