@@ -5,6 +5,7 @@ import {
   loadingPendingAC,
   loadingSuccessAC,
   setNotificationAC,
+  
 } from '../actionCreators/aplication';
 import {
   authFailureAC,
@@ -14,6 +15,7 @@ import {
   googleAuthFailureAC,
   registrationFailureAC,
   registrationSuccessAC,
+  getAuthorizationStatusAC
 } from '../actionCreators/auth';
 import { authAPI } from '../api';
 
@@ -46,6 +48,7 @@ function* authorization({ payload }) {
       yield put(authFailureAC(data));
     }
 
+    yield put(getAuthorizationStatusAC());
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(authFailureAC(data));
@@ -59,6 +62,7 @@ function* logout() {
 
     yield call(authAPI.logout);
 
+    yield put(getAuthorizationStatusAC());
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(authFailureAC(data));
@@ -81,9 +85,47 @@ function* registration({ payload }) {
       yield put(registrationFailureAC(data));
     }
 
+    yield put(getAuthorizationStatusAC());
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(registrationFailureAC(data));
+    yield put(loadingSuccessAC());
+  }
+}
+
+function* authorizationStatus() {
+  try {
+    yield put(loadingPendingAC());
+
+    const { email } = yield call(authAPI.status);
+
+    if (email) {
+      yield put(getAuthorizationStatusSuccessAC());
+      yield put(loadingSuccessAC());
+
+      return;
+    }
+
+    yield call(setSession, AUTH_TOKEN);
+    yield put(getAuthorizationStatusFailureAC());
+    yield put(loadingSuccessAC());
+  } catch (e) {
+    yield put(getAuthorizationStatusFailureAC());
+    yield put(loadingSuccessAC());
+  }
+}
+
+function* getGoogleAuthorization() {
+  try {
+    yield put(loadingPendingAC());
+
+    yield call(authAPI.googleAuth);
+
+    yield put(closeAuthorizationModalsAC());
+    yield put(getAuthorizationStatusAC());
+    yield put(loadingSuccessAC());
+  } catch ({ response: { data } }) {
+    yield put(googleAuthFailureAC(data));
     yield put(loadingSuccessAC());
   }
 }
@@ -123,42 +165,6 @@ function* registrationFailure({ payload }) {
       type: NOTIFICATION_TYPE.error,
     }),
   );
-}
-
-function* authorizationStatus() {
-  try {
-    yield put(loadingPendingAC());
-
-    const { email } = yield call(authAPI.status);
-
-    if (email) {
-      yield put(getAuthorizationStatusSuccessAC());
-      yield put(loadingSuccessAC());
-
-      return;
-    }
-
-    yield call(setSession, AUTH_TOKEN);
-    yield put(getAuthorizationStatusFailureAC());
-    yield put(loadingSuccessAC());
-  } catch (e) {
-    yield put(getAuthorizationStatusFailureAC());
-    yield put(loadingSuccessAC());
-  }
-}
-
-function* getGoogleAuthorization() {
-  try {
-    yield put(loadingPendingAC());
-
-    yield call(authAPI.googleAuth);
-
-    yield put(closeAuthorizationModalsAC());
-    yield put(loadingSuccessAC());
-  } catch ({ response: { data } }) {
-    yield put(googleAuthFailureAC(data));
-    yield put(loadingSuccessAC());
-  }
 }
 
 export function authSaga() {
