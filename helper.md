@@ -1,5 +1,13 @@
 конфиг по адресу /etc/nginx/sites-available/apijira.conf
 
+если там запущенно реакт приложение необходимо подправить работу роутинга добовляется в конфиг server... и там добавить эту првоерку
+
+location / {
+if (!-e $request_filename){
+      rewrite ^(.*)$ /index.html break;
+}
+}
+
 после сохранения конфига првоерить синтакс
 nginx -t
 

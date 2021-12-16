@@ -1,9 +1,11 @@
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
 import dotenv from 'dotenv';
 import express from 'express';
 import passport from 'passport';
-import morgan from 'morgan';
-import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import cookieSession from 'cookie-session';
 
 import sequelize from './database';
 import mwPassport, { googlePassport } from './middleware/passport';
@@ -19,6 +21,7 @@ dotenv.config();
 const app = express();
 
 app.use(morgan('dev'));
+app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -27,10 +30,17 @@ app.use(
     origin: process.env.CLIENT_URL,
   }),
 );
+app.use(
+  cookieSession({
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [process.env.COOKIE_KEY],
+  }),
+);
 
 app.use(passport.initialize());
 mwPassport(passport);
 googlePassport(passport);
+app.use(passport.session());
 
 app.use('/api/auth', authRoute);
 app.use('/api/order', orderRoute);

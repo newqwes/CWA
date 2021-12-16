@@ -17,12 +17,12 @@ class MailService {
     await this.transporter.sendMail({
       from: process.env.SMTP_USER,
       to,
-      subject: `Crypto Wallet Analytics. Активация аккаунта на ${process.env.CLIENT_URL}`,
+      subject: `Crypto Wallet Analytics. Активация аккаунта на сайте ${process.env.CLIENT_URL_VISUAL}`,
       text: '',
       html: `
                 <div>
                     <h1>Для активации перейдите по ссылке</h1>
-                    <a href="${link}">${link}</a>
+                    <h2><a href="${link}">${link}</a></h2>
                 </div>
             `,
     });
@@ -32,11 +32,14 @@ class MailService {
     await this.transporter.sendMail({
       from: process.env.SMTP_USER,
       to,
-      subject: `Crypto Wallet Analytics. Вы зарегистрировались на ${process.env.CLIENT_URL}`,
+      subject: `Crypto Wallet Analytics. Вы зарегистрировались на сайте ${process.env.CLIENT_URL_VISUAL}`,
       text: '',
       html: `
                 <div>
                     <h1>Мы сгененрировали для Вас пароль.</h1>
+                    <h1>
+                      <a href="${process.env.CLIENT_URL}" target="_blank" style="text-decoration: none;">${process.env.CLIENT_URL_VISUAL}</a>
+                    </h1>
                     <h4>Ваш пароль: ${password}</h4>
                 </div>
             `,

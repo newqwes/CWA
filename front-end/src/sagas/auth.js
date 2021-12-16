@@ -1,4 +1,4 @@
-import { takeEvery, all, call, put } from 'redux-saga/effects';
+import { takeEvery, all, call, put, delay } from 'redux-saga/effects';
 
 import {
   closeAuthorizationModalsAC,
@@ -14,11 +14,13 @@ import {
   googleAuthFailureAC,
   registrationFailureAC,
   registrationSuccessAC,
+  getAuthorizationStatusAC,
 } from '../actionCreators/auth';
-import { authAPI } from '../api';
+import { authAPI, googleLoginURL } from '../api';
 
 import {
   AUTH_FAILURE,
+  AUTH_LOGOUT,
   AUTH_PENDING,
   AUTH_SUCCESS,
   GET_AUTHORIZATION_STATUS_PENDING,
@@ -28,8 +30,9 @@ import {
   REGISTRATION_SUCCESS,
 } from '../actions';
 import { AUTH_TOKEN } from '../constants/authModal';
-import { setSession, getToken } from '../utils/localStore';
+import { setSession } from '../utils/localStore';
 import { NOTIFICATION_MESSAGE_PLACEMENT, NOTIFICATION_TYPE } from '../constants/notification';
+import { openCenteredWindow } from '../utils/openCenteredWindow';
 
 function* authorization({ payload }) {
   try {
@@ -45,6 +48,21 @@ function* authorization({ payload }) {
       yield put(authFailureAC(data));
     }
 
+    yield put(getAuthorizationStatusAC());
+    yield put(loadingSuccessAC());
+  } catch ({ response: { data } }) {
+    yield put(authFailureAC(data));
+    yield put(loadingSuccessAC());
+  }
+}
+
+function* logout() {
+  try {
+    yield put(loadingPendingAC());
+
+    yield call(authAPI.logout);
+
+    yield put(getAuthorizationStatusAC());
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(authFailureAC(data));
@@ -67,9 +85,62 @@ function* registration({ payload }) {
       yield put(registrationFailureAC(data));
     }
 
+    yield put(getAuthorizationStatusAC());
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(registrationFailureAC(data));
+    yield put(loadingSuccessAC());
+  }
+}
+
+function* authorizationStatus() {
+  try {
+    yield put(loadingPendingAC());
+
+    const { email } = yield call(authAPI.status);
+
+    if (email) {
+      yield put(getAuthorizationStatusSuccessAC());
+      yield put(loadingSuccessAC());
+
+      return;
+    }
+
+    yield call(setSession, AUTH_TOKEN);
+    yield put(getAuthorizationStatusFailureAC());
+    yield put(loadingSuccessAC());
+  } catch (e) {
+    yield put(getAuthorizationStatusFailureAC());
+    yield put(loadingSuccessAC());
+  }
+}
+
+function* callSelfTilWindowClose(googleAuthWindow) {
+  if (googleAuthWindow && !googleAuthWindow.closed) {
+    yield delay(500);
+
+    yield call(callSelfTilWindowClose, googleAuthWindow);
+  } else {
+    yield put(getAuthorizationStatusAC());
+  }
+}
+
+function* getGoogleAuthorization() {
+  try {
+    yield put(loadingPendingAC());
+
+    const googleAuthWindow = yield call(openCenteredWindow, {
+      height: 600,
+      width: 500,
+      url: googleLoginURL,
+    });
+
+    yield put(closeAuthorizationModalsAC());
+
+    yield call(callSelfTilWindowClose, googleAuthWindow);
+    yield put(loadingSuccessAC());
+  } catch ({ response }) {
+    yield put(googleAuthFailureAC(response));
     yield put(loadingSuccessAC());
   }
 }
@@ -111,45 +182,6 @@ function* registrationFailure({ payload }) {
   );
 }
 
-function* authorizationStatus() {
-  try {
-    yield put(loadingPendingAC());
-    const token = yield call(getToken);
-
-    if (token) {
-      const authorized = yield call(authAPI.status);
-
-      if (authorized) {
-        yield put(getAuthorizationStatusSuccessAC());
-        yield put(loadingSuccessAC());
-
-        return;
-      }
-    }
-
-    yield call(setSession, AUTH_TOKEN);
-    yield put(getAuthorizationStatusFailureAC());
-    yield put(loadingSuccessAC());
-  } catch (e) {
-    yield put(getAuthorizationStatusFailureAC());
-    yield put(loadingSuccessAC());
-  }
-}
-
-function* getGoogleAuthorization() {
-  try {
-    yield put(loadingPendingAC());
-
-    yield call(authAPI.googleAuth);
-
-    yield put(closeAuthorizationModalsAC());
-    yield put(loadingSuccessAC());
-  } catch ({ response: { data } }) {
-    yield put(googleAuthFailureAC(data));
-    yield put(loadingSuccessAC());
-  }
-}
-
 export function authSaga() {
   return all([
     takeEvery(AUTH_PENDING, authorization),
@@ -160,5 +192,6 @@ export function authSaga() {
     takeEvery(REGISTRATION_FAILURE, registrationFailure),
     takeEvery(GET_AUTHORIZATION_STATUS_PENDING, authorizationStatus),
     takeEvery(GET_GOOGLE_AUTHORIZATION_PENDING, getGoogleAuthorization),
+    takeEvery(AUTH_LOGOUT, logout),
   ]);
 }

@@ -2,8 +2,6 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth2';
 import dotenv from 'dotenv';
 
-import User from '../database/models/user';
-
 import UserDto from '../dto/userDto';
 import { generateTokens } from '../utils/token';
 import createResponse from '../utils/createResponse';
@@ -24,7 +22,7 @@ const mwPassport = passport => {
   passport.use(
     new JwtStrategy(options, async ({ id }, done) => {
       try {
-        const user = await User.findOne({ where: { id } });
+        const user = await UserService.findByKey(id, 'id');
 
         user ? done(null, user) : done(null, false);
       } catch (error) {
@@ -65,8 +63,7 @@ export const googlePassport = passport => {
             await MailService.sendPasswordMail(email, randomPassword);
           }
 
-          tokens ? done(null, userData) : done(null, false);
-          return userData;
+          return done(null, user || false);
         } catch (error) {
           return createResponse(500, 'Server Error', error);
         }
@@ -75,13 +72,19 @@ export const googlePassport = passport => {
   );
 
   passport.serializeUser((user, done) => {
-    console.log('serializeUser: ', user);
-    done(null, user);
+    done(null, user.email);
   });
 
-  passport.deserializeUser((user, done) => {
-    console.log('deserializeUser: ', user);
-    done(null, user);
+  passport.deserializeUser(async (email, done) => {
+    const user = await UserService.findByKey(email, 'email').catch(err => {
+      console.log('Error deserializing', err);
+      done(err, null);
+    });
+
+    const userDto = new UserDto(user);
+    const userData = { ...userDto };
+
+    if (user) done(null, userData);
   });
 };
 

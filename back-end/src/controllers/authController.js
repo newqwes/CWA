@@ -57,3 +57,11 @@ export const activate = async (req, res, next) => {
     next(e);
   }
 };
+
+export const status = async (req, res, next) => {
+  try {
+    return res.status('200').json(req.user);
+  } catch (e) {
+    next(e);
+  }
+};

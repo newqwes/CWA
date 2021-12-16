@@ -3,6 +3,12 @@ import tokenService from '../services/tokenService';
 
 const authMiddleware = (req, res, next) => {
   try {
+    const googleauthorization = req.isAuthenticated();
+
+    if (googleauthorization && req.user) {
+      return next();
+    }
+
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
       return next(ApiError.UnauthorizedError());
