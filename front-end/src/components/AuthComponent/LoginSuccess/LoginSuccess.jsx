@@ -1,13 +1,18 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-const LoginSuccess = () => {
+const LoginSuccess = ({ userName }) => {
   useEffect(() => {
     setTimeout(() => {
       window.close();
     }, 100000);
   }, []);
 
-  return <div>Успешно авторизованы!</div>;
+  return <h2>{userName} успешно авторизованы</h2>;
+};
+
+LoginSuccess.propTypes = {
+  userName: PropTypes.string.isRequired,
 };
 
 export default LoginSuccess;

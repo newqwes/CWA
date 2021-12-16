@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { Layout } from 'antd';
 import { get, isEqual } from 'lodash/fp';
 
@@ -50,8 +50,13 @@ export const Owerlay = styled.div`
   display: none;
 `;
 
+const animationOpacity = keyframes`
+  50% { opacity: 0.88; }
+`;
+
 const appLoading = css`
-  opacity: 0.8;
+  opacity: 0.9;
+  animation: ${animationOpacity} 2s infinite;
 
   ${Owerlay} {
     display: block;

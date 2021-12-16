@@ -1,11 +1,10 @@
-import { takeEvery, all, call, put } from 'redux-saga/effects';
+import { takeEvery, all, call, put, delay } from 'redux-saga/effects';
 
 import {
   closeAuthorizationModalsAC,
   loadingPendingAC,
   loadingSuccessAC,
   setNotificationAC,
-  
 } from '../actionCreators/aplication';
 import {
   authFailureAC,
@@ -15,9 +14,9 @@ import {
   googleAuthFailureAC,
   registrationFailureAC,
   registrationSuccessAC,
-  getAuthorizationStatusAC
+  getAuthorizationStatusAC,
 } from '../actionCreators/auth';
-import { authAPI } from '../api';
+import { authAPI, googleLoginURL } from '../api';
 
 import {
   AUTH_FAILURE,
@@ -33,6 +32,7 @@ import {
 import { AUTH_TOKEN } from '../constants/authModal';
 import { setSession } from '../utils/localStore';
 import { NOTIFICATION_MESSAGE_PLACEMENT, NOTIFICATION_TYPE } from '../constants/notification';
+import { openCenteredWindow } from '../utils/openCenteredWindow';
 
 function* authorization({ payload }) {
   try {
@@ -115,17 +115,32 @@ function* authorizationStatus() {
   }
 }
 
+function* callSelfTilWindowClose(googleAuthWindow) {
+  if (googleAuthWindow && !googleAuthWindow.closed) {
+    yield delay(500);
+
+    yield call(callSelfTilWindowClose, googleAuthWindow);
+  } else {
+    yield put(getAuthorizationStatusAC());
+  }
+}
+
 function* getGoogleAuthorization() {
   try {
     yield put(loadingPendingAC());
 
-    yield call(authAPI.googleAuth);
+    const googleAuthWindow = yield call(openCenteredWindow, {
+      height: 600,
+      width: 500,
+      url: googleLoginURL,
+    });
 
     yield put(closeAuthorizationModalsAC());
-    yield put(getAuthorizationStatusAC());
+
+    yield call(callSelfTilWindowClose, googleAuthWindow);
     yield put(loadingSuccessAC());
-  } catch ({ response: { data } }) {
-    yield put(googleAuthFailureAC(data));
+  } catch ({ response }) {
+    yield put(googleAuthFailureAC(response));
     yield put(loadingSuccessAC());
   }
 }
