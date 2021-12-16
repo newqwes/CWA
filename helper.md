@@ -18,7 +18,7 @@ service nginx restart
 service nginx status
 
 конфиг pm2 по адресу home/ecosystem.config.js
-после изменения конфиг файла pm2 перезапустить pm2 необходимо!
+после изменения конфиг файла pm2 перезапустить pm2 необходимо! pm2 start в директории конфига это всё
 
 команды pm2
 pm2 start cwa
