@@ -4,6 +4,7 @@ import { USER_ROLES } from '../constants';
 
 const checkRole = roles => (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
+    console.log('6 checkRole');
     if (err) {
       res.status(403).send('Not authorized to access');
 
@@ -16,14 +17,14 @@ const checkRole = roles => (req, res, next) => {
       return;
     }
 
-    if (roles.includes(user.type)) {
+    if (roles.includes(user.userType)) {
       req.user = user;
       next();
 
       return;
     }
 
-    res.status(403).send('Not authorized to access');
+    return res.status(403).send('Not authorized to access');
   })(req, res, next);
 };
 

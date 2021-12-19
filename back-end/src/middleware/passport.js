@@ -7,29 +7,15 @@ import { generateTokens } from '../utils/token';
 import createResponse from '../utils/createResponse';
 import { createUserDataByGoogle } from '../utils/user';
 
-import UserService from '../services/userService';
-import MailService from '../services/mailService';
-import TokenService from '../services/tokenService';
+import userService from '../services/userService';
+import mailService from '../services/mailService';
+import tokenService from '../services/tokenService';
 
 dotenv.config();
 
 const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.ACCESS_TOKEN_SECRET,
-};
-
-const mwPassport = passport => {
-  passport.use(
-    new JwtStrategy(options, async ({ id }, done) => {
-      try {
-        const user = await UserService.findByKey(id, 'id');
-
-        user ? done(null, user) : done(null, false);
-      } catch (error) {
-        return createResponse(500, 'Server Error', error);
-      }
-    }),
-  );
 };
 
 const googleOptions = {
@@ -39,7 +25,19 @@ const googleOptions = {
   passReqToCallback: true,
 };
 
-export const googlePassport = passport => {
+const passportJWTAndGoogle = passport => {
+  passport.use(
+    new JwtStrategy(options, async ({ id }, done) => {
+      try {
+        const user = await userService.findByKey(id, 'id');
+
+        user ? done(null, user) : done(null, false);
+      } catch (error) {
+        return createResponse(500, 'Server Error', error);
+      }
+    }),
+  );
+
   passport.use(
     new GoogleStrategy(
       googleOptions,
@@ -47,23 +45,23 @@ export const googlePassport = passport => {
         try {
           const { defaults, randomPassword } = createUserDataByGoogle({ email, displayName });
 
-          const { user, created } = await UserService.findOrCreateByEmail(email, defaults);
+          const { user, created } = await userService.findOrCreateByEmail(email, defaults);
 
           const userDto = new UserDto(user);
           const userData = { ...userDto };
 
           const tokens = generateTokens(userData);
 
-          await TokenService.saveToken({
+          await tokenService.saveToken({
             userId: userData.id,
             refreshToken: tokens.refreshToken,
           });
 
           if (created) {
-            await MailService.sendPasswordMail(email, randomPassword);
+            await mailService.sendPasswordMail(email, randomPassword);
           }
 
-          return done(null, user || false);
+          user ? done(null, user) : done(null, false);
         } catch (error) {
           return createResponse(500, 'Server Error', error);
         }
@@ -71,25 +69,23 @@ export const googlePassport = passport => {
     ),
   );
 
-  passport.serializeUser((user, done) => {
-    done(null, user.email);
-  });
+  passport.serializeUser((user, done) => done(null, user.email));
 
   passport.deserializeUser(async (email, done) => {
-    const user = await UserService.findByKey(email, 'email').catch(err => {
+    const user = await userService.findByKey(email, 'email').catch(err => {
       console.log('Error deserializing', err);
-      done(err, null);
+      return done(err, null);
     });
 
     if (user) {
       const userDto = new UserDto(user);
       const userData = { ...userDto };
 
-      done(null, userData);
+      return done(null, userData);
     }
 
-    done(null, false);
+    return done(null, false);
   });
 };
 
-export default mwPassport;
+export default passportJWTAndGoogle;

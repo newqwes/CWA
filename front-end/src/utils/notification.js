@@ -20,7 +20,7 @@ import {
 export const getNotification = ({
   message = NOTIFICATION_ERROR_MESSAGE,
   type = NOTIFICATION_TYPE.error,
-  placement = NOTIFICATION_MESSAGE_PLACEMENT.topRight,
+  placement = NOTIFICATION_MESSAGE_PLACEMENT.bottomRight,
   duration = NOTIFICATION_DURATION,
 }) => {
   notification[type]({

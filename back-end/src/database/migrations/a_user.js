@@ -23,7 +23,22 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      type: {
+      lastDateUpdate: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+        allowNull: false,
+      },
+      score: {
+        type: DataTypes.DOUBLE,
+        defaultValue: 2,
+        allowNull: false,
+      },
+      dataRefreshLimitPerMinute: {
+        type: DataTypes.DOUBLE,
+        defaultValue: 1,
+        allowNull: false,
+      },
+      userType: {
         type: DataTypes.STRING(50),
         allowNull: false,
       },
