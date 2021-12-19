@@ -23,7 +23,9 @@ import {
   AUTH_LOGOUT,
   AUTH_PENDING,
   AUTH_SUCCESS,
+  GET_AUTHORIZATION_STATUS_FAILURE,
   GET_AUTHORIZATION_STATUS_PENDING,
+  GET_AUTHORIZATION_STATUS_SUCCESS,
   GET_GOOGLE_AUTHORIZATION_PENDING,
   REGISTRATION_FAILURE,
   REGISTRATION_PENDING,
@@ -31,8 +33,9 @@ import {
 } from '../actions';
 import { AUTH_TOKEN } from '../constants/authModal';
 import { setSession } from '../utils/localStore';
-import { NOTIFICATION_MESSAGE_PLACEMENT, NOTIFICATION_TYPE } from '../constants/notification';
+import { NOTIFICATION_TYPE } from '../constants/notification';
 import { openCenteredWindow } from '../utils/openCenteredWindow';
+import { setUserDataAC } from '../actionCreators/user';
 
 function* authorization({ payload }) {
   try {
@@ -98,17 +101,20 @@ function* authorizationStatus() {
   try {
     yield put(loadingPendingAC());
 
-    const { email } = yield call(authAPI.status);
+    const user = yield call(authAPI.status);
 
-    if (email) {
-      yield put(getAuthorizationStatusSuccessAC());
+    if (user.isActivated) {
+      yield put(getAuthorizationStatusSuccessAC(user));
       yield put(loadingSuccessAC());
 
       return;
     }
 
-    yield call(setSession, AUTH_TOKEN);
-    yield put(getAuthorizationStatusFailureAC());
+    if (!user || user.error) {
+      yield put(getAuthorizationStatusFailureAC(user.error));
+      yield call(setSession, AUTH_TOKEN);
+    }
+
     yield put(loadingSuccessAC());
   } catch (e) {
     yield put(getAuthorizationStatusFailureAC());
@@ -151,7 +157,6 @@ function* authSuccess({ payload }) {
     setNotificationAC({
       message: `С возвращением ${payload.login}`,
       type: NOTIFICATION_TYPE.success,
-      placement: NOTIFICATION_MESSAGE_PLACEMENT.bottomRight,
     }),
   );
 }
@@ -183,6 +188,25 @@ function* registrationFailure({ payload }) {
   );
 }
 
+function* authorizationStatusSuccess({ payload }) {
+  yield put(setUserDataAC(payload));
+  yield put(
+    setNotificationAC({
+      message: `С возвращение ${payload.login}!`,
+      type: NOTIFICATION_TYPE.success,
+    }),
+  );
+}
+
+function* authorizationStatusFailure({ payload }) {
+  yield put(
+    setNotificationAC({
+      message: payload.message,
+      type: NOTIFICATION_TYPE.error,
+    }),
+  );
+}
+
 export function authSaga() {
   return all([
     takeEvery(AUTH_PENDING, authorization),
@@ -194,5 +218,7 @@ export function authSaga() {
     takeEvery(GET_AUTHORIZATION_STATUS_PENDING, authorizationStatus),
     takeEvery(GET_GOOGLE_AUTHORIZATION_PENDING, getGoogleAuthorization),
     takeEvery(AUTH_LOGOUT, logout),
+    takeEvery(GET_AUTHORIZATION_STATUS_SUCCESS, authorizationStatusSuccess),
+    takeEvery(GET_AUTHORIZATION_STATUS_FAILURE, authorizationStatusFailure),
   ]);
 }

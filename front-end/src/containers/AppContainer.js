@@ -1,10 +1,12 @@
 import { connect } from 'react-redux';
 
-import { handleCollapseSideMenuAC } from '../actionCreators/aplication';
+import { handleRefreshAC } from '../actionCreators/refresh';
 import { getAuthorizationStatusAC } from '../actionCreators/auth';
+import { handleCollapseSideMenuAC } from '../actionCreators/aplication';
 
-import { isLoading, getCollapsedSideMenu } from '../selectors/aplication';
 import { isAuthorized } from '../selectors/authorization';
+import { getLastDateUpdate, getScore, getDataRefreshLimitPerMinute } from '../selectors/user';
+import { isLoading, getCollapsedSideMenu } from '../selectors/aplication';
 
 import App from '../App.jsx';
 
@@ -12,11 +14,15 @@ const mapStateToProps = state => ({
   authorized: isAuthorized(state),
   loading: isLoading(state),
   collapsedSideMenu: getCollapsedSideMenu(state),
+  lastDateUpdate: getLastDateUpdate(state),
+  score: getScore(state),
+  dataRefreshLimitPerMinute: getDataRefreshLimitPerMinute(state),
 });
 
 const mapDispatchToProps = {
   handleCollapseSideMenu: handleCollapseSideMenuAC,
   getAutharizationStatus: getAuthorizationStatusAC,
+  handleRefresh: handleRefreshAC,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

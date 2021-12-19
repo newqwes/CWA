@@ -1,9 +1,9 @@
-name: Check and deploy project
+name: Check
 
 on:
   pull_request:
     branches:
-      - release
+      - 'master'
 
 jobs:
   lint-backend:

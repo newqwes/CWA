@@ -33,7 +33,7 @@ authRoute.get(
   (req, res) => {
     console.log('Callback google SUCCESS user: ', req.user);
 
-    res.cookie('refreshToken', req.user.refreshToken, {
+    return res.cookie('refreshToken', req.user.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
       secure: true, // if have https
@@ -43,7 +43,7 @@ authRoute.get(
 
 authRoute.get('/protected', authMiddleware, (req, res) => {
   console.log('/protected ', req.user);
-  res.send('Только авторизованные!');
+  return res.send('Только авторизованные!');
 });
 
 authRoute.get('/status', authMiddleware, status);

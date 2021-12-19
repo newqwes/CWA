@@ -47,7 +47,7 @@ export const authAPI = {
   status: async () => {
     try {
       const { data } = await axios.get('auth/status');
-
+      console.log('status', data);
       return data;
     } catch ({ response: { data } }) {
       return data;
@@ -57,6 +57,18 @@ export const authAPI = {
   logout: async () => {
     try {
       await axios.get('auth/logout');
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+};
+
+export const refreshAPI = {
+  refresh: async () => {
+    try {
+      const { data } = await axios.post('refresh');
+      console.log('refreshAPI', data);
+      return data;
     } catch ({ response: { data } }) {
       return data;
     }

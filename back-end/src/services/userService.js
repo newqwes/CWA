@@ -3,7 +3,9 @@ import createResponse from '../utils/createResponse';
 
 class UserService {
   async findByKey(value, key) {
-    return User.findOne({ where: { [key]: value } });
+    const user = await User.findOne({ where: { [key]: value } });
+
+    return user;
   }
 
   async findOrCreateByEmail(email, defaults) {

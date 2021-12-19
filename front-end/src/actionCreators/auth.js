@@ -48,12 +48,14 @@ export const getAuthorizationStatusAC = () => ({
   type: GET_AUTHORIZATION_STATUS_PENDING,
 });
 
-export const getAuthorizationStatusSuccessAC = () => ({
+export const getAuthorizationStatusSuccessAC = data => ({
   type: GET_AUTHORIZATION_STATUS_SUCCESS,
+  payload: data,
 });
 
-export const getAuthorizationStatusFailureAC = () => ({
+export const getAuthorizationStatusFailureAC = error => ({
   type: GET_AUTHORIZATION_STATUS_FAILURE,
+  payload: error,
 });
 
 export const authLogoutAC = () => ({

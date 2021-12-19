@@ -28,7 +28,21 @@ User.init(
       unique: true,
       allowNull: false,
     },
-    type: {
+    lastDateUpdate: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    dataRefreshLimitPerMinute: {
+      type: DataTypes.DOUBLE,
+      defaultValue: 1,
+      allowNull: false,
+    },
+    score: {
+      type: DataTypes.DOUBLE,
+      defaultValue: 10,
+      allowNull: false,
+    },
+    userType: {
       type: DataTypes.STRING(50),
       defaultValue: USER_ROLES.user,
       allowNull: false,

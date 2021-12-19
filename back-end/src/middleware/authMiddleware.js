@@ -3,9 +3,9 @@ import tokenService from '../services/tokenService';
 
 const authMiddleware = (req, res, next) => {
   try {
-    const googleauthorization = req.isAuthenticated();
+    const authenticated = req.isAuthenticated();
 
-    if (googleauthorization && req.user) {
+    if (authenticated && req.user) {
       return next();
     }
 

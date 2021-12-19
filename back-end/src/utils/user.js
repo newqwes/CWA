@@ -15,7 +15,7 @@ export const getUserId = req => getOr(null, ['user', 'id'], req);
  * @returns {Object}
  */
 export const createUserData = body => {
-  const userData = omit(['password', 'id', 'type'], body);
+  const userData = omit(['password', 'id', 'userType'], body);
 
   return userData;
 };
