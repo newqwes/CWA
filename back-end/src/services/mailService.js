@@ -15,7 +15,7 @@ class MailService {
 
   async sendActivationMail(to, link) {
     await this.transporter.sendMail({
-      from: process.env.SMTP_USER,
+      from: `"${process.env.CLIENT_URL_VISUAL}" <${process.env.SMTP_USER}>`,
       to,
       subject: `Crypto Wallet Analytics. Активация аккаунта на сайте ${process.env.CLIENT_URL_VISUAL}`,
       text: '',
@@ -30,7 +30,7 @@ class MailService {
 
   async sendPasswordMail(to, password) {
     await this.transporter.sendMail({
-      from: process.env.SMTP_USER,
+      from: `"${process.env.CLIENT_URL_VISUAL}" <${process.env.SMTP_USER}>`,
       to,
       subject: `Crypto Wallet Analytics. Вы зарегистрировались на сайте ${process.env.CLIENT_URL_VISUAL}`,
       text: '',
