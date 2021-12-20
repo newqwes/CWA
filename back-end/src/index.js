@@ -3,6 +3,8 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import express from 'express';
 import passport from 'passport';
+import useSocket from 'socket.io';
+import { Server } from 'http';
 import cookieParser from 'cookie-parser';
 
 import sequelize from './database';
@@ -19,6 +21,8 @@ import refreshRoute from './routes/refreshRoute';
 
 dotenv.config();
 const app = express();
+const server = Server(app);
+const io = useSocket(server);
 
 passportJWTAndGoogle(passport);
 
@@ -41,9 +45,13 @@ app.use('/api/refresh', refreshRoute);
 
 app.use(errorMiddleware);
 
+io.on('connection', socket => {
+  console.log(socket);
+});
+
 const start = async () => {
   try {
-    app.listen(process.env.SERVER_PORT, async () => {
+    server.listen(process.env.SERVER_PORT, async () => {
       console.log(`Server is listening on port ${process.env.SERVER_PORT}...`);
       await sequelize.authenticate();
       console.log('Database Connected!');

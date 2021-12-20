@@ -7,7 +7,6 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { DEFAULT_THEME } from './constants/theme';
 import store from './store/configureStore';
 
-import LoginSuccessContainer from './containers/LoginSuccessContainer';
 import AppContainer from './containers/AppContainer';
 
 import GlobalStyle from './style/GlobalStyle';
@@ -19,11 +18,8 @@ ReactDOM.render(
       <ThemeProvider theme={theme[DEFAULT_THEME]}>
         <GlobalStyle />
         <BrowserRouter>
-          <Route exact path='/' component={AppContainer} />
-          <Route exact path='/login/success' component={LoginSuccessContainer} />
-          <Route exact path='/login/failure'>
-            Ошибка авторизации
-          </Route>
+          <Route path='/' component={AppContainer} />
+          <Route path={['/login/success', '/login/failure']}>{window.close()}</Route>
         </BrowserRouter>
       </ThemeProvider>
     </Provider>
