@@ -5,6 +5,7 @@ const localState = get('user');
 
 export const getLastDateUpdate = createSelector(localState, get('lastDateUpdate'));
 export const getScore = createSelector(localState, get('score'));
+export const getLogin = createSelector(localState, get('login'));
 export const getDataRefreshLimitPerMinute = createSelector(
   localState,
   get('dataRefreshLimitPerMinute'),
