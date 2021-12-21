@@ -1,7 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { floor } from 'lodash/fp';
-import { Button, Progress } from 'antd';
+// import { floor } from 'lodash/fp';
+// import { Button, Progress, Table } from 'antd';
+import Chart from 'react-apexcharts';
+import { Col, Row, Descriptions, Statistic } from 'antd';
+import { ArrowUpOutlined } from '@ant-design/icons';
+import { AgGridReact } from 'ag-grid-react';
+import { chartData, columns, data } from './columns.jsx';
+
+import { ChartWrapper, CHART_HEIGHT } from './styled';
 
 const UPDATE_TIMER_MILLISECONDS = 200;
 
@@ -17,6 +24,8 @@ class Statistics extends React.Component {
   state = {
     refreshTimer: 0,
     percent: 0,
+    options: { labels: ['XRP', 'BTC', 'ETH', 'BLOK', 'SAMO'] },
+    series: [30.46, 4.32, 6.77, 2.23, 6.34],
   };
 
   componentDidMount() {
@@ -75,12 +84,12 @@ class Statistics extends React.Component {
   }
 
   render() {
-    const { score, handleRefresh } = this.props;
-    const { percent, refreshTimer } = this.state;
+    // const { score, handleRefresh } = this.props;
+    // const { percent, refreshTimer } = this.state;
 
     return (
-      <div>
-        <div>score: {score}</div>
+      <div style={{ height: '100%' }}>
+        {/* <div>score: {score}</div>
         <div>
           <Progress
             type='circle'
@@ -96,6 +105,59 @@ class Statistics extends React.Component {
               </Button>
             )}
           />
+        </div> */}
+        <Descriptions title='Последняя обновленная статистика'>
+          <Row gutter={16}>
+            <Col span={3}>
+              <Statistic title='Всего вложил:' value={985.32} precision={2} suffix='$' />
+            </Col>
+            <Col span={9}>
+              <Statistic
+                title='Чистая прибыль'
+                value={35.43}
+                precision={2}
+                valueStyle={{ color: '#3f8600' }}
+                prefix={<ArrowUpOutlined />}
+                suffix='$'
+              />
+            </Col>
+            <Col span={3}>
+              <Statistic title='Состояние кошелька:' value={1028.71} precision={2} suffix='$' />
+            </Col>
+
+            <Col span={3}>
+              <Statistic
+                title='Проценты'
+                value={2.28}
+                precision={2}
+                valueStyle={{ color: '#3f8600' }}
+                prefix={<ArrowUpOutlined />}
+                suffix='%'
+              />
+            </Col>
+          </Row>
+        </Descriptions>
+        <ChartWrapper>
+          <Col span={12}>
+            <Chart
+              options={this.state.options}
+              series={this.state.series}
+              type='donut'
+              height={CHART_HEIGHT}
+            />
+          </Col>
+          <Col span={12}>
+            <Chart
+              options={chartData.options}
+              series={chartData.series}
+              type='area'
+              height={CHART_HEIGHT}
+            />
+          </Col>
+        </ChartWrapper>
+
+        <div className='ag-theme-material'>
+          <AgGridReact columnDefs={columns} rowData={data} domLayout='autoHeight' />
         </div>
       </div>
     );

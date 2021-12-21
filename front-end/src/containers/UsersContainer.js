@@ -1,10 +1,6 @@
 import { connect } from 'react-redux';
+import { Empty } from 'antd';
 
-import { MENU } from '../constants/menu';
-import SideMenu from '../components/SideMenu';
+const mapStateToProps = () => ({});
 
-const mapStateToProps = () => ({
-  menuItems: MENU,
-});
-
-export default connect(mapStateToProps)(SideMenu);
+export default connect(mapStateToProps)(Empty);
