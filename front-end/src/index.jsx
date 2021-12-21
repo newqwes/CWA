@@ -8,6 +8,7 @@ import { DEFAULT_THEME } from './constants/theme';
 import store from './store/configureStore';
 
 import AppContainer from './containers/AppContainer';
+import CloseWindow from './components/CloseWindow';
 
 import GlobalStyle from './style/GlobalStyle';
 import theme from './style/theme';
@@ -19,7 +20,7 @@ ReactDOM.render(
         <GlobalStyle />
         <BrowserRouter>
           <Route path='/' component={AppContainer} />
-          <Route path={['/login/success', '/login/failure']}>{window.close()}</Route>
+          <Route path={['/login/success', '/login/failure']} component={CloseWindow} />
         </BrowserRouter>
       </ThemeProvider>
     </Provider>
