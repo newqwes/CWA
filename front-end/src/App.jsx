@@ -10,8 +10,7 @@ import LogoutContainer from './containers/LogoutContainer';
 import StatisticsContainer from './containers/StatisticsContainer';
 import UsersContainer from './containers/UsersContainer';
 import ChatContainer from './containers/ChatContainer';
-
-import Header from './components/Header';
+import HeaderContainer from './containers/HeaderContainer';
 
 import { AppWrapper, Logo, Owerlay } from './style/AppWrapper';
 import { DEFAULT_SELECTED_MENU, MENU_KEYS } from './constants/menu';
@@ -50,7 +49,7 @@ class App extends React.Component {
           <SideMenuContainer />
         </Sider>
         <Layout>
-          <Header>{authorized ? <LogoutContainer /> : <AuthContainer />}</Header>
+          <HeaderContainer>{authorized ? <LogoutContainer /> : <AuthContainer />}</HeaderContainer>
           <Content style={{ margin: '0 16px' }}>
             <div style={{ padding: 24, minHeight: 360 }}>
               {authorized ? (

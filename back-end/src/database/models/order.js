@@ -25,7 +25,7 @@ Order.init(
     },
     date: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING(100),

@@ -47,7 +47,7 @@ export const authAPI = {
   status: async () => {
     try {
       const { data } = await axios.get('auth/status');
-      console.log('status', data);
+
       return data;
     } catch ({ response: { data } }) {
       return data;
@@ -67,7 +67,29 @@ export const refreshAPI = {
   refresh: async () => {
     try {
       const { data } = await axios.post('refresh');
-      console.log('refreshAPI', data);
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+};
+
+export const orderAPI = {
+  setUserOrder: async ({ count, name, price, date }) => {
+    try {
+      const { data } = await axios.post('order', { count, name, price, date });
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+
+  getUserOrders: async () => {
+    try {
+      const { data } = await axios.get('order');
+
       return data;
     } catch ({ response: { data } }) {
       return data;

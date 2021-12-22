@@ -1,16 +1,14 @@
 import express from 'express';
 
-import { USER_ROLES } from '../constants';
-import checkRole from '../middleware/checkRole';
+import authMiddleware from '../middleware/authMiddleware';
 
-import { getUserOrders, deleteUserOrder } from '../controllers/orderController';
+import { setUserOrder, getUserOrders, deleteUserOrder } from '../controllers/orderController';
 
 const orderRoute = express.Router();
 
-const { admin, user } = USER_ROLES;
+orderRoute.post('/', authMiddleware, setUserOrder);
+orderRoute.get('/', authMiddleware, getUserOrders);
 
-orderRoute.get('/', checkRole([user, admin]), getUserOrders);
-
-orderRoute.delete('/delete/:orderId', checkRole([admin]), deleteUserOrder);
+orderRoute.delete('/delete/:orderId', authMiddleware, deleteUserOrder);
 
 export default orderRoute;

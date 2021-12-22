@@ -5,4 +5,4 @@
  * @param {Object} data - response obj
  * @returns {Object}
  */
-export default (status, message, data = {}) => ({ status, message, data });
+export default (status, message, data = {}) => ({ status, data: { data, message } });
