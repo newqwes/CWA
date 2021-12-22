@@ -1,32 +1,25 @@
-import { getUserId } from '../utils/user';
 import createResponse from '../utils/createResponse';
 
 import Order from '../database/models/order';
 
 class OrderService {
-  async getUserOrders(req) {
+  async setUserOrder({ userId, count, name, price, date }) {
     try {
-      const userId = getUserId(req);
+      await Order.create({ userId, date, name, count, price });
 
-      const orders = await Order.findAll({
-        where: { userId },
-      });
-
-      return createResponse(200, 'Successfully!', orders);
+      return createResponse(201, 'Данные успешно добавленны!');
     } catch (error) {
-      return createResponse(500, 'Server Error', error);
+      return createResponse(500, 'Server Error OrderService setUserOrder', error);
     }
   }
 
-  async deleteUserOrder(orderId) {
+  async getUserOrders(userId) {
     try {
-      const isFound = await Order.destroy({ where: { orderId } });
+      const orders = await Order.findAll({ where: { userId } });
 
-      if (isFound) return createResponse(200, 'Successfully!', orderId);
-
-      return createResponse(404, 'Not found', orderId);
+      return createResponse(200, 'Данные успешно получены!', orders);
     } catch (error) {
-      return createResponse(500, 'Server Error', error);
+      return createResponse(500, 'Server Error OrderService getUserOrders', error);
     }
   }
 }

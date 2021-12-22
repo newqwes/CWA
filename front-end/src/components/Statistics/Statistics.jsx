@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { floor } from 'lodash/fp';
-// import { Button, Progress, Table } from 'antd';
 import Chart from 'react-apexcharts';
 import { Col, Row, Descriptions, Statistic } from 'antd';
 import { ArrowUpOutlined } from '@ant-design/icons';
@@ -10,102 +8,20 @@ import { chartData, columns, data } from './columns.jsx';
 
 import { ChartWrapper, CHART_HEIGHT } from './styled';
 
-const UPDATE_TIMER_MILLISECONDS = 200;
-
-// TODO: Refactor all
 class Statistics extends React.Component {
   static propTypes = {
-    handleRefresh: PropTypes.func.isRequired,
-    lastDateUpdate: PropTypes.string,
-    score: PropTypes.number,
-    dataRefreshLimitPerMinute: PropTypes.number,
+    setOrder: PropTypes.func.isRequired,
+    getOrders: PropTypes.func.isRequired,
   };
 
   state = {
-    refreshTimer: 0,
-    percent: 0,
     options: { labels: ['XRP', 'BTC', 'ETH', 'BLOK', 'SAMO'] },
     series: [30.46, 4.32, 6.77, 2.23, 6.34],
   };
 
-  componentDidMount() {
-    const { lastDateUpdate, dataRefreshLimitPerMinute } = this.props;
-
-    this.transition();
-
-    const refreshTimer = Date.now() - Date.parse(lastDateUpdate);
-
-    if (refreshTimer > dataRefreshLimitPerMinute * 60 * 1000) {
-      return;
-    }
-
-    this.setState({ refreshTimer });
-
-    if (dataRefreshLimitPerMinute) {
-      this.timer = setTimeout(this.tick, UPDATE_TIMER_MILLISECONDS);
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { lastDateUpdate, dataRefreshLimitPerMinute } = this.props;
-
-    this.transition();
-
-    if (prevProps.lastDateUpdate !== lastDateUpdate) {
-      const refreshTimer = Date.now() - Date.parse(lastDateUpdate);
-
-      this.setState({ refreshTimer });
-    }
-
-    if (dataRefreshLimitPerMinute) {
-      this.timer = setTimeout(this.tick, UPDATE_TIMER_MILLISECONDS);
-    }
-  }
-
-  componentWillUnmount() {
-    this.transition();
-  }
-
-  tick = () => {
-    const { refreshTimer } = this.state;
-    const { dataRefreshLimitPerMinute } = this.props;
-
-    if (refreshTimer < 0 || refreshTimer > dataRefreshLimitPerMinute * 60 * 1000) {
-      this.transition();
-    } else {
-      const percent = (refreshTimer * 100) / (dataRefreshLimitPerMinute * 60 * 1000);
-
-      this.setState({ refreshTimer: refreshTimer + UPDATE_TIMER_MILLISECONDS, percent });
-    }
-  };
-
-  transition() {
-    clearInterval(this.timer);
-  }
-
   render() {
-    // const { score, handleRefresh } = this.props;
-    // const { percent, refreshTimer } = this.state;
-
     return (
       <div style={{ height: '100%' }}>
-        {/* <div>score: {score}</div>
-        <div>
-          <Progress
-            type='circle'
-            percent={percent}
-            status='active'
-            strokeColor={{
-              '0%': '#108ee9',
-              '100%': '#87d068',
-            }}
-            format={() => (
-              <Button onClick={handleRefresh} type='primary'>
-                {floor(refreshTimer / 1000)} сек.
-              </Button>
-            )}
-          />
-        </div> */}
         <Descriptions title='Последняя обновленная статистика'>
           <Row gutter={16}>
             <Col span={3}>

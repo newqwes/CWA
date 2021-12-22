@@ -16,7 +16,6 @@ import errorMiddleware from './middleware/errorMiddleware';
 
 import authRoute from './routes/authRoute';
 import orderRoute from './routes/orderRoute';
-import userRoute from './routes/userRoute';
 import refreshRoute from './routes/refreshRoute';
 
 dotenv.config();
@@ -40,7 +39,6 @@ app.use(passport.session());
 
 app.use('/api/auth', authRoute);
 app.use('/api/order', orderRoute);
-app.use('/api/user', userRoute);
 app.use('/api/refresh', refreshRoute);
 
 app.use(errorMiddleware);
