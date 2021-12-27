@@ -7,6 +7,13 @@ const dark = {
       default: COLORS.white,
     },
   },
+  buttons: {
+    google: {
+      active: COLORS.dodgerBlueActive,
+      text: COLORS.white,
+      default: COLORS.dodgerBlue,
+    },
+  },
 };
 
 export default dark;

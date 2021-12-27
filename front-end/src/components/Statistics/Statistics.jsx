@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Chart from 'react-apexcharts';
-import { Col, Row, Descriptions, Statistic } from 'antd';
+import { Col, Row, Descriptions, Statistic, Button } from 'antd';
 import { ArrowUpOutlined } from '@ant-design/icons';
 import { AgGridReact } from 'ag-grid-react';
-import { chartData, columns, data } from './columns.jsx';
+import { chartData, columns, data, defaultColDef, frameworkComponents } from './columns';
 
-import { ChartWrapper, CHART_HEIGHT } from './styled';
+import { ChartWrapper, Text, CHART_HEIGHT } from './styled';
 
 class Statistics extends React.Component {
   static propTypes = {
@@ -40,7 +40,6 @@ class Statistics extends React.Component {
             <Col span={3}>
               <Statistic title='Состояние кошелька:' value={1028.71} precision={2} suffix='$' />
             </Col>
-
             <Col span={3}>
               <Statistic
                 title='Проценты'
@@ -50,6 +49,13 @@ class Statistics extends React.Component {
                 prefix={<ArrowUpOutlined />}
                 suffix='%'
               />
+            </Col>
+            <Col span={4}>
+              <Statistic title='Всего транзакций' value={4} />
+            </Col>
+            <Col span={2}>
+              <Text type='secondary'>Транзакция</Text>
+              <Button type='primary'>Добавить</Button>
             </Col>
           </Row>
         </Descriptions>
@@ -71,9 +77,14 @@ class Statistics extends React.Component {
             />
           </Col>
         </ChartWrapper>
-
         <div className='ag-theme-material'>
-          <AgGridReact columnDefs={columns} rowData={data} domLayout='autoHeight' />
+          <AgGridReact
+            columnDefs={columns}
+            rowData={data}
+            domLayout='autoHeight'
+            defaultColDef={defaultColDef}
+            frameworkComponents={frameworkComponents}
+          />
         </div>
       </div>
     );

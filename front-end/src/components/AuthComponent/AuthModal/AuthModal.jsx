@@ -5,8 +5,7 @@ import { Form as FormAntd, Input, Modal } from 'antd';
 import { KEYWORD } from '../../../constants/keyword';
 
 import authModalTypes from './propTypes';
-
-import { GoogleOutlined } from './styled';
+import GoogleAuth from '../../Buttons/GoogleAuth';
 
 class AuthModal extends React.Component {
   static propTypes = authModalTypes;
@@ -84,7 +83,7 @@ class AuthModal extends React.Component {
           cancelText={cancelText}
           okButtonProps={okButtonProps}>
           {this.renderFormItems()}
-          <GoogleOutlined type='dark' onClick={googleAuth} />
+          <GoogleAuth handleClick={googleAuth} />
         </Modal>
       </FormAntd>
     );

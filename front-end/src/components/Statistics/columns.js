@@ -1,35 +1,55 @@
+import TotalBuyCellRenderer from '../frameworkComponents/TotalBuyCellRenderer';
+
 export const columns = [
   {
     field: 'name',
-    tooltipField: 'Наименование',
-    width: '300px',
+    headerName: 'Наименование',
+    sortable: true,
   },
   {
-    tooltipField: 'Количество',
+    headerName: 'Количество',
     field: 'amount',
+    sortable: true,
   },
   {
-    tooltipField: 'Общая цена покупки',
+    headerName: 'Общая цена покупки',
     field: 'totalBuy',
+    sortable: true,
+    cellRenderer: 'totalBuyCellRenderer',
   },
   {
-    tooltipField: 'Общая прибыли (убытков)',
+    headerName: 'Общая прибыли (убытков)',
     field: 'totalProfit',
+    sortable: true,
   },
   {
-    tooltipField: 'Цена',
+    headerName: 'Цена',
     field: 'price',
-    width: '300px',
+    sortable: true,
   },
   {
-    tooltipField: 'Ср. цена покупки',
+    headerName: 'Ср. цена покупки',
     field: 'average',
+    sortable: true,
   },
   {
-    tooltipField: 'Последнее изменение',
+    headerName: 'Последнее изменение',
     field: 'lastModified',
+    sortable: true,
+  },
+  {
+    headerName: 'Цена продажи 1/3',
+    field: 'priceToSell',
+    sortable: true,
   },
 ];
+
+export const defaultColDef = {
+  flex: 1,
+  resizable: true,
+};
+
+export const frameworkComponents = { totalBuyCellRenderer: TotalBuyCellRenderer };
 
 export const data = [
   {
@@ -41,6 +61,7 @@ export const data = [
     lastModified: 23.3,
     amount: 32,
     average: 23.4,
+    priceToSell: 2.93,
     children: [
       {
         key: '153',
@@ -67,6 +88,7 @@ export const data = [
     price: 3978.34,
     amount: 42,
     average: 3.1,
+    priceToSell: 9143.32,
   },
   {
     key: '3',
@@ -77,6 +99,7 @@ export const data = [
     price: 47653.344,
     amount: 32,
     average: 321.4,
+    priceToSell: 130899.45,
   },
 ];
 
