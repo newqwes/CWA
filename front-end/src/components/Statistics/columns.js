@@ -1,15 +1,15 @@
-import TotalBuyCellRenderer from '../frameworkComponents/TotalBuyCellRenderer';
-
-export const columns = [
+export const columnDefs = [
   {
     field: 'name',
-    headerName: 'Наименование',
     sortable: true,
+    rowGroup: true,
+    hide: true,
   },
   {
     headerName: 'Количество',
     field: 'amount',
     sortable: true,
+    aggFunc: 'sum',
   },
   {
     headerName: 'Общая цена покупки',
@@ -21,6 +21,7 @@ export const columns = [
     headerName: 'Общая прибыли (убытков)',
     field: 'totalProfit',
     sortable: true,
+    aggFunc: 'sum',
   },
   {
     headerName: 'Цена',
@@ -36,6 +37,7 @@ export const columns = [
     headerName: 'Последнее изменение',
     field: 'lastModified',
     sortable: true,
+    aggFunc: 'sum',
   },
   {
     headerName: 'Цена продажи 1/3',
@@ -49,11 +51,8 @@ export const defaultColDef = {
   resizable: true,
 };
 
-export const frameworkComponents = { totalBuyCellRenderer: TotalBuyCellRenderer };
-
-export const data = [
+export const rowData = [
   {
-    key: '1',
     name: 'Ripple (XRP)',
     totalBuy: 234.2,
     totalProfit: -4.3,
@@ -62,25 +61,26 @@ export const data = [
     amount: 32,
     average: 23.4,
     priceToSell: 2.93,
-    children: [
-      {
-        key: '153',
-        name: 'Ripple (XRP)',
-        totalBuy: 24.2,
-        price: 0.881,
-        amount: 29.3,
-      },
-      {
-        key: '153',
-        name: 'Ripple (XRP)',
-        totalBuy: 218.33,
-        price: 0.814,
-        amount: 289.67,
-      },
-    ],
   },
   {
-    key: '2',
+    name: 'Ripple (XRP)',
+    price: 0.51,
+    amount: 19.3,
+    totalProfit: -4.3,
+    lastModified: 23.3,
+    average: 23.4,
+    priceToSell: 2.93,
+  },
+  {
+    name: 'Ripple (XRP)',
+    price: 1.21,
+    amount: 3.2,
+    totalProfit: -32.3,
+    lastModified: 23.3,
+    average: 23.4,
+    priceToSell: 2.93,
+  },
+  {
     name: 'Ethereum (ETH)',
     lastModified: -23.3,
     totalBuy: 2334.2,
@@ -91,7 +91,16 @@ export const data = [
     priceToSell: 9143.32,
   },
   {
-    key: '3',
+    name: 'Ethereum (ETH)',
+    lastModified: -23.3,
+    totalBuy: 2334.2,
+    totalProfit: 23.4,
+    price: 3978.34,
+    amount: 42,
+    average: 3.1,
+    priceToSell: 9143.32,
+  },
+  {
     name: 'Bitcoin (BTC)',
     lastModified: 223.3,
     totalBuy: 4234.2,
@@ -103,50 +112,60 @@ export const data = [
   },
 ];
 
+export const autoGroupColumnDef = { field: 'name', headerName: 'Наименование' };
+
+export const groupDisplayType = 'singleColumn';
+
 export const chartData = {
-  series: [
-    {
-      name: 'Цена портфеля',
-      data: [
-        {
-          x: new Date('2021-02-12').getTime(),
-          y: 76,
-        },
-        {
-          x: new Date('2021-02-15').getTime(),
-          y: 65,
-        },
-        {
-          x: new Date('2021-03-05').getTime(),
-          y: 130,
-        },
-        {
-          x: new Date('2021-03-15').getTime(),
-          y: 120,
-        },
-      ],
-    },
-  ],
-  options: {
-    stroke: {
-      width: 2,
-    },
-    title: {
-      text: 'Общий анализ портфеля',
-      align: 'left',
-    },
-    subtitle: {
-      text: 'Изменение цены',
-      align: 'left',
-    },
-    xaxis: {
-      type: 'datetime',
-    },
-    yaxis: {
-      opposite: true,
-    },
-    legend: {
-      horizontalAlign: 'left',
+  donut: {
+    options: { labels: ['XRP', 'BTC', 'ETH', 'BLOK', 'SAMO'] },
+    series: [30.46, 4.32, 6.77, 2.23, 6.34],
+  },
+  area: {
+    series: [
+      {
+        name: 'Цена портфеля',
+        data: [
+          {
+            x: new Date('2021-02-12').getTime(),
+            y: 76,
+          },
+          {
+            x: new Date('2021-02-15').getTime(),
+            y: 65,
+          },
+          {
+            x: new Date('2021-03-05').getTime(),
+            y: 130,
+          },
+          {
+            x: new Date('2021-03-15').getTime(),
+            y: 120,
+          },
+        ],
+      },
+    ],
+    options: {
+      stroke: {
+        width: 2,
+      },
+      title: {
+        text: 'Общий анализ портфеля',
+        align: 'left',
+      },
+      subtitle: {
+        text: 'Изменение цены',
+        align: 'left',
+      },
+      xaxis: {
+        type: 'datetime',
+      },
+      yaxis: {
+        opposite: true,
+      },
+      legend: {
+        horizontalAlign: 'left',
+      },
     },
   },
 };

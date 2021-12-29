@@ -11,7 +11,11 @@ class TotalBuyCellRenderer extends React.Component {
   render() {
     const { value } = this.props;
 
-    return <Wrapper>{value} $</Wrapper>;
+    return (
+      <Wrapper>
+        {value} {value && '$'}
+      </Wrapper>
+    );
   }
 }
 

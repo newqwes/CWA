@@ -13,6 +13,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "ag-grid-community": "^26.2.1",
+    "ag-grid-enterprise": "^26.2.1",
     "ag-grid-react": "^26.2.0",
     "antd": "^4.15.4",
     "apexcharts": "^3.32.0",
