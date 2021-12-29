@@ -13,6 +13,7 @@ class Header extends React.Component {
     score: PropTypes.number,
     dataRefreshLimitPerMinute: PropTypes.number,
     children: PropTypes.node.isRequired,
+    authorized: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -63,26 +64,30 @@ class Header extends React.Component {
   }
 
   render() {
-    const { score, handleRefresh, children } = this.props;
+    const { score, handleRefresh, children, authorized } = this.props;
     const { refreshTimer, refreshDisabled } = this.state;
 
     return (
       <HeaderWrapper>
-        <Title level={4}>score: {score}</Title>
-        {refreshDisabled ? (
-          <Text>{floor(refreshTimer)} сек.</Text>
-        ) : (
-          <div>
-            <Button
-              onClick={handleRefresh}
-              type='primary'
-              loading={refreshDisabled}
-              disabled={refreshDisabled}>
-              Клик
-            </Button>
-          </div>
+        {/* NOTE: Separate to component like name CountScore */}
+        {authorized && (
+          <>
+            <Title level={4}>score: {score}</Title>
+            {refreshDisabled ? (
+              <Text>{floor(refreshTimer)} сек.</Text>
+            ) : (
+              <div>
+                <Button
+                  onClick={handleRefresh}
+                  type='primary'
+                  loading={refreshDisabled}
+                  disabled={refreshDisabled}>
+                  Клик
+                </Button>
+              </div>
+            )}
+          </>
         )}
-
         {children}
       </HeaderWrapper>
     );

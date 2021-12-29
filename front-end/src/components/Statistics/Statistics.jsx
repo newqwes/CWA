@@ -1,12 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Chart from 'react-apexcharts';
-import { Col, Row, Descriptions, Statistic } from 'antd';
-import { ArrowUpOutlined } from '@ant-design/icons';
-import { AgGridReact } from 'ag-grid-react';
-import { chartData, columns, data } from './columns.jsx';
 
-import { ChartWrapper, CHART_HEIGHT } from './styled';
+import {
+  chartData,
+  columnDefs,
+  rowData,
+  defaultColDef,
+  autoGroupColumnDef,
+  groupDisplayType,
+} from './columns';
+
+import Description from './Description';
+import Chart from './Chart';
+import Grid from './Grid';
+import Drawer from './Drawer';
+
+import { Wrapper } from './styled';
 
 class Statistics extends React.Component {
   static propTypes = {
@@ -15,67 +24,47 @@ class Statistics extends React.Component {
   };
 
   state = {
-    options: { labels: ['XRP', 'BTC', 'ETH', 'BLOK', 'SAMO'] },
-    series: [30.46, 4.32, 6.77, 2.23, 6.34],
+    drawerVisible: false,
+  };
+
+  handleDrawer = () => {
+    this.setState({ drawerVisible: !this.state.drawerVisible });
+  };
+
+  closeDrawer = () => {
+    this.setState({ drawerVisible: false });
   };
 
   render() {
+    const { setOrder } = this.props;
+    const { drawerVisible } = this.state;
+
     return (
-      <div style={{ height: '100%' }}>
-        <Descriptions title='Последняя обновленная статистика'>
-          <Row gutter={16}>
-            <Col span={3}>
-              <Statistic title='Всего вложил:' value={985.32} precision={2} suffix='$' />
-            </Col>
-            <Col span={9}>
-              <Statistic
-                title='Чистая прибыль'
-                value={35.43}
-                precision={2}
-                valueStyle={{ color: '#3f8600' }}
-                prefix={<ArrowUpOutlined />}
-                suffix='$'
-              />
-            </Col>
-            <Col span={3}>
-              <Statistic title='Состояние кошелька:' value={1028.71} precision={2} suffix='$' />
-            </Col>
-
-            <Col span={3}>
-              <Statistic
-                title='Проценты'
-                value={2.28}
-                precision={2}
-                valueStyle={{ color: '#3f8600' }}
-                prefix={<ArrowUpOutlined />}
-                suffix='%'
-              />
-            </Col>
-          </Row>
-        </Descriptions>
-        <ChartWrapper>
-          <Col span={12}>
-            <Chart
-              options={this.state.options}
-              series={this.state.series}
-              type='donut'
-              height={CHART_HEIGHT}
-            />
-          </Col>
-          <Col span={12}>
-            <Chart
-              options={chartData.options}
-              series={chartData.series}
-              type='area'
-              height={CHART_HEIGHT}
-            />
-          </Col>
-        </ChartWrapper>
-
-        <div className='ag-theme-material'>
-          <AgGridReact columnDefs={columns} rowData={data} domLayout='autoHeight' />
-        </div>
-      </div>
+      <Wrapper>
+        <Description
+          totalInvested={1452.23}
+          currencySymbol='$'
+          netProfit={14.22}
+          walletState={1468.34}
+          precision={2}
+          lastModified={0.31}
+          totalTransactionCount={16}
+          handleDrawer={this.handleDrawer}
+        />
+        <Chart chartData={chartData} />
+        <Grid
+          columnDefs={columnDefs}
+          rowData={rowData}
+          defaultColDef={defaultColDef}
+          autoGroupColumnDef={autoGroupColumnDef}
+          groupDisplayType={groupDisplayType}
+        />
+        <Drawer
+          closeDrawer={this.closeDrawer}
+          handleAddTransaction={setOrder}
+          visible={drawerVisible}
+        />
+      </Wrapper>
     );
   }
 }

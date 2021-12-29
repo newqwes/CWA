@@ -51,11 +51,11 @@ export const Owerlay = styled.div`
 `;
 
 const animationOpacity = keyframes`
-  50% { opacity: 0.88; }
+  50% { opacity: 0.85; }
 `;
 
 const appLoading = css`
-  opacity: 0.9;
+  opacity: 0.98;
   animation: ${animationOpacity} 2s infinite;
 
   ${Owerlay} {
