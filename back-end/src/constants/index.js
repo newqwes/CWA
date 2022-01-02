@@ -3,3 +3,5 @@ export const USER_ROLES = {
   user: 'user',
   admin: 'admin',
 };
+
+export const PRICE_PROVIDER = 'coinmarketcap';

@@ -13,6 +13,10 @@ class UserDto {
 
   lastDateUpdate;
 
+  list;
+
+  prevData;
+
   dataRefreshLimitPerMinute;
 
   constructor(model) {
@@ -23,6 +27,8 @@ class UserDto {
     this.isActivated = model.isActivated;
     this.score = Number(model.score);
     this.lastDateUpdate = model.lastDateUpdate;
+    this.list = model.list;
+    this.prevData = model.prevData;
     this.dataRefreshLimitPerMinute = Number(model.dataRefreshLimitPerMinute);
   }
 }

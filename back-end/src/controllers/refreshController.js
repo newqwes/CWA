@@ -4,7 +4,7 @@ import refreshService from '../services/refreshService';
 // NOTE: IMPORTANT dont use async
 export const refresh = async (req, res, next) => {
   try {
-    const user = await refreshService.refresh(req.user.id);
+    const user = await refreshService.refresh(req.user.id, req.body.prevData);
 
     if (!user) {
       return next(ApiError.BadRequest('Вы не были найдены в нашей базе данных'));

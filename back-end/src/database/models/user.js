@@ -28,6 +28,12 @@ User.init(
       unique: true,
       allowNull: false,
     },
+    list: {
+      type: DataTypes.JSON,
+    },
+    prevData: {
+      type: DataTypes.JSON,
+    },
     lastDateUpdate: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
@@ -39,7 +45,7 @@ User.init(
     },
     score: {
       type: DataTypes.DOUBLE,
-      defaultValue: 10,
+      defaultValue: 1,
       allowNull: false,
     },
     userType: {
