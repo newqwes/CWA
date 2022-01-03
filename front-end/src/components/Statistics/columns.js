@@ -1,9 +1,17 @@
+import { getPriceAvg, getSellPrice } from '../../utils/aggFunc';
+
 export const columnDefs = [
   {
     field: 'name',
     sortable: true,
     rowGroup: true,
     hide: true,
+  },
+  {
+    headerName: 'Символ',
+    field: 'symbol',
+    sortable: true,
+    aggFunc: 'last',
   },
   {
     headerName: 'Количество',
@@ -23,19 +31,20 @@ export const columnDefs = [
     field: 'totalProfit',
     sortable: true,
     aggFunc: 'sum',
-    cellRenderer: 'totalBuyCellRenderer',
+    cellRenderer: 'priceCellRenderer',
   },
   {
     headerName: 'Цена',
     field: 'price',
     sortable: true,
     cellRenderer: 'totalBuyCellRenderer',
-    aggFunc: 'avg',
+    aggFunc: getPriceAvg,
   },
   {
     headerName: 'Последнее изменение',
     field: 'lastModified',
     sortable: true,
+    cellRenderer: 'lastChangeCellRenderer',
     aggFunc: 'sum',
   },
 
@@ -49,6 +58,7 @@ export const columnDefs = [
     headerName: 'Цена продажи 1/3',
     field: 'priceToSell',
     sortable: true,
+    aggFunc: getSellPrice,
   },
 ];
 
@@ -57,6 +67,6 @@ export const defaultColDef = {
   resizable: true,
 };
 
-export const autoGroupColumnDef = { field: 'name', headerName: 'Наименование' };
+export const autoGroupColumnDef = { field: 'name', headerName: 'Наименование', minWidth: 250 };
 
 export const groupDisplayType = 'singleColumn';

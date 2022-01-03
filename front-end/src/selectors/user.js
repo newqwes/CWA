@@ -13,3 +13,6 @@ export const getDataRefreshLimitPerMinute = createSelector(
 
 export const getUserLastPriceList = createSelector(localState, get('list'));
 export const getUserPrevData = createSelector(localState, get('prevData'));
+
+export const getPrevGridRowData = createSelector(getUserPrevData, get('gridRowData'));
+export const getUserHistory = createSelector(localState, get('history'));

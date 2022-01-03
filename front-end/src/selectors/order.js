@@ -1,26 +1,29 @@
-import { get, reduce, find, map } from 'lodash/fp';
+import { get, reduce, find, map, isEmpty } from 'lodash/fp';
 import { round } from 'lodash';
 import { createSelector } from 'reselect';
 import moment from 'moment';
 
-import { getUserLastPriceList, getUserPrevData } from './user';
+import { getPrevGridRowData, getUserHistory, getUserLastPriceList, getUserPrevData } from './user';
 
 const localState = get('order');
 
 export const getOrderList = createSelector(localState, get('list'));
 
-export const getTotalInvested = createSelector(
-  getOrderList,
-  reduce((acc, { price, count }) => acc + price * count, 0),
-);
+export const getTotalInvested = createSelector(getOrderList, orderList => {
+  if (isEmpty(orderList)) return 0;
+
+  return reduce((acc, { price, count }) => acc + price * count, 0, orderList);
+});
 
 export const getComparisonOrdersAndPriceList = createSelector(
   getOrderList,
   getUserLastPriceList,
-  (orders, priceList) =>
-    reduce(
+  (orderList, priceList) => {
+    if (isEmpty(orderList)) return {};
+
+    return reduce(
       (acc, { name, price, count }) => {
-        const coin = find(['symbol', name.toUpperCase()], priceList);
+        const coin = find(['symbol', name === 'BabyDoge' ? name : name.toUpperCase()], priceList);
 
         if (!coin) return acc;
 
@@ -43,13 +46,18 @@ export const getComparisonOrdersAndPriceList = createSelector(
         return acc;
       },
       {},
-      orders,
-    ),
+      orderList,
+    );
+  },
 );
 
 export const getNetProfit = createSelector(
   getComparisonOrdersAndPriceList,
-  reduce((acc, { netProfit }) => acc + netProfit, 0),
+  comparisonOrdersAndPriceList => {
+    if (isEmpty(comparisonOrdersAndPriceList)) return 0;
+
+    return reduce((acc, { netProfit }) => acc + netProfit, 0, comparisonOrdersAndPriceList);
+  },
 );
 
 export const getWalletState = createSelector(
@@ -57,20 +65,29 @@ export const getWalletState = createSelector(
   getTotalInvested,
   (netProfit, totalInvested) => netProfit + totalInvested,
 );
+
 export const getTotalTransactionCount = createSelector(getOrderList, list => list.length);
 
 export const getLastModified = createSelector(
   getWalletState,
   getUserPrevData,
-  (walletState, prevData) => 100 - (walletState * 100) / prevData.walletState,
+  (walletState, prevData) => {
+    const walletStateEmpty = walletState === 0 || isEmpty(prevData) || prevData.walletState === 0;
+    if (walletStateEmpty) return 0;
+
+    const lastModified = 100 - (walletState * 100) / prevData.walletState;
+
+    return lastModified;
+  },
 );
 
 export const getGridRowData = createSelector(
   getOrderList,
   getUserLastPriceList,
-  (orders, priceList) =>
-    map(({ name, price, count, date }) => {
-      const coin = find(['symbol', name.toUpperCase()], priceList);
+  getPrevGridRowData,
+  (orders, priceList, prevGridRowData) =>
+    map(({ name, price, count, date, id }) => {
+      const coin = find(['symbol', name === 'BabyDoge' ? name : name.toUpperCase()], priceList);
 
       if (!coin) return {};
 
@@ -78,86 +95,97 @@ export const getGridRowData = createSelector(
       const coinName = get(['name'], coin);
       const symbol = get(['symbol'], coin);
       const totalProfit = round((actualPrice - price) * count, 2);
+      const prevCell = find(['id', id], prevGridRowData);
+
+      let lastModified;
+
+      if (!prevCell) {
+        lastModified = 0;
+      } else {
+        lastModified = round(prevCell.totalProfit - totalProfit, 2);
+      }
 
       return {
-        name: `${coinName} (${symbol})`,
+        name: coinName,
+        symbol,
         price,
         amount: count,
         totalBuy: round(count * price, 2),
         date: moment(date).format('YYYY-MM-DD h:mm'),
         totalProfit,
+        lastModified,
+        id,
       };
     }, orders),
 );
 
-export const chartData = {
-  donut: {
-    options: { labels: ['XRP', 'BTC', 'ETH', 'BLOK', 'SAMO'] },
-    series: [30.46, 4.32, 6.77, 2.23, 6.34],
-  },
-  area: {
-    series: [
-      {
-        name: 'Цена портфеля',
-        data: [
-          {
-            x: new Date('2021-02-12').getTime(),
-            y: 76,
-          },
-          {
-            x: new Date('2021-02-15').getTime(),
-            y: 65,
-          },
-          {
-            x: new Date('2021-03-05').getTime(),
-            y: 130,
-          },
-          {
-            x: new Date('2021-03-15').getTime(),
-            y: 120,
-          },
-        ],
-      },
-    ],
-    options: {
-      stroke: {
-        width: 2,
-      },
-      title: {
-        text: 'Общий анализ портфеля',
-        align: 'left',
-      },
-      subtitle: {
-        text: 'Изменение цены',
-        align: 'left',
-      },
-      xaxis: {
-        type: 'datetime',
-      },
-      yaxis: {
-        opposite: true,
-      },
-      legend: {
-        horizontalAlign: 'left',
-      },
-    },
-  },
-};
-
 export const getChartData = createSelector(
   getComparisonOrdersAndPriceList,
-  comparisonOrdersAndPriceList => {
-    const test = reduce(
+  getUserHistory,
+  (comparisonOrdersAndPriceList, userHistory) => {
+    const donut = reduce(
       (acc, { name, totalBuy }) => {
-        acc.donut.options.labels.push(name.toUpperCase());
-        acc.donut.series.push(totalBuy);
+        const modifiedName = name === 'BabyDoge' ? name : name.toUpperCase();
+
+        const labelIndex = acc.options.labels.findIndex(value => value === modifiedName);
+
+        if (labelIndex !== -1) {
+          acc.series[labelIndex] += totalBuy;
+
+          return acc;
+        }
+
+        acc.options.labels.push(modifiedName);
+        acc.series.push(totalBuy);
         return acc;
       },
-      { donut: { options: { labels: [] }, series: [] } },
+      { options: { labels: [] }, series: [] },
       comparisonOrdersAndPriceList,
     );
 
-    console.log(test);
-    return chartData;
+    const seriesData = map(({ date, lastModified }) => {
+      let y = round(lastModified, 2);
+
+      y = y > 6 ? 6 : y;
+      y = y < -6 ? -6 : y;
+
+      const series = { x: date, y };
+
+      return series;
+    }, userHistory);
+
+    return {
+      donut,
+      area: {
+        series: [
+          {
+            name: 'Цена портфеля',
+            data: seriesData,
+          },
+        ],
+        options: {
+          stroke: {
+            width: 2,
+          },
+          title: {
+            text: 'Общий анализ портфеля',
+            align: 'left',
+          },
+          subtitle: {
+            text: 'Изменение цены',
+            align: 'left',
+          },
+          xaxis: {
+            type: 'datetime',
+          },
+          yaxis: {
+            opposite: true,
+          },
+          legend: {
+            horizontalAlign: 'left',
+          },
+        },
+      },
+    };
   },
 );

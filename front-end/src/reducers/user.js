@@ -8,6 +8,7 @@ const initialState = {
   id: '',
   isActivated: false,
   list: [],
+  history: [],
   prevData: {},
   score: 0,
   lastDateUpdate: '',
@@ -22,6 +23,7 @@ const user = (state = initialState, { type, payload }) => {
         login,
         userType,
         id,
+        history,
         prevData,
         list,
         isActivated,
@@ -34,6 +36,7 @@ const user = (state = initialState, { type, payload }) => {
           'login',
           'userType',
           'id',
+          'history',
           'isActivated',
           'prevData',
           'score',
@@ -43,7 +46,9 @@ const user = (state = initialState, { type, payload }) => {
         ],
         payload,
       );
+
       return compose(
+        assoc(['history'], history),
         assoc(['email'], email),
         assoc(['list'], list),
         assoc(['prevData'], prevData),

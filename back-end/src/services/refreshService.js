@@ -4,6 +4,8 @@ import UserDto from '../dto/userDto';
 import ApiError from '../exceptions/apiError';
 import userService from './userService';
 import CoinList from '../database/models/coinList';
+import History from '../database/models/history';
+
 import { PRICE_PROVIDER } from '../constants';
 
 const REQUESTS_OPTIONS = {
@@ -61,8 +63,16 @@ class RefreshService {
     user.list = list;
     await user.save();
 
+    await History.create({
+      lastModified: prevData.lastModified,
+      userId: id,
+      date: Date.now(),
+    });
+
+    const history = await History.findAll({ where: { userId: id } });
+
     const userDto = new UserDto(user);
-    const userData = { ...userDto };
+    const userData = { ...userDto, history };
 
     return userData;
   }

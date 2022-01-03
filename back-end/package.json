@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon --exec babel-node src/index.js",
     "lint": "eslint .",
-    "resetDb": "yarn sequelize-cli db:migrate:undo:all && yarn sequelize-cli db:migrate",
+    "resetDb": "yarn sequelize-cli db:migrate && yarn sequelize-cli db:migrate:undo:all && yarn sequelize-cli db:migrate",
     "prod": "yarn resetDb && yarn start"
   },
   "author": "Nazar Ashyrov <newnewqwes@gmail.com>",
