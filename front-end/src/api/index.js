@@ -64,9 +64,9 @@ export const authAPI = {
 };
 
 export const refreshAPI = {
-  refresh: async () => {
+  refresh: async prevData => {
     try {
-      const { data } = await axios.post('refresh');
+      const { data } = await axios.post('refresh', { prevData });
 
       return data;
     } catch ({ response: { data } }) {

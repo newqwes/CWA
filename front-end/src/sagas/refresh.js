@@ -1,4 +1,4 @@
-import { takeEvery, all, call, put } from 'redux-saga/effects';
+import { takeEvery, all, call, put, select } from 'redux-saga/effects';
 
 import {
   loadingPendingAC,
@@ -11,12 +11,20 @@ import { HANDLE_REFRESH, HANDLE_REFRESH_FAILURE, HANDLE_REFRESH_SUCCESS } from '
 import { setUserDataAC } from '../actionCreators/user';
 import { NOTIFICATION_TYPE } from '../constants/notification';
 import { handleRefreshFailureAC, handleRefreshSuccessAC } from '../actionCreators/refresh';
+import { getNetProfit, getWalletState, getGridRowData, getLastModified } from '../selectors/order';
 
 function* refresh() {
   try {
     yield put(loadingPendingAC());
 
-    const data = yield call(refreshAPI.refresh);
+    const netProfit = yield select(getNetProfit);
+    const walletState = yield select(getWalletState);
+    const gridRowData = yield select(getGridRowData);
+    const lastModified = yield select(getLastModified);
+
+    const prevData = { netProfit, walletState, lastModified, gridRowData };
+
+    const data = yield call(refreshAPI.refresh, prevData);
 
     if (data.email) {
       yield put(handleRefreshSuccessAC(data));

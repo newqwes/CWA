@@ -6,6 +6,7 @@ import {
   AUTHORIZATION_REQUEST_BODY,
   LINK_REQUEST_PARAM,
 } from '../constants/requestBody';
+import History from '../database/models/history';
 
 import ApiError from '../exceptions/apiError';
 import authService from '../services/authService';
@@ -59,12 +60,14 @@ export const activate = async (req, res, next) => {
   }
 };
 
-export const status = (req, res, next) => {
+export const status = async (req, res, next) => {
   try {
     const userDto = new UserDto(req.user);
     const userData = { ...userDto };
 
-    return res.status('200').json(userData);
+    const history = await History.findAll({ where: { userId: userData.id } });
+
+    return res.status('200').json({ ...userData, history });
   } catch (e) {
     next(e);
   }

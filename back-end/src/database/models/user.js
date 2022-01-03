@@ -28,18 +28,24 @@ User.init(
       unique: true,
       allowNull: false,
     },
+    list: {
+      type: DataTypes.JSON,
+    },
+    prevData: {
+      type: DataTypes.JSON,
+    },
     lastDateUpdate: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
     dataRefreshLimitPerMinute: {
       type: DataTypes.DOUBLE,
-      defaultValue: 1,
+      defaultValue: 60,
       allowNull: false,
     },
     score: {
       type: DataTypes.DOUBLE,
-      defaultValue: 10,
+      defaultValue: 1,
       allowNull: false,
     },
     userType: {

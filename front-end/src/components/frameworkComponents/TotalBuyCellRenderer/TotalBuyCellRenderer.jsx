@@ -5,17 +5,13 @@ import { Wrapper } from './styled';
 
 class TotalBuyCellRenderer extends React.Component {
   static propTypes = {
-    value: PropTypes.number,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
 
   render() {
     const { value } = this.props;
 
-    return (
-      <Wrapper>
-        {value} {value && '$'}
-      </Wrapper>
-    );
+    return <Wrapper>{value ? `${value} $` : ''}</Wrapper>;
   }
 }
 

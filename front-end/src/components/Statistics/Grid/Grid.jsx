@@ -4,9 +4,15 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-enterprise';
 
 import TotalBuyCellRenderer from '../../frameworkComponents/TotalBuyCellRenderer';
+import PriceCellRenderer from '../../frameworkComponents/PriceCellRenderer';
+import LastChangeCellRenderer from '../../frameworkComponents/LastChangeCellRenderer';
 
 class Grid extends React.Component {
-  frameworkComponents = { totalBuyCellRenderer: TotalBuyCellRenderer };
+  frameworkComponents = {
+    totalBuyCellRenderer: TotalBuyCellRenderer,
+    priceCellRenderer: PriceCellRenderer,
+    lastChangeCellRenderer: LastChangeCellRenderer,
+  };
 
   static propTypes = {
     columnDefs: PropTypes.array.isRequired,

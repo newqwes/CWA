@@ -30,12 +30,12 @@ module.exports = {
       },
       score: {
         type: DataTypes.DOUBLE,
-        defaultValue: 2,
+        defaultValue: 1,
         allowNull: false,
       },
       dataRefreshLimitPerMinute: {
         type: DataTypes.DOUBLE,
-        defaultValue: 1,
+        defaultValue: 60,
         allowNull: false,
       },
       userType: {
@@ -45,6 +45,12 @@ module.exports = {
       isActivated: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
+      },
+      list: {
+        type: DataTypes.JSON,
+      },
+      prevData: {
+        type: DataTypes.JSON,
       },
       activationHash: {
         type: DataTypes.STRING(100),

@@ -67,6 +67,9 @@ class Header extends React.Component {
     const { score, handleRefresh, children, authorized } = this.props;
     const { refreshTimer, refreshDisabled } = this.state;
 
+    const time =
+      refreshTimer > 100 ? `${floor(refreshTimer / 60)} мин.` : `${floor(refreshTimer)} сек.`;
+
     return (
       <HeaderWrapper>
         {/* NOTE: Separate to component like name CountScore */}
@@ -74,7 +77,7 @@ class Header extends React.Component {
           <>
             <Title level={4}>score: {score}</Title>
             {refreshDisabled ? (
-              <Text>{floor(refreshTimer)} сек.</Text>
+              <Text>Осталось: {time}</Text>
             ) : (
               <div>
                 <Button

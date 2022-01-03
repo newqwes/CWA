@@ -1,24 +1,51 @@
-import { takeEvery, all, call } from 'redux-saga/effects';
+import { takeEvery, all, call, put } from 'redux-saga/effects';
+import { loadingPendingAC, loadingSuccessAC } from '../actionCreators/aplication';
+import {
+  getOrdersAC,
+  getOrdersFailureAC,
+  getOrdersSuccessAC,
+  setOrderFailureAC,
+  setOrderSuccessAC,
+} from '../actionCreators/order';
 
-import { GET_USER_ORDERS_PENDING, SET_USER_ORDER_PENDING } from '../actions';
+import { SET_USER_ORDER_PENDING, SET_USER_DATA } from '../actions';
 
 import { orderAPI } from '../api';
 
 function* setUserOrder({ payload }) {
-  const { count, name, price, date } = payload;
+  try {
+    yield put(loadingPendingAC());
 
-  yield call(orderAPI.setUserOrder, { count, name, price, date });
+    const { count, name, price, date } = payload;
+
+    const { data } = yield call(orderAPI.setUserOrder, { count, name, price, date });
+
+    yield put(setOrderSuccessAC(data));
+    yield put(loadingSuccessAC());
+  } catch ({ response: { data } }) {
+    yield put(setOrderFailureAC(data));
+    yield put(loadingSuccessAC());
+  }
 }
 
 function* getUserOrders() {
-  const orders = yield call(orderAPI.getUserOrders);
+  try {
+    yield put(getOrdersAC());
+    yield put(loadingPendingAC());
 
-  console.log(orders);
+    const { data } = yield call(orderAPI.getUserOrders);
+
+    yield put(getOrdersSuccessAC(data));
+    yield put(loadingSuccessAC());
+  } catch ({ response: { data } }) {
+    yield put(getOrdersFailureAC(data));
+    yield put(loadingSuccessAC());
+  }
 }
 
 export function orderSaga() {
   return all([
     takeEvery(SET_USER_ORDER_PENDING, setUserOrder),
-    takeEvery(GET_USER_ORDERS_PENDING, getUserOrders),
+    takeEvery(SET_USER_DATA, getUserOrders),
   ]);
 }

@@ -6,15 +6,13 @@ import {
   Button,
   Col,
   Row,
+  InputNumber,
   Input,
-  Select,
   DatePicker,
   Space,
 } from 'antd';
 
 import {} from './styled';
-
-const { Option } = Select;
 
 class Drawer extends React.Component {
   static propTypes = {
@@ -23,12 +21,11 @@ class Drawer extends React.Component {
     handleAddTransaction: PropTypes.func.isRequired,
   };
 
-  handleSubmit = formData => {
+  handleSubmit = ({ name, dateTime, price, count }) => {
     const { closeDrawer, handleAddTransaction } = this.props;
-    console.log(formData);
 
     closeDrawer();
-    handleAddTransaction();
+    handleAddTransaction({ name, price, count, date: dateTime.format() });
   };
 
   render() {
@@ -58,63 +55,9 @@ class Drawer extends React.Component {
             <Col span={12}>
               <Form.Item
                 name='name'
-                label='Название'
+                label='Символ токена'
                 rules={[{ required: true, message: 'Пожалуйста добавьте название криптоактива' }]}>
-                <Select placeholder='Выберите название криптоактива' defaultValue='xrp'>
-                  <Option value='xrp'>Ripple (XRP)</Option>
-                  <Option value='btc'>Bitcoin (BTC)</Option>
-                  <Option value='eth'>Etherium (ETH)</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name='url'
-                label='Url'
-                rules={[{ required: true, message: 'Please enter url' }]}>
-                <Input
-                  style={{ width: '100%' }}
-                  addonBefore='http://'
-                  addonAfter='.com'
-                  placeholder='Please enter url'
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name='owner'
-                label='Owner'
-                rules={[{ required: true, message: 'Please select an owner' }]}>
-                <Select placeholder='Please select an owner'>
-                  <Option value='xiao'>Xiaoxiao Fu</Option>
-                  <Option value='mao'>Maomao Zhou</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name='type'
-                label='Type'
-                rules={[{ required: true, message: 'Please choose the type' }]}>
-                <Select placeholder='Please choose the type'>
-                  <Option value='private'>Private</Option>
-                  <Option value='public'>Public</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name='approver'
-                label='Approver'
-                rules={[{ required: true, message: 'Please choose the approver' }]}>
-                <Select placeholder='Please choose the approver'>
-                  <Option value='jack'>Jack Ma</Option>
-                  <Option value='tom'>Tom Liu</Option>
-                </Select>
+                <Input placeholder='Выберите название криптоактива' />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -127,6 +70,36 @@ class Drawer extends React.Component {
                   placeholder='Выберите дату'
                   style={{ width: '100%' }}
                   getPopupContainer={trigger => trigger.parentElement}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name='price'
+                label='Цена покупки'
+                rules={[{ required: true, message: 'Пожалуйста введите цену' }]}>
+                <InputNumber
+                  style={{ width: '100%' }}
+                  defaultValue='0'
+                  min='0'
+                  step='1'
+                  stringMode
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name='count'
+                label='Количество'
+                rules={[{ required: true, message: 'Пожалуйста введите количество' }]}>
+                <InputNumber
+                  style={{ width: '100%' }}
+                  defaultValue='0'
+                  min='0'
+                  step='1'
+                  stringMode
                 />
               </Form.Item>
             </Col>

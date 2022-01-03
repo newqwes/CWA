@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon --exec babel-node src/index.js",
     "lint": "eslint .",
-    "resetDb": "yarn sequelize-cli db:migrate:undo:all && yarn sequelize-cli db:migrate",
+    "resetDb": "yarn sequelize-cli db:migrate && yarn sequelize-cli db:migrate:undo:all && yarn sequelize-cli db:migrate",
     "prod": "yarn resetDb && yarn start"
   },
   "author": "Nazar Ashyrov <newnewqwes@gmail.com>",
@@ -47,6 +47,8 @@
     "passport-jwt": "^4.0.0",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
     "sequelize": "^6.12.0-beta.1",
     "sequelize-cli": "^6.2.0",
     "socket.io": "^4.4.0",

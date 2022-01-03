@@ -1,14 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  chartData,
-  columnDefs,
-  rowData,
-  defaultColDef,
-  autoGroupColumnDef,
-  groupDisplayType,
-} from './columns';
+import { columnDefs, defaultColDef, autoGroupColumnDef, groupDisplayType } from './columns';
 
 import Description from './Description';
 import Chart from './Chart';
@@ -20,7 +13,13 @@ import { Wrapper } from './styled';
 class Statistics extends React.Component {
   static propTypes = {
     setOrder: PropTypes.func.isRequired,
-    getOrders: PropTypes.func.isRequired,
+    totalInvested: PropTypes.number.isRequired,
+    netProfit: PropTypes.number.isRequired,
+    walletState: PropTypes.number.isRequired,
+    lastModified: PropTypes.number.isRequired,
+    totalTransactionCount: PropTypes.number.isRequired,
+    rowData: PropTypes.array.isRequired,
+    chartData: PropTypes.object.isRequired,
   };
 
   state = {
@@ -36,19 +35,28 @@ class Statistics extends React.Component {
   };
 
   render() {
-    const { setOrder } = this.props;
+    const {
+      setOrder,
+      totalInvested,
+      netProfit,
+      walletState,
+      lastModified,
+      totalTransactionCount,
+      rowData,
+      chartData,
+    } = this.props;
     const { drawerVisible } = this.state;
 
     return (
       <Wrapper>
         <Description
-          totalInvested={1452.23}
+          totalInvested={totalInvested}
           currencySymbol='$'
-          netProfit={14.22}
-          walletState={1468.34}
+          netProfit={netProfit}
+          walletState={walletState}
           precision={2}
-          lastModified={0.31}
-          totalTransactionCount={16}
+          lastModified={lastModified}
+          totalTransactionCount={totalTransactionCount}
           handleDrawer={this.handleDrawer}
         />
         <Chart chartData={chartData} />
