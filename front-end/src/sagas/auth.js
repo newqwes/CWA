@@ -30,12 +30,14 @@ import {
   REGISTRATION_FAILURE,
   REGISTRATION_PENDING,
   REGISTRATION_SUCCESS,
+  SET_USER_DATA,
 } from '../actions';
 import { AUTH_TOKEN } from '../constants/authModal';
 import { setSession } from '../utils/localStore';
 import { NOTIFICATION_TYPE } from '../constants/notification';
 import { openCenteredWindow } from '../utils/openCenteredWindow';
 import { setUserDataAC } from '../actionCreators/user';
+import { getOrdersAC } from '../actionCreators/order';
 
 function* authorization({ payload }) {
   try {
@@ -161,6 +163,10 @@ function* authSuccess({ payload }) {
   );
 }
 
+function* setUserData() {
+  yield put(getOrdersAC());
+}
+
 function* authFailure({ payload }) {
   yield put(
     setNotificationAC({
@@ -220,5 +226,6 @@ export function authSaga() {
     takeEvery(AUTH_LOGOUT, logout),
     takeEvery(GET_AUTHORIZATION_STATUS_SUCCESS, authorizationStatusSuccess),
     takeEvery(GET_AUTHORIZATION_STATUS_FAILURE, authorizationStatusFailure),
+    takeEvery(SET_USER_DATA, setUserData),
   ]);
 }

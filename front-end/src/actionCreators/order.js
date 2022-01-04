@@ -5,6 +5,10 @@ import {
   GET_USER_ORDERS_FAILURE,
   SET_USER_ORDER_SUCCESS,
   SET_USER_ORDER_FAILURE,
+  DELETE_USER_ORDER_PENDING,
+  DELETE_USER_ORDER_SUCCESS,
+  DELETE_USER_ORDER_FAILURE,
+  SET_USER_ORDERS_PENDING,
 } from '../actions';
 
 export const getOrdersAC = () => ({
@@ -34,4 +38,24 @@ export const setOrderSuccessAC = data => ({
 export const setOrderFailureAC = error => ({
   type: SET_USER_ORDER_FAILURE,
   payload: error,
+});
+
+export const deleteOrderAC = orderId => ({
+  type: DELETE_USER_ORDER_PENDING,
+  payload: orderId,
+});
+
+export const deleteOrderSuccessAC = orderId => ({
+  type: DELETE_USER_ORDER_SUCCESS,
+  payload: orderId,
+});
+
+export const deleteOrderFailureAC = error => ({
+  type: DELETE_USER_ORDER_FAILURE,
+  payload: error,
+});
+
+export const setOrdersAC = orders => ({
+  type: SET_USER_ORDERS_PENDING,
+  payload: orders,
 });

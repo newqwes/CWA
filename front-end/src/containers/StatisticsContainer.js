@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import Statistics from '../components/Statistics';
-import { setOrderAC } from '../actionCreators/order';
+import { deleteOrderAC, setOrderAC, setOrdersAC } from '../actionCreators/order';
 import {
   getTotalInvested,
   getNetProfit,
@@ -24,6 +24,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   setOrder: setOrderAC,
+  setOrders: setOrdersAC,
+  deleteOrder: deleteOrderAC,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Statistics);

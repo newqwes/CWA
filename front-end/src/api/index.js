@@ -95,4 +95,22 @@ export const orderAPI = {
       return data;
     }
   },
+
+  deleteUserOrder: async id => {
+    try {
+      const { data } = await axios.delete(`order/delete/${id}`);
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+
+  setUserOrders: async orders => {
+    try {
+      await axios.post('order/upload', orders);
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
 };

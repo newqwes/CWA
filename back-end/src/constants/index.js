@@ -4,4 +4,4 @@ export const USER_ROLES = {
   admin: 'admin',
 };
 
-export const PRICE_PROVIDER = 'coinmarketcap';
+export const REFRESH_TOKEN_AGE = 30 * 24 * 60 * 60 * 1000;

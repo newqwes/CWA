@@ -6,22 +6,7 @@ import userService from './userService';
 import CoinList from '../database/models/coinList';
 import History from '../database/models/history';
 
-import { PRICE_PROVIDER } from '../constants';
-
-const REQUESTS_OPTIONS = {
-  method: 'GET',
-  uri: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
-  qs: {
-    start: '1',
-    limit: '5000',
-    convert: 'USD',
-  },
-  headers: {
-    'X-CMC_PRO_API_KEY': process.env.COINMARKETCAP_AUTH_KEY,
-  },
-  json: true,
-  gzip: true,
-};
+import { PRICE_PROVIDER, REQUESTS_OPTIONS } from '../constants/coinmarketcapConfig';
 
 export const setLastCoinPrice = async () => {
   const { data } = await rp(REQUESTS_OPTIONS);
@@ -40,13 +25,6 @@ export const setLastCoinPrice = async () => {
   return data;
 };
 
-setLastCoinPrice();
-
-setInterval(() => {
-  console.log('setInterval done!');
-  setLastCoinPrice();
-}, 1000 * 60 * 60);
-
 class RefreshService {
   async refresh(id, prevData) {
     const user = await userService.findByKey(id, 'id');
@@ -55,7 +33,7 @@ class RefreshService {
       throw ApiError.BadRequest('Пользователь с таким ID не существует');
     }
 
-    const { list } = await CoinList.findOne({ where: { name: PRICE_PROVIDER } });
+    const list = await setLastCoinPrice();
 
     user.score += 1;
     user.prevData = prevData;

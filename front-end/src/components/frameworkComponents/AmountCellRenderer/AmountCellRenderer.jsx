@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Wrapper } from './styled';
 import { toNormalNumber } from '../../../utils/toNormalNumber';
+import { Wrapper } from './styled';
 
-class LastChangeCellRenderer extends React.Component {
+class AmountCellRenderer extends React.Component {
   static propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
@@ -12,9 +12,10 @@ class LastChangeCellRenderer extends React.Component {
   render() {
     const { value } = this.props;
 
-    const positive = value >= 0;
-    return <Wrapper positive={positive}>{toNormalNumber(value)} $</Wrapper>;
+    const amount = toNormalNumber(value);
+
+    return <Wrapper>{amount}</Wrapper>;
   }
 }
 
-export default LastChangeCellRenderer;
+export default AmountCellRenderer;

@@ -6,12 +6,18 @@ import 'ag-grid-enterprise';
 import TotalBuyCellRenderer from '../../frameworkComponents/TotalBuyCellRenderer';
 import PriceCellRenderer from '../../frameworkComponents/PriceCellRenderer';
 import LastChangeCellRenderer from '../../frameworkComponents/LastChangeCellRenderer';
+import DeleteButtonCellRenderer from '../../frameworkComponents/DeleteButtonCellRenderer';
+import AmountCellRenderer from '../../frameworkComponents/AmountCellRenderer';
+import ActualPriceCellRenderer from '../../frameworkComponents/ActualPriceCellRenderer';
 
 class Grid extends React.Component {
   frameworkComponents = {
     totalBuyCellRenderer: TotalBuyCellRenderer,
     priceCellRenderer: PriceCellRenderer,
     lastChangeCellRenderer: LastChangeCellRenderer,
+    deleteButtonCellRenderer: DeleteButtonCellRenderer,
+    amountCellRenderer: AmountCellRenderer,
+    actualPriceCellRenderer: ActualPriceCellRenderer,
   };
 
   static propTypes = {
