@@ -13,6 +13,7 @@ import { Wrapper } from './styled';
 class Statistics extends React.Component {
   static propTypes = {
     setOrder: PropTypes.func.isRequired,
+    setOrders: PropTypes.func.isRequired,
     totalInvested: PropTypes.number.isRequired,
     netProfit: PropTypes.number.isRequired,
     walletState: PropTypes.number.isRequired,
@@ -20,6 +21,7 @@ class Statistics extends React.Component {
     totalTransactionCount: PropTypes.number.isRequired,
     rowData: PropTypes.array.isRequired,
     chartData: PropTypes.object.isRequired,
+    deleteOrder: PropTypes.func.isRequired,
   };
 
   state = {
@@ -44,6 +46,8 @@ class Statistics extends React.Component {
       totalTransactionCount,
       rowData,
       chartData,
+      deleteOrder,
+      setOrders,
     } = this.props;
     const { drawerVisible } = this.state;
 
@@ -61,7 +65,7 @@ class Statistics extends React.Component {
         />
         <Chart chartData={chartData} />
         <Grid
-          columnDefs={columnDefs}
+          columnDefs={columnDefs({ deleteOrder })}
           rowData={rowData}
           defaultColDef={defaultColDef}
           autoGroupColumnDef={autoGroupColumnDef}
@@ -71,6 +75,7 @@ class Statistics extends React.Component {
           closeDrawer={this.closeDrawer}
           handleAddTransaction={setOrder}
           visible={drawerVisible}
+          handleAddTransactions={setOrders}
         />
       </Wrapper>
     );

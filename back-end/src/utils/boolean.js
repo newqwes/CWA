@@ -2,7 +2,12 @@ import { every, some, complement } from 'lodash/fp';
 
 export const negate = complement(Boolean);
 
-// someFalsey(['d', 'ds', '']) // true
+/**
+ * @example
+ * // returns true
+ * everyTruthy(['d', 'ds', '']);
+ * @returns {Boolean}
+ */
 export const everyTruthy = every(Boolean);
 export const someTruthy = some(Boolean);
 

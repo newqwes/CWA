@@ -12,20 +12,26 @@ import {
   Space,
 } from 'antd';
 
-import {} from './styled';
-
 class Drawer extends React.Component {
   static propTypes = {
     visible: PropTypes.bool.isRequired,
     closeDrawer: PropTypes.func.isRequired,
     handleAddTransaction: PropTypes.func.isRequired,
+    handleAddTransactions: PropTypes.func.isRequired,
   };
 
   handleSubmit = ({ name, dateTime, price, count }) => {
     const { closeDrawer, handleAddTransaction } = this.props;
 
     closeDrawer();
-    handleAddTransaction({ name, price, count, date: dateTime.format() });
+    handleAddTransaction({ name, price, count, date: dateTime && dateTime.format() });
+  };
+
+  handleSubmitTransactions = ({ list }) => {
+    const { closeDrawer, handleAddTransactions } = this.props;
+
+    closeDrawer();
+    handleAddTransactions({ list });
   };
 
   render() {
@@ -61,10 +67,7 @@ class Drawer extends React.Component {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                name='dateTime'
-                label='Время покупки'
-                rules={[{ required: true, message: 'Пожалуйста выберите дату' }]}>
+              <Form.Item name='dateTime' label='Время покупки'>
                 <DatePicker
                   showTime
                   placeholder='Выберите дату'
@@ -102,6 +105,25 @@ class Drawer extends React.Component {
                   stringMode
                 />
               </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+        <Form
+          layout='vertical'
+          name='addTransactions'
+          onFinish={this.handleSubmitTransactions}
+          onFinishFailed={data => console.log('onFinishFailed: ', data)}>
+          <Row>
+            <Col span={12} offset={6}>
+              <Form.Item
+                name='list'
+                label='Список транзакций'
+                rules={[{ required: true, message: 'Пожалуйста добавьте список' }]}>
+                <Input.TextArea rows={20} placeholder='Выберите название криптоактива' />
+              </Form.Item>
+              <Button type='primary' htmlType='submit' form='addTransactions'>
+                Принять список
+              </Button>
             </Col>
           </Row>
         </Form>

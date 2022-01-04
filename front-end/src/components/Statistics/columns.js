@@ -1,6 +1,6 @@
 import { getPriceAvg, getSellPrice } from '../../utils/aggFunc';
 
-export const columnDefs = [
+export const columnDefs = ({ deleteOrder }) => [
   {
     field: 'name',
     sortable: true,
@@ -14,13 +14,20 @@ export const columnDefs = [
     aggFunc: 'last',
   },
   {
+    headerName: 'Цена',
+    field: 'actualPrice',
+    sortable: true,
+    cellRenderer: 'actualPriceCellRenderer',
+  },
+  {
     headerName: 'Количество',
     field: 'amount',
     sortable: true,
     aggFunc: 'sum',
+    cellRenderer: 'amountCellRenderer',
   },
   {
-    headerName: 'Общая стоимость покупки',
+    headerName: 'Вложил',
     field: 'totalBuy',
     sortable: true,
     aggFunc: 'sum',
@@ -34,7 +41,7 @@ export const columnDefs = [
     cellRenderer: 'priceCellRenderer',
   },
   {
-    headerName: 'Цена',
+    headerName: 'Ср. Цена',
     field: 'price',
     sortable: true,
     cellRenderer: 'totalBuyCellRenderer',
@@ -47,7 +54,6 @@ export const columnDefs = [
     cellRenderer: 'lastChangeCellRenderer',
     aggFunc: 'sum',
   },
-
   {
     headerName: 'Дата покупки',
     field: 'date',
@@ -59,6 +65,15 @@ export const columnDefs = [
     field: 'priceToSell',
     sortable: true,
     aggFunc: getSellPrice,
+  },
+  {
+    field: 'athlete',
+    headerName: 'Уд.',
+    cellRenderer: 'deleteButtonCellRenderer',
+    cellRendererParams: {
+      deleteOrder,
+    },
+    maxWidth: 100,
   },
 ];
 

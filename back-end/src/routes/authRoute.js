@@ -2,6 +2,7 @@ import express from 'express';
 import { body } from 'express-validator';
 import passport from 'passport';
 
+import { REFRESH_TOKEN_AGE } from '../constants';
 import { LINK_REQUEST_PARAM, REGISTRATION_REQUEST_BODY } from '../constants/requestBody';
 
 import { login, registration, activate, status } from '../controllers/authController';
@@ -34,7 +35,7 @@ authRoute.get(
     console.log('Callback google SUCCESS user: ', req.user);
 
     return res.cookie('refreshToken', req.user.refreshToken, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      maxAge: REFRESH_TOKEN_AGE,
       httpOnly: true,
       secure: true, // if have https
     });
