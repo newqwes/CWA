@@ -64,9 +64,9 @@ export const authAPI = {
 };
 
 export const refreshAPI = {
-  refresh: async prevData => {
+  refresh: async ({ prevData, coinList }) => {
     try {
-      const { data } = await axios.post('refresh', { prevData });
+      const { data } = await axios.post('refresh', { prevData, coinList });
 
       return data;
     } catch ({ response: { data } }) {

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { toNormalNumber } from '../../../utils/toNormalNumber';
 import { Wrapper } from './styled';
 
-class ActualPriceCellRenderer extends React.Component {
+class PercentCellRenderer extends React.Component {
   static propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
@@ -14,8 +14,10 @@ class ActualPriceCellRenderer extends React.Component {
 
     const actualPrice = toNormalNumber(value);
 
-    return <Wrapper>{actualPrice}</Wrapper>;
+    const positive = value >= 0;
+
+    return <Wrapper positive={positive}>{actualPrice} %</Wrapper>;
   }
 }
 
-export default ActualPriceCellRenderer;
+export default PercentCellRenderer;

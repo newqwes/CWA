@@ -1,5 +1,5 @@
 import { assoc, compose, pick } from 'lodash/fp';
-import { SET_USER_DATA } from '../actions';
+import { SET_USER_DATA, SET_USER_HISTORY } from '../actions';
 
 const initialState = {
   email: '',
@@ -60,6 +60,10 @@ const user = (state = initialState, { type, payload }) => {
         assoc(['lastDateUpdate'], lastDateUpdate),
         assoc(['dataRefreshLimitPerMinute'], dataRefreshLimitPerMinute),
       )(state);
+    }
+
+    case SET_USER_HISTORY: {
+      return { ...state, history: payload };
     }
 
     default:

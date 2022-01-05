@@ -1,4 +1,5 @@
 import rp from 'request-promise';
+import { map, find, isEqual } from 'lodash/fp';
 
 import UserDto from '../dto/userDto';
 import ApiError from '../exceptions/apiError';
@@ -26,8 +27,8 @@ export const setLastCoinPrice = async () => {
 };
 
 class RefreshService {
-  async refresh(id, prevData) {
-    const user = await userService.findByKey(id, 'id');
+  async refresh({ userId, prevData, coinList }) {
+    const user = await userService.findByKey(userId, 'id');
 
     if (!user) {
       throw ApiError.BadRequest('Пользователь с таким ID не существует');
@@ -35,19 +36,28 @@ class RefreshService {
 
     const list = await setLastCoinPrice();
 
+    const actualUserCoinList = map(coin => {
+      const actualCoinData = find(
+        ['symbol', isEqual(coin, 'BabyDoge') ? coin : coin.toUpperCase()],
+        list,
+      );
+
+      return actualCoinData;
+    }, coinList);
+
     user.score += 1;
     user.prevData = prevData;
     user.lastDateUpdate = Date.now();
-    user.list = list;
+    user.list = actualUserCoinList;
     await user.save();
 
     await History.create({
-      lastModified: prevData.lastModified,
-      userId: id,
+      lastModified: prevData.netProfit,
+      userId,
       date: Date.now(),
     });
 
-    const history = await History.findAll({ where: { userId: id } });
+    const history = await History.findAll({ where: { userId } });
 
     const userDto = new UserDto(user);
     const userData = { ...userDto, history };
