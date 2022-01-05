@@ -4,7 +4,6 @@ import { isTimeLimitOver } from '../utils/toMinute';
 
 const checkLastRefreshDate = (req, res, next) => {
   try {
-    console.log('5 checkLastRefreshDate');
     const { dataRefreshLimitPerMinute, lastDateUpdate } = pick(
       ['dataRefreshLimitPerMinute', 'lastDateUpdate'],
       req.user,

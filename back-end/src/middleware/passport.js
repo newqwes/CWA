@@ -50,7 +50,7 @@ const passportJWTAndGoogle = passport => {
           const userDto = new UserDto(user);
           const userData = { ...userDto };
 
-          const tokens = generateTokens(userData);
+          const tokens = generateTokens({ email, id: userData.id });
 
           await tokenService.saveToken({
             userId: userData.id,
