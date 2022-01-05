@@ -9,6 +9,7 @@ import LastChangeCellRenderer from '../../frameworkComponents/LastChangeCellRend
 import DeleteButtonCellRenderer from '../../frameworkComponents/DeleteButtonCellRenderer';
 import AmountCellRenderer from '../../frameworkComponents/AmountCellRenderer';
 import ActualPriceCellRenderer from '../../frameworkComponents/ActualPriceCellRenderer';
+import PercentCellRenderer from '../../frameworkComponents/PercentCellRenderer';
 
 class Grid extends React.Component {
   frameworkComponents = {
@@ -18,6 +19,7 @@ class Grid extends React.Component {
     deleteButtonCellRenderer: DeleteButtonCellRenderer,
     amountCellRenderer: AmountCellRenderer,
     actualPriceCellRenderer: ActualPriceCellRenderer,
+    percentCellRenderer: PercentCellRenderer,
   };
 
   static propTypes = {

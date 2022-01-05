@@ -31,21 +31,15 @@ authRoute.get(
     successRedirect: process.env.CLIENT_URL_GOOGLE_SUCCESS,
     failureRedirect: process.env.CLIENT_URL_GOOGLE_FAILURE,
   }),
-  (req, res) => {
-    console.log('Callback google SUCCESS user: ', req.user);
-
-    return res.cookie('refreshToken', req.user.refreshToken, {
+  (req, res) =>
+    res.cookie('refreshToken', req.user.refreshToken, {
       maxAge: REFRESH_TOKEN_AGE,
       httpOnly: true,
       secure: true, // if have https
-    });
-  },
+    }),
 );
 
-authRoute.get('/protected', authMiddleware, (req, res) => {
-  console.log('/protected ', req.user);
-  return res.send('Только авторизованные!');
-});
+authRoute.get('/protected', authMiddleware, (req, res) => res.send('Только авторизованные!'));
 
 authRoute.get('/status', authMiddleware, status);
 

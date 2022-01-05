@@ -52,11 +52,7 @@ class Drawer extends React.Component {
             </Button>
           </Space>
         }>
-        <Form
-          layout='vertical'
-          name='addTransaction'
-          onFinish={this.handleSubmit}
-          onFinishFailed={data => console.log('onFinishFailed: ', data)}>
+        <Form layout='vertical' name='addTransaction' onFinish={this.handleSubmit}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -97,22 +93,12 @@ class Drawer extends React.Component {
                 name='count'
                 label='Количество'
                 rules={[{ required: true, message: 'Пожалуйста введите количество' }]}>
-                <InputNumber
-                  style={{ width: '100%' }}
-                  defaultValue='0'
-                  min='0'
-                  step='1'
-                  stringMode
-                />
+                <InputNumber style={{ width: '100%' }} defaultValue='0' step='1' stringMode />
               </Form.Item>
             </Col>
           </Row>
         </Form>
-        <Form
-          layout='vertical'
-          name='addTransactions'
-          onFinish={this.handleSubmitTransactions}
-          onFinishFailed={data => console.log('onFinishFailed: ', data)}>
+        <Form layout='vertical' name='addTransactions' onFinish={this.handleSubmitTransactions}>
           <Row>
             <Col span={12} offset={6}>
               <Form.Item

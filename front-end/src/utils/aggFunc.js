@@ -34,3 +34,14 @@ export const getSellPrice = params => {
 
   return `${toNormalNumber(sellPrice)} $`;
 };
+
+export const getProfitPercentAvg = params => {
+  const allLeafChildren = get(['rowNode', 'allLeafChildren'], params);
+
+  if (isEmpty(allLeafChildren)) return 0;
+
+  const actualPrice = get([0, 'data', 'actualPrice'], allLeafChildren);
+  const price = getPriceAvg(params);
+
+  return ((actualPrice - price) * 100) / price;
+};

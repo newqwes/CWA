@@ -1,4 +1,5 @@
 import { takeEvery, all, call, put, select } from 'redux-saga/effects';
+import { getOr } from 'lodash/fp';
 
 import {
   loadingPendingAC,
@@ -8,10 +9,10 @@ import {
 import { refreshAPI } from '../api';
 
 import { HANDLE_REFRESH, HANDLE_REFRESH_FAILURE, HANDLE_REFRESH_SUCCESS } from '../actions';
-import { setUserDataAC } from '../actionCreators/user';
+import { setUserDataAC, setUserHistoryAC } from '../actionCreators/user';
 import { NOTIFICATION_TYPE } from '../constants/notification';
 import { handleRefreshFailureAC, handleRefreshSuccessAC } from '../actionCreators/refresh';
-import { getNetProfit, getWalletState, getGridRowData, getLastModified } from '../selectors/order';
+import { getNetProfit, getWalletState, getGridRowData, getOrderCoinList } from '../selectors/order';
 
 function* refresh() {
   try {
@@ -20,21 +21,24 @@ function* refresh() {
     const netProfit = yield select(getNetProfit);
     const walletState = yield select(getWalletState);
     const gridRowData = yield select(getGridRowData);
-    const lastModified = yield select(getLastModified);
+    const coinList = yield select(getOrderCoinList);
 
-    const prevData = { netProfit, walletState, lastModified, gridRowData };
+    const prevData = { netProfit, walletState, gridRowData };
 
-    const data = yield call(refreshAPI.refresh, prevData);
+    const data = yield call(refreshAPI.refresh, { prevData, coinList });
 
     if (data.email) {
       yield put(handleRefreshSuccessAC(data));
+      yield put(setUserHistoryAC(data.history));
       yield put(loadingSuccessAC());
       return;
     }
 
     yield put(handleRefreshFailureAC(data));
     yield put(loadingSuccessAC());
-  } catch ({ response: { data } }) {
+  } catch (error) {
+    const data = getOr({ message: 'Ошибка ui' }, ['response', 'data'], error);
+
     yield put(handleRefreshFailureAC(data));
     yield put(loadingSuccessAC());
   }

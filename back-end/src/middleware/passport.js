@@ -72,10 +72,7 @@ const passportJWTAndGoogle = passport => {
   passport.serializeUser((user, done) => done(null, user.email));
 
   passport.deserializeUser(async (email, done) => {
-    const user = await userService.findByKey(email, 'email').catch(err => {
-      console.log('Error deserializing', err);
-      return done(err, null);
-    });
+    const user = await userService.findByKey(email, 'email').catch(err => done(err, null));
 
     if (user) {
       const userDto = new UserDto(user);
