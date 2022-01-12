@@ -14,7 +14,7 @@ class ActualPriceCellRenderer extends React.Component {
 
     const actualPrice = toNormalNumber(value);
 
-    return <Wrapper>{actualPrice}</Wrapper>;
+    return <Wrapper>{actualPrice} $</Wrapper>;
   }
 }
 

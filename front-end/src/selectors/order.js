@@ -1,4 +1,4 @@
-import { get, reduce, find, map, isEmpty, compose, uniq, isEqual } from 'lodash/fp';
+import { get, reduce, find, map, isEmpty, compose, uniq, isEqual, drop } from 'lodash/fp';
 import { round } from 'lodash';
 import { createSelector } from 'reselect';
 import moment from 'moment';
@@ -173,7 +173,7 @@ export const getChartData = createSelector(
         series: [
           {
             name: 'Чистая прибыль',
-            data: seriesData,
+            data: drop(2, seriesData),
           },
         ],
         options: {
@@ -196,6 +196,9 @@ export const getChartData = createSelector(
           },
           legend: {
             horizontalAlign: 'left',
+          },
+          dataLabels: {
+            enabled: false,
           },
         },
       },

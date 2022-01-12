@@ -1,4 +1,9 @@
-import { getPriceAvg, getProfitPercentAvg, getSellPrice } from '../../utils/aggFunc';
+import {
+  getPriceAvg,
+  getProfitPercentAvg,
+  getSellPrice,
+  getlastModifiedPercentAvg,
+} from '../../utils/aggFunc';
 
 export const columnDefs = ({ deleteOrder }) => [
   {
@@ -6,6 +11,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     rowGroup: true,
     hide: true,
+    cellRenderer: 'symbolCellRenderer',
   },
   {
     headerName: 'Символ',
@@ -14,7 +20,7 @@ export const columnDefs = ({ deleteOrder }) => [
     aggFunc: 'last',
   },
   {
-    headerName: 'Цена',
+    headerName: 'Текущая цена',
     field: 'actualPrice',
     sortable: true,
     cellRenderer: 'actualPriceCellRenderer',
@@ -68,6 +74,13 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     cellRenderer: 'lastChangeCellRenderer',
     aggFunc: 'sum',
+  },
+  {
+    headerName: '% Последнее изменение',
+    field: 'lastModifiedPercent',
+    sortable: true,
+    aggFunc: getlastModifiedPercentAvg,
+    cellRenderer: 'percentCellRenderer',
   },
   {
     headerName: 'Дата покупки',

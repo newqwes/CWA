@@ -35,7 +35,7 @@ module.exports = {
       },
       dataRefreshLimitPerMinute: {
         type: DataTypes.DOUBLE,
-        defaultValue: 2,
+        defaultValue: 1,
         allowNull: false,
       },
       userType: {
