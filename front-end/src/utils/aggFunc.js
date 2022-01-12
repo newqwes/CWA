@@ -35,6 +35,17 @@ export const getSellPrice = params => {
   return `${toNormalNumber(sellPrice)} $`;
 };
 
+export const getlastModifiedPercentAvg = params => {
+  const allLeafChildren = get(['rowNode', 'allLeafChildren'], params);
+
+  if (isEmpty(allLeafChildren)) return 0;
+
+  const lastModified = get([0, 'data', 'lastModified'], allLeafChildren);
+  const totalBuyActual = get([0, 'data', 'totalBuyActual'], allLeafChildren);
+
+  return (lastModified * 100) / totalBuyActual;
+};
+
 export const getProfitPercentAvg = params => {
   const allLeafChildren = get(['rowNode', 'allLeafChildren'], params);
 

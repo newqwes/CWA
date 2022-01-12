@@ -3088,6 +3088,11 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
+base64-cryptocurrency-icons@^1.1.20:
+  version "1.1.20"
+  resolved "https://registry.yarnpkg.com/base64-cryptocurrency-icons/-/base64-cryptocurrency-icons-1.1.20.tgz#25517e2b22ff872cdf65ad82de7eaee864c67bb5"
+  integrity sha512-3MFEUkwiFrWOxQEdeyvSyN7OZ73xD4d4geOuOgDsYLHpU4pgGXxkKR/yOxUJfMUTIp0CUBzY1Xt7eylNPFhxZQ==
+
 base64-js@^1.0.2:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
