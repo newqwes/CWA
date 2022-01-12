@@ -40,7 +40,7 @@ User.init(
     },
     dataRefreshLimitPerMinute: {
       type: DataTypes.DOUBLE,
-      defaultValue: 1,
+      defaultValue: 2,
       allowNull: false,
     },
     score: {
