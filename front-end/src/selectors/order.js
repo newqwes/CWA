@@ -77,7 +77,7 @@ export const getLastModified = createSelector(
     const walletStateEmpty = walletState === 0 || isEmpty(prevData) || prevData.walletState === 0;
     if (walletStateEmpty) return 0;
 
-    const lastModified = 100 - (walletState * 100) / prevData.walletState;
+    const lastModified = ((walletState * 100) / prevData.walletState) - 100;
 
     return lastModified;
   },
