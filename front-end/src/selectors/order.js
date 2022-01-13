@@ -134,7 +134,8 @@ export const getGridRowData = createSelector(
 export const getChartData = createSelector(
   getComparisonOrdersAndPriceList,
   getUserHistory,
-  (comparisonOrdersAndPriceList, userHistory) => {
+  getLastModified,
+  (comparisonOrdersAndPriceList, userHistory, newLastModified) => {
     const prepareOrders = reduce(
       (acc, { name, totalBuy }) => {
         const modifiedName = name === 'BabyDoge' ? name : name.toUpperCase();
@@ -175,7 +176,7 @@ export const getChartData = createSelector(
         series: [
           {
             name: 'Чистая прибыль',
-            data: drop(2, seriesData),
+            data: drop(2, [...seriesData, { x: Date.now(), y: round(newLastModified, 1) }]),
           },
         ],
         options: {
