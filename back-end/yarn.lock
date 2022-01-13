@@ -1258,6 +1258,11 @@ base64-arraybuffer@~1.0.1:
   resolved "https://registry.yarnpkg.com/base64-arraybuffer/-/base64-arraybuffer-1.0.1.tgz#87bd13525626db4a9838e00a508c2b73efcf348c"
   integrity sha512-vFIUq7FdLtjZMhATwDul5RZWv2jpXQ09Pd6jcVEOvIsqCWTRFD/ONHNfyOS8dA/Ippi5dsIgpyKWKZaAKZltbA==
 
+base64-cryptocurrency-icons@^1.1.20:
+  version "1.1.20"
+  resolved "https://registry.yarnpkg.com/base64-cryptocurrency-icons/-/base64-cryptocurrency-icons-1.1.20.tgz#25517e2b22ff872cdf65ad82de7eaee864c67bb5"
+  integrity sha512-3MFEUkwiFrWOxQEdeyvSyN7OZ73xD4d4geOuOgDsYLHpU4pgGXxkKR/yOxUJfMUTIp0CUBzY1Xt7eylNPFhxZQ==
+
 base64id@2.0.0, base64id@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/base64id/-/base64id-2.0.0.tgz#2770ac6bc47d312af97a8bf9a634342e0cd25cb6"

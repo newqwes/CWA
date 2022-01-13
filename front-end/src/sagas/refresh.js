@@ -1,5 +1,5 @@
 import { takeEvery, all, call, put, select } from 'redux-saga/effects';
-import { getOr } from 'lodash/fp';
+import { getOr, omit, map } from 'lodash/fp';
 
 import {
   loadingPendingAC,
@@ -23,7 +23,7 @@ function* refresh() {
     const gridRowData = yield select(getGridRowData);
     const coinList = yield select(getOrderCoinList);
 
-    const prevData = { netProfit, walletState, gridRowData };
+    const prevData = { netProfit, walletState, gridRowData: map(omit(['icon']), gridRowData) };
 
     const data = yield call(refreshAPI.refresh, { prevData, coinList });
 

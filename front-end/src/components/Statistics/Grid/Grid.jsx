@@ -11,6 +11,7 @@ import AmountCellRenderer from '../../frameworkComponents/AmountCellRenderer';
 import ActualPriceCellRenderer from '../../frameworkComponents/ActualPriceCellRenderer';
 import PercentCellRenderer from '../../frameworkComponents/PercentCellRenderer';
 import SymbolCellRenderer from '../../frameworkComponents/SymbolCellRenderer';
+import { Wrapper } from './styled';
 
 class Grid extends React.Component {
   frameworkComponents = {
@@ -36,7 +37,7 @@ class Grid extends React.Component {
     const { columnDefs, rowData, defaultColDef, autoGroupColumnDef, groupDisplayType } = this.props;
 
     return (
-      <div className='ag-theme-material'>
+      <Wrapper className='ag-theme-material'>
         <AgGridReact
           columnDefs={columnDefs}
           rowData={rowData}
@@ -44,12 +45,11 @@ class Grid extends React.Component {
           frameworkComponents={this.frameworkComponents}
           autoGroupColumnDef={autoGroupColumnDef}
           groupDisplayType={groupDisplayType}
-          domLayout='autoHeight'
           suppressAggFuncInHeader
           animateRows
           showOpenedGroup
         />
-      </div>
+      </Wrapper>
     );
   }
 }

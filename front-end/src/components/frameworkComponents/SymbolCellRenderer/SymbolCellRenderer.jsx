@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash/fp';
-import icon from 'base64-cryptocurrency-icons';
 
 import { Wrapper } from './styled';
 
@@ -13,10 +12,7 @@ class SymbolCellRenderer extends React.Component {
   render() {
     const { value } = this.props;
 
-    console.log(this.props);
-
-    const iconSymbol = get(['node', 'aggData', 'symbol'], this.props);
-    const iconSrc = get([iconSymbol, 'icon'], icon);
+    const iconSrc = get(['node', 'aggData', 'icon'], this.props);
 
     return (
       <Wrapper>

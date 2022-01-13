@@ -1,5 +1,6 @@
 import rp from 'request-promise';
-import { map, find, isEqual } from 'lodash/fp';
+import { map, find, isEqual, get } from 'lodash/fp';
+import icon from 'base64-cryptocurrency-icons';
 
 import UserDto from '../dto/userDto';
 import ApiError from '../exceptions/apiError';
@@ -36,13 +37,21 @@ class RefreshService {
 
     const list = await setLastCoinPrice();
 
-    const actualUserCoinList = map(coin => {
+    const actualUserCoinList = await map(coin => {
+      if (isEqual(coin.toUpperCase(), 'WAG')) {
+        const actualCoinData = find(['name', 'Waggle Network'], list);
+
+        return { ...actualCoinData, icon: null };
+      }
+
       const actualCoinData = find(
         ['symbol', isEqual(coin, 'BabyDoge') ? coin : coin.toUpperCase()],
         list,
       );
 
-      return actualCoinData;
+      const coinIcon = get([coin, 'icon'], icon);
+
+      return { ...actualCoinData, icon: coinIcon };
     }, coinList);
 
     user.score += 1;

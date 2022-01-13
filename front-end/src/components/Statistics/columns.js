@@ -95,9 +95,16 @@ export const columnDefs = ({ deleteOrder }) => [
     aggFunc: getSellPrice,
   },
   {
+    headerName: 'Иконка',
+    field: 'icon',
+    aggFunc: 'last',
+    hide: true,
+  },
+  {
     field: 'athlete',
     headerName: 'Уд.',
     cellRenderer: 'deleteButtonCellRenderer',
+    hide: true,
     cellRendererParams: {
       deleteOrder,
     },

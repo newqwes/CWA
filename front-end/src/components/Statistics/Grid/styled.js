@@ -1,8 +1,7 @@
 import styled from 'styled-components';
-import { Row } from 'antd';
 
-export const CHART_HEIGHT = 350;
-
-export const ChartWrapper = styled(Row)`
-  margin: 40px 0;
+export const Wrapper = styled.div`
+  width: 100%;
+  height: 80vh;
+  margin-bottom: 15vh;
 `;

@@ -96,6 +96,7 @@ export const getGridRowData = createSelector(
       const actualPrice = get(['quote', 'USD', 'price'], coin);
       const coinName = get(['name'], coin);
       const symbol = get(['symbol'], coin);
+      const icon = get(['icon'], coin);
       const totalBuy = round(count * price, 2);
       const totalBuyActual = round(count * actualPrice, 2);
       const totalProfit = round((actualPrice - price) * count, 2);
@@ -124,6 +125,7 @@ export const getGridRowData = createSelector(
         totalProfitPercent,
         lastModified,
         actualPrice,
+        icon,
         id,
       };
     }, orders),
