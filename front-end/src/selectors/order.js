@@ -77,7 +77,7 @@ export const getLastModified = createSelector(
     const walletStateEmpty = walletState === 0 || isEmpty(prevData) || prevData.walletState === 0;
     if (walletStateEmpty) return 0;
 
-    const lastModified = ((walletState * 100) / prevData.walletState) - 100;
+    const lastModified = (walletState * 100) / prevData.walletState - 100;
 
     return lastModified;
   },
@@ -110,7 +110,7 @@ export const getGridRowData = createSelector(
       if (!prevCell) {
         lastModified = 0;
       } else {
-        lastModified = round(prevCell.totalProfit - totalProfit, 2);
+        lastModified = round(totalProfit - prevCell.totalProfit, 2);
       }
 
       return {
