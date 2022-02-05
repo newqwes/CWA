@@ -10,7 +10,7 @@ import cookieParser from 'cookie-parser';
 import sequelize from './database';
 import cookieSession from './middleware/cookieSession';
 import cors from './middleware/cors';
-// import limiter from './middleware/limiter';
+import limiter from './middleware/limiter';
 import passportJWTAndGoogle from './middleware/passport';
 import errorMiddleware from './middleware/errorMiddleware';
 
@@ -30,7 +30,7 @@ app.use(helmet());
 app.use(cors);
 app.use(express.json());
 app.use(cookieParser());
-// app.use(limiter);
+app.use(limiter);
 
 app.use(cookieSession);
 

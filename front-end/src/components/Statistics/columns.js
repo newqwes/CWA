@@ -81,6 +81,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     aggFunc: getlastModifiedPercentAvg,
     cellRenderer: 'percentCellRenderer',
+    sort: 'desc',
   },
   {
     headerName: 'Дата',

@@ -21,7 +21,7 @@ class Chart extends React.Component {
           <Apexchar
             options={donut.options}
             series={donut.series}
-            type='donut'
+            type='pie'
             height={CHART_HEIGHT}
           />
         </Col>

@@ -148,6 +148,8 @@ export const getChartData = createSelector(
       comparisonOrdersAndPriceList,
     );
 
+    prepareOrders.sort(({ totalBuy }, b) => b.totalBuy - totalBuy);
+
     const donut = reduce(
       (acc, { totalBuy, modifiedName }) => {
         const price = round(totalBuy, 1);
@@ -165,8 +167,11 @@ export const getChartData = createSelector(
       prepareOrders,
     );
 
+    let x = 0;
+
     const seriesData = map(
-      ({ date, lastModified }) => ({ x: date, y: round(lastModified, 1) }),
+      // eslint-disable-next-line no-plusplus
+      ({ lastModified }) => ({ x: x++, y: round(lastModified, 1) }),
       userHistory,
     );
 
@@ -176,12 +181,17 @@ export const getChartData = createSelector(
         series: [
           {
             name: 'Чистая прибыль',
-            data: drop(2, [...seriesData, { x: Date.now(), y: round(netProfit, 1) }]),
+            // eslint-disable-next-line no-plusplus
+            data: drop(2, [...seriesData, { x: x++, y: round(netProfit, 1) }]),
           },
         ],
         options: {
           stroke: {
+            show: true,
+            curve: 'smooth',
+            lineCap: 'butt',
             width: 2,
+            dashArray: 0,
           },
           title: {
             text: 'Общий анализ прибыли',
@@ -192,7 +202,7 @@ export const getChartData = createSelector(
             align: 'left',
           },
           xaxis: {
-            type: 'datetime',
+            type: 'number',
           },
           yaxis: {
             opposite: true,
