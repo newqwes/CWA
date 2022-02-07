@@ -25,11 +25,11 @@ export const getComparisonOrdersAndPriceList = createSelector(
 
     return reduce(
       (acc, { name, price, count }) => {
-        const coin = find(['symbol', name === 'BabyDoge' ? name : name.toUpperCase()], priceList);
+        const coin = find(['id', name], priceList);
 
         if (!coin) return acc;
 
-        const actualPrice = get(['quote', 'USD', 'price'], coin);
+        const actualPrice = get(['current_price'], coin);
 
         const netProfit = (actualPrice - price) * count;
         const totalBuy = actualPrice * count;
@@ -89,14 +89,14 @@ export const getGridRowData = createSelector(
   getPrevGridRowData,
   (orders, priceList, prevGridRowData) =>
     map(({ name, price, count, date, id }) => {
-      const coin = find(['symbol', name === 'BabyDoge' ? name : name.toUpperCase()], priceList);
+      const coin = find(['id', name], priceList);
 
       if (!coin) return {};
 
-      const actualPrice = get(['quote', 'USD', 'price'], coin);
+      const actualPrice = get(['current_price'], coin);
       const coinName = get(['name'], coin);
       const symbol = get(['symbol'], coin);
-      const icon = get(['icon'], coin);
+      const icon = get(['image'], coin);
       const totalBuy = round(count * price, 2);
       const totalBuyActual = round(count * actualPrice, 2);
       const totalProfit = round((actualPrice - price) * count, 2);
@@ -138,9 +138,7 @@ export const getChartData = createSelector(
   (comparisonOrdersAndPriceList, userHistory, netProfit) => {
     const prepareOrders = reduce(
       (acc, { name, totalBuy }) => {
-        const modifiedName = name === 'BabyDoge' ? name : name.toUpperCase();
-
-        acc.push({ totalBuy, modifiedName });
+        acc.push({ totalBuy, name });
 
         return acc;
       },
@@ -151,7 +149,7 @@ export const getChartData = createSelector(
     prepareOrders.sort(({ totalBuy }, b) => b.totalBuy - totalBuy);
 
     const donut = reduce(
-      (acc, { totalBuy, modifiedName }) => {
+      (acc, { totalBuy, name }) => {
         const price = round(totalBuy, 1);
 
         if (isEqual(price, 0)) {
@@ -159,7 +157,7 @@ export const getChartData = createSelector(
         }
 
         acc.series.push(price);
-        acc.options.labels.push(modifiedName);
+        acc.options.labels.push(name);
 
         return acc;
       },

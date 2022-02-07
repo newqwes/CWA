@@ -1,31 +1,11 @@
-import rp from 'request-promise';
-import { map, find, isEqual, get } from 'lodash/fp';
-import icon from 'base64-cryptocurrency-icons';
+import CoinGecko from 'coingecko-api';
 
 import UserDto from '../dto/userDto';
 import ApiError from '../exceptions/apiError';
 import userService from './userService';
-import CoinList from '../database/models/coinList';
 import History from '../database/models/history';
 
-import { PRICE_PROVIDER, REQUESTS_OPTIONS } from '../constants/coinmarketcapConfig';
-
-export const setLastCoinPrice = async () => {
-  const { data } = await rp(REQUESTS_OPTIONS);
-
-  const [coinList, created] = await CoinList.findOrCreate({
-    where: { name: PRICE_PROVIDER },
-    defaults: { list: data },
-  });
-
-  if (created) return coinList;
-
-  coinList.name = PRICE_PROVIDER;
-  coinList.list = data;
-  await coinList.save();
-
-  return data;
-};
+const CoinGeckoClient = new CoinGecko();
 
 class RefreshService {
   async refresh({ userId, prevData, coinList }) {
@@ -35,29 +15,16 @@ class RefreshService {
       throw ApiError.BadRequest('Пользователь с таким ID не существует');
     }
 
-    const list = await setLastCoinPrice();
-
-    const actualUserCoinList = await map(coin => {
-      if (isEqual(coin.toUpperCase(), 'WAG')) {
-        const actualCoinData = find(['name', 'Waggle Network'], list);
-
-        return { ...actualCoinData, icon: null };
-      }
-
-      const actualCoinData = find(
-        ['symbol', isEqual(coin, 'BabyDoge') ? coin : coin.toUpperCase()],
-        list,
-      );
-
-      const coinIcon = get([coin, 'icon'], icon);
-
-      return { ...actualCoinData, icon: coinIcon };
-    }, coinList);
+    const { data } = await CoinGeckoClient.coins.markets({
+      per_page: 300,
+      localization: false,
+      ids: coinList,
+    });
 
     user.score += 1;
     user.prevData = prevData;
     user.lastDateUpdate = Date.now();
-    user.list = actualUserCoinList;
+    user.list = data;
     await user.save();
 
     await History.create({

@@ -29,8 +29,8 @@
     "prettier": "^2.1.2"
   },
   "dependencies": {
-    "base64-cryptocurrency-icons": "^1.1.20",
     "bcrypt": "^5.0.1",
+    "coingecko-api": "^1.0.10",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^1.4.0",
     "cors": "^2.8.5",
