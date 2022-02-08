@@ -39,7 +39,7 @@ export const getComparisonOrdersAndPriceList = createSelector(
           acc[name].totalBuy += totalBuy;
         } else {
           acc[name] = {
-            name,
+            name: coin.name,
             netProfit,
             totalBuy,
           };

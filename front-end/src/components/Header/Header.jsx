@@ -85,7 +85,7 @@ class Header extends React.Component {
                   type='primary'
                   loading={refreshDisabled}
                   disabled={refreshDisabled}>
-                  Клик
+                  Обновить
                 </Button>
               </div>
             )}
