@@ -10,7 +10,7 @@ import DeleteButtonCellRenderer from '../../frameworkComponents/DeleteButtonCell
 import AmountCellRenderer from '../../frameworkComponents/AmountCellRenderer';
 import ActualPriceCellRenderer from '../../frameworkComponents/ActualPriceCellRenderer';
 import PercentCellRenderer from '../../frameworkComponents/PercentCellRenderer';
-import SymbolCellRenderer from '../../frameworkComponents/SymbolCellRenderer';
+import IconCellRenderer from '../../frameworkComponents/IconCellRenderer';
 import { Wrapper } from './styled';
 
 class Grid extends React.Component {
@@ -22,7 +22,7 @@ class Grid extends React.Component {
     amountCellRenderer: AmountCellRenderer,
     actualPriceCellRenderer: ActualPriceCellRenderer,
     percentCellRenderer: PercentCellRenderer,
-    symbolCellRenderer: SymbolCellRenderer,
+    IconCellRenderer: IconCellRenderer,
   };
 
   static propTypes = {

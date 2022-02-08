@@ -5,32 +5,28 @@ import { Col } from 'antd';
 
 import { ChartWrapper, CHART_HEIGHT } from './styled';
 
-class Chart extends React.Component {
-  static propTypes = {
-    chartData: PropTypes.object.isRequired,
-  };
+const Chart = ({ chartData }) => {
+  const { donut, area } = chartData;
 
-  render() {
-    const {
-      chartData: { donut, area },
-    } = this.props;
+  return (
+    <ChartWrapper>
+      <Col span={12}>
+        <Apexchar
+          options={donut.options}
+          series={donut.series}
+          type='pie'
+          height={CHART_HEIGHT}
+        />
+      </Col>
+      <Col span={12}>
+        <Apexchar options={area.options} series={area.series} type='area' height={CHART_HEIGHT} />
+      </Col>
+    </ChartWrapper>
+  );
+};
 
-    return (
-      <ChartWrapper>
-        <Col span={12}>
-          <Apexchar
-            options={donut.options}
-            series={donut.series}
-            type='pie'
-            height={CHART_HEIGHT}
-          />
-        </Col>
-        <Col span={12}>
-          <Apexchar options={area.options} series={area.series} type='area' height={CHART_HEIGHT} />
-        </Col>
-      </ChartWrapper>
-    );
-  }
-}
+Chart.propTypes = {
+  chartData: PropTypes.object.isRequired,
+};
 
-export default Chart;
+export default React.memo(Chart);

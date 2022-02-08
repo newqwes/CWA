@@ -4,7 +4,7 @@ import { get } from 'lodash/fp';
 
 import { Wrapper } from './styled';
 
-class SymbolCellRenderer extends React.Component {
+class IconCellRenderer extends React.Component {
   static propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
@@ -22,4 +22,4 @@ class SymbolCellRenderer extends React.Component {
   }
 }
 
-export default SymbolCellRenderer;
+export default IconCellRenderer;

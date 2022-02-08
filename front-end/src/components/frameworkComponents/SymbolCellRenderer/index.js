@@ -1,1 +1,1 @@
-export { default } from './SymbolCellRenderer.jsx';
+export { default } from './IconCellRenderer.jsx';
