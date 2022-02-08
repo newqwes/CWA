@@ -10,6 +10,7 @@ import {
   getTotalTransactionCount,
   getGridRowData,
   getChartData,
+  getEdgeCoins,
 } from '../selectors/order';
 
 const mapStateToProps = state => ({
@@ -20,6 +21,7 @@ const mapStateToProps = state => ({
   totalTransactionCount: getTotalTransactionCount(state),
   rowData: getGridRowData(state),
   chartData: getChartData(state),
+  edgeCoins: getEdgeCoins(state),
 });
 
 const mapDispatchToProps = {

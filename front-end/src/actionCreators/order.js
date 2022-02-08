@@ -25,9 +25,9 @@ export const getOrdersFailureAC = error => ({
   payload: error,
 });
 
-export const setOrderAC = ({ count, name, price, date }) => ({
+export const setOrderAC = ({ count, coinId, price, date }) => ({
   type: SET_USER_ORDER_PENDING,
-  payload: { count, name, price, date },
+  payload: { count, coinId, price, date },
 });
 
 export const setOrderSuccessAC = data => ({

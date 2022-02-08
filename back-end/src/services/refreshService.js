@@ -1,11 +1,8 @@
-import CoinGecko from 'coingecko-api';
-
 import UserDto from '../dto/userDto';
 import ApiError from '../exceptions/apiError';
 import userService from './userService';
 import History from '../database/models/history';
-
-const CoinGeckoClient = new CoinGecko();
+import { CoinGeckoClient } from '../utils/coinGeckoClient';
 
 class RefreshService {
   async refresh({ userId, prevData, coinList }) {

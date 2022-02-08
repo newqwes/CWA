@@ -23,13 +23,13 @@ export const AUTHORIZATION_REQUEST_BODY = {
 /**
  * @typedef {Object} OrderRequestBody
  * @property {string} count
- * @property {string} name
+ * @property {string} coinId
  * @property {string} price
  * @property {string} date
  */
 export const ORDER_REQUEST_BODY = {
   count: 'count',
-  name: 'name',
+  coinId: 'coinId',
   price: 'price',
   date: 'date',
 };

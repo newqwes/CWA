@@ -10,13 +10,13 @@ import orderService from '../services/orderService';
 export const setUserOrder = async (req, res, next) => {
   const userId = getUserId(req);
 
-  const { count, name, price, date } = pick(values(ORDER_REQUEST_BODY), req.body);
+  const { count, coinId, price, date } = pick(values(ORDER_REQUEST_BODY), req.body);
 
-  if (someFalsey([userId, count, name, price])) {
+  if (someFalsey([userId, count, coinId, price])) {
     return next(ApiError.BadRequest('Ошибка при валидации'));
   }
 
-  await orderService.setUserOrder({ userId, count, name, price, date });
+  await orderService.setUserOrder({ userId, count, coinId, price, date });
 
   const { status, data } = await orderService.getUserOrders(userId);
 

@@ -15,6 +15,7 @@ class Description extends React.Component {
     totalTransactionCount: PropTypes.number.isRequired,
     handleDrawer: PropTypes.func.isRequired,
     precision: PropTypes.number.isRequired,
+    edgeCoins: PropTypes.object.isRequired,
   };
 
   render() {
@@ -27,10 +28,16 @@ class Description extends React.Component {
       lastModified,
       totalTransactionCount,
       handleDrawer,
+      edgeCoins,
     } = this.props;
 
     const positiveNetProfit = netProfit >= 0;
     const positiveLastModified = lastModified >= 0;
+
+    const { best, worst } = edgeCoins;
+
+    const positiveBest = best.differenceChange >= 0;
+    const positiveWorst = worst.differenceChange >= 0;
 
     return (
       <Descriptions title='Последняя обновленная статистика'>
@@ -43,7 +50,7 @@ class Description extends React.Component {
               suffix={currencySymbol}
             />
           </Col>
-          <Col span={9}>
+          <Col span={3}>
             <InteractiveStatistic
               title='Чистая прибыль'
               value={netProfit}
@@ -53,6 +60,29 @@ class Description extends React.Component {
               positive={positiveNetProfit}
             />
           </Col>
+
+          <Col span={3}>
+            <InteractiveStatistic
+              title={`Лучшая: ${best.name}`}
+              value={best.differenceChange}
+              precision={precision}
+              prefix={<img src={best.icon} alt={best.name} />}
+              suffix='%'
+              positive={positiveBest}
+            />
+          </Col>
+
+          <Col span={3}>
+            <InteractiveStatistic
+              title={`Худшая: ${worst.name}`}
+              value={worst.differenceChange}
+              precision={precision}
+              prefix={<img src={worst.icon} alt={worst.name} />}
+              suffix='%'
+              positive={positiveWorst}
+            />
+          </Col>
+
           <Col span={3}>
             <Statistic
               title='Состояние кошелька:'

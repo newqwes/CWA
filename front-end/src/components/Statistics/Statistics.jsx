@@ -22,6 +22,7 @@ class Statistics extends React.Component {
     rowData: PropTypes.array.isRequired,
     chartData: PropTypes.object.isRequired,
     deleteOrder: PropTypes.func.isRequired,
+    edgeCoins: PropTypes.object.isRequired,
   };
 
   state = {
@@ -48,6 +49,7 @@ class Statistics extends React.Component {
       chartData,
       deleteOrder,
       setOrders,
+      edgeCoins,
     } = this.props;
     const { drawerVisible } = this.state;
 
@@ -62,6 +64,7 @@ class Statistics extends React.Component {
           lastModified={lastModified}
           totalTransactionCount={totalTransactionCount}
           handleDrawer={this.handleDrawer}
+          edgeCoins={edgeCoins}
         />
         <Chart chartData={chartData} />
         <Grid

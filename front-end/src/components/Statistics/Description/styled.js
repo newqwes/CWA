@@ -12,5 +12,10 @@ export const Text = styled(TextAntd)`
 export const InteractiveStatistic = styled(Statistic)`
   .ant-statistic-content {
     color: ${({ positive, theme }) => get([positive ? 'positive' : 'negative'], theme)};
+
+    img {
+      height: 24px;
+      margin: 0 5px 4px 0;
+    }
   }
 `;

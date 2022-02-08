@@ -1,9 +1,23 @@
-import { get, reduce, find, map, isEmpty, compose, uniq, isEqual, drop } from 'lodash/fp';
+import {
+  get,
+  reduce,
+  find,
+  map,
+  isEmpty,
+  compose,
+  uniq,
+  isEqual,
+  drop,
+  toArray,
+  head,
+  last,
+} from 'lodash/fp';
 import { round } from 'lodash';
 import { createSelector } from 'reselect';
 import moment from 'moment';
 
 import { getPrevGridRowData, getUserHistory, getUserLastPriceList, getUserPrevData } from './user';
+import { MAX_PIE_LENGTH } from '../constants/chart';
 
 const localState = get('order');
 
@@ -136,17 +150,9 @@ export const getChartData = createSelector(
   getUserHistory,
   getNetProfit,
   (comparisonOrdersAndPriceList, userHistory, netProfit) => {
-    const prepareOrders = reduce(
-      (acc, { name, totalBuy }) => {
-        acc.push({ totalBuy, name });
-
-        return acc;
-      },
-      [],
-      comparisonOrdersAndPriceList,
+    const sortedOrders = toArray(comparisonOrdersAndPriceList).sort(
+      ({ totalBuy }, b) => b.totalBuy - totalBuy,
     );
-
-    prepareOrders.sort(({ totalBuy }, b) => b.totalBuy - totalBuy);
 
     const donut = reduce(
       (acc, { totalBuy, name }) => {
@@ -156,13 +162,23 @@ export const getChartData = createSelector(
           return acc;
         }
 
-        acc.series.push(price);
-        acc.options.labels.push(name);
+        if (acc.series.length > MAX_PIE_LENGTH) {
+          acc.series[MAX_PIE_LENGTH] += price;
+          acc.options.labels[MAX_PIE_LENGTH] = 'Other coins';
+        } else {
+          acc.series.push(price);
+          acc.options.labels.push(name);
+        }
 
         return acc;
       },
-      { options: { labels: [] }, series: [] },
-      prepareOrders,
+      {
+        options: {
+          labels: [],
+        },
+        series: [],
+      },
+      sortedOrders,
     );
 
     let x = 0;
@@ -180,7 +196,7 @@ export const getChartData = createSelector(
           {
             name: 'Чистая прибыль',
             // eslint-disable-next-line no-plusplus
-            data: drop(2, [...seriesData, { x: x++, y: round(netProfit, 1) }]),
+            data: drop(1, [...seriesData, { x: x++, y: round(netProfit, 1) }]),
           },
         ],
         options: {
@@ -216,3 +232,47 @@ export const getChartData = createSelector(
     };
   },
 );
+
+export const getEdgeCoins = createSelector(getGridRowData, gridData => {
+  const groupedByCoinId = reduce(
+    (acc, { coinId, lastModified, totalBuyActual, name, icon }) => {
+      if (acc[coinId]) {
+        acc[coinId].lastModified += lastModified;
+        acc[coinId].totalBuyActual += totalBuyActual;
+        acc[coinId].differenceChange =
+          (acc[coinId].lastModified * 100) / acc[coinId].totalBuyActual;
+      } else {
+        acc[coinId] = {
+          lastModified,
+          name,
+          icon,
+          totalBuyActual,
+          differenceChange: (lastModified * 100) / totalBuyActual,
+        };
+      }
+
+      return acc;
+    },
+    {},
+    gridData,
+  );
+
+  const sortedGridData = toArray(groupedByCoinId).sort(
+    ({ differenceChange }, b) => b.differenceChange - differenceChange,
+  );
+
+  const bestCoin = head(sortedGridData);
+  const worstCoin = last(sortedGridData);
+
+  if (!bestCoin || !worstCoin) {
+    return {
+      best: { name: '', differenceChange: 0, icon: '' },
+      worst: { name: '', differenceChange: 0, icon: '' },
+    };
+  }
+
+  return {
+    best: bestCoin,
+    worst: worstCoin,
+  };
+});

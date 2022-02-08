@@ -17,6 +17,7 @@ export const columnDefs = ({ deleteOrder }) => [
     headerName: 'ID монеты',
     field: 'coinId',
     sortable: true,
+    hide: true,
     aggFunc: 'last',
   },
   {

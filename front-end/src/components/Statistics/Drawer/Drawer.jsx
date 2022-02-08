@@ -20,11 +20,11 @@ class Drawer extends React.Component {
     handleAddTransactions: PropTypes.func.isRequired,
   };
 
-  handleSubmit = ({ name, dateTime, price, count }) => {
+  handleSubmit = ({ coinId, dateTime, price, count }) => {
     const { closeDrawer, handleAddTransaction } = this.props;
 
     closeDrawer();
-    handleAddTransaction({ name, price, count, date: dateTime && dateTime.format() });
+    handleAddTransaction({ coinId, price, count, date: dateTime && dateTime.format() });
   };
 
   handleSubmitTransactions = ({ list }) => {
@@ -56,10 +56,10 @@ class Drawer extends React.Component {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name='name'
-                label='Символ токена'
-                rules={[{ required: true, message: 'Пожалуйста добавьте название криптоактива' }]}>
-                <Input placeholder='Выберите название криптоактива' />
+                name='coinId'
+                label='ID монеты'
+                rules={[{ required: true, message: 'Пожалуйста добавьте ID монеты' }]}>
+                <Input placeholder='Введите ID монеты из coingecko.com' />
               </Form.Item>
             </Col>
             <Col span={12}>

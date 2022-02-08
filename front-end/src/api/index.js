@@ -76,9 +76,9 @@ export const refreshAPI = {
 };
 
 export const orderAPI = {
-  setUserOrder: async ({ count, name, price, date }) => {
+  setUserOrder: async ({ count, coinId, price, date }) => {
     try {
-      const { data } = await axios.post('order', { count, name, price, date });
+      const { data } = await axios.post('order', { count, coinId, price, date });
 
       return data;
     } catch ({ response: { data } }) {

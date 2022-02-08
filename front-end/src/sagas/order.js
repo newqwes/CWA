@@ -1,4 +1,4 @@
-import { takeEvery, all, call, put } from 'redux-saga/effects';
+import { takeEvery, all, take, call, put } from 'redux-saga/effects';
 import { loadingPendingAC, loadingSuccessAC } from '../actionCreators/aplication';
 import {
   deleteOrderFailureAC,
@@ -16,6 +16,7 @@ import {
   DELETE_USER_ORDER_PENDING,
   GET_USER_ORDERS_PENDING,
   SET_USER_ORDERS_PENDING,
+  GET_USER_ORDERS_SUCCESS,
 } from '../actions';
 
 import { orderAPI } from '../api';
@@ -24,12 +25,18 @@ function* setUserOrder({ payload }) {
   try {
     yield put(loadingPendingAC());
 
-    const { count, name, price, date } = payload;
+    const { count, coinId, price, date } = payload;
 
-    const { data } = yield call(orderAPI.setUserOrder, { count, name, price, date });
+    const { data } = yield call(orderAPI.setUserOrder, { count, coinId, price, date });
     yield put(getOrdersAC());
     yield put(setOrderSuccessAC(data));
-    yield put(handleRefreshAC());
+
+    const success = yield take(GET_USER_ORDERS_SUCCESS);
+
+    if (success) {
+      yield put(handleRefreshAC());
+    }
+
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(setOrderFailureAC(data));
@@ -59,7 +66,11 @@ function* deleteUserOrder({ payload }) {
 
     yield put(deleteOrderSuccessAC(orderId));
     yield put(getOrdersAC());
-    yield put(handleRefreshAC());
+    const success = yield take(GET_USER_ORDERS_SUCCESS);
+
+    if (success) {
+      yield put(handleRefreshAC());
+    }
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(deleteOrderFailureAC(data));
@@ -73,7 +84,11 @@ function* setUserOrders({ payload }) {
 
     yield call(orderAPI.setUserOrders, payload);
     yield put(getOrdersAC());
-    yield put(handleRefreshAC());
+    const success = yield take(GET_USER_ORDERS_SUCCESS);
+
+    if (success) {
+      yield put(handleRefreshAC());
+    }
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(deleteOrderFailureAC(data));
