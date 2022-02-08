@@ -9,6 +9,7 @@ import {
   setOrderFailureAC,
   setOrderSuccessAC,
 } from '../actionCreators/order';
+import { handleRefreshAC } from '../actionCreators/refresh';
 
 import {
   SET_USER_ORDER_PENDING,
