@@ -12,7 +12,7 @@ export const parseRawOrderList = (stringData, userId) => {
 
     return {
       userId,
-      date: (Date.now() - 59000),
+      date: Date.now(),
       name,
       count,
       price,

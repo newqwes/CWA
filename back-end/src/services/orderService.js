@@ -4,7 +4,7 @@ import Order from '../database/models/order';
 import { parseRawOrderList } from '../utils/parseRawOrderList';
 
 class OrderService {
-  async setUserOrder({ userId, count, name, price, date = (Date.now() - 59000) }) {
+  async setUserOrder({ userId, count, name, price, date = Date.now() }) {
     try {
       await Order.create({ userId, date, name, count, price });
 

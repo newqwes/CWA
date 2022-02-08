@@ -23,7 +23,7 @@ class RefreshService {
 
     user.score += 1;
     user.prevData = prevData;
-    user.lastDateUpdate = Date.now() - 59000;
+    user.lastDateUpdate = Date.now();
     user.list = data;
     await user.save();
 
