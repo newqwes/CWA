@@ -11,7 +11,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     rowGroup: true,
     hide: true,
-    cellRenderer: 'IconCellRenderer',
+    cellRenderer: 'iconCellRenderer',
   },
   {
     headerName: 'ID монеты',

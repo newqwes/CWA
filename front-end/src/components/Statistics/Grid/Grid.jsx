@@ -22,7 +22,7 @@ class Grid extends React.Component {
     amountCellRenderer: AmountCellRenderer,
     actualPriceCellRenderer: ActualPriceCellRenderer,
     percentCellRenderer: PercentCellRenderer,
-    IconCellRenderer: IconCellRenderer,
+    iconCellRenderer: IconCellRenderer,
   };
 
   static propTypes = {
