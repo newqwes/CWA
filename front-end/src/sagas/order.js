@@ -44,7 +44,6 @@ function* getUserOrders() {
     const { data } = yield call(orderAPI.getUserOrders);
 
     yield put(getOrdersSuccessAC(data));
-    yield put(handleRefreshAC());
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(getOrdersFailureAC(data));
