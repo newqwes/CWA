@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 
-import { handleRefreshAC } from '../actionCreators/refresh';
 import { getAuthorizationStatusAC } from '../actionCreators/auth';
 import { handleCollapseSideMenuAC, handleShowAuthModalAC } from '../actionCreators/aplication';
 
@@ -22,7 +21,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   handleCollapseSideMenu: handleCollapseSideMenuAC,
   getAutharizationStatus: getAuthorizationStatusAC,
-  handleRefresh: handleRefreshAC,
   handleShowAuthModal: handleShowAuthModalAC,
 };
 

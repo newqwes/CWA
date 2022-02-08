@@ -27,8 +27,8 @@ function* setUserOrder({ payload }) {
 
     const { data } = yield call(orderAPI.setUserOrder, { count, name, price, date });
     yield put(getOrdersAC());
-
     yield put(setOrderSuccessAC(data));
+    yield put(handleRefreshAC());
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(setOrderFailureAC(data));
@@ -43,6 +43,7 @@ function* getUserOrders() {
     const { data } = yield call(orderAPI.getUserOrders);
 
     yield put(getOrdersSuccessAC(data));
+    yield put(handleRefreshAC());
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(getOrdersFailureAC(data));
@@ -58,7 +59,7 @@ function* deleteUserOrder({ payload }) {
 
     yield put(deleteOrderSuccessAC(orderId));
     yield put(getOrdersAC());
-
+    yield put(handleRefreshAC());
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(deleteOrderFailureAC(data));
@@ -72,7 +73,7 @@ function* setUserOrders({ payload }) {
 
     yield call(orderAPI.setUserOrders, payload);
     yield put(getOrdersAC());
-
+    yield put(handleRefreshAC());
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(deleteOrderFailureAC(data));

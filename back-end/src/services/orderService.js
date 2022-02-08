@@ -4,7 +4,7 @@ import Order from '../database/models/order';
 import { parseRawOrderList } from '../utils/parseRawOrderList';
 
 class OrderService {
-  async setUserOrder({ userId, count, name, price, date = Date.now() }) {
+  async setUserOrder({ userId, count, name, price, date = (Date.now() - 59000) }) {
     try {
       await Order.create({ userId, date, name, count, price });
 
@@ -17,7 +17,7 @@ class OrderService {
   async getUserOrders(userId) {
     try {
       const orders = await Order.findAll({ where: { userId } });
-
+      
       return createResponse(200, 'Данные успешно получены!', orders);
     } catch (error) {
       return createResponse(500, 'Server Error OrderService getUserOrders', error);
