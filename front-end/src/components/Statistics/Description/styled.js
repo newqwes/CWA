@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { get } from 'lodash/fp';
-import { Typography, Statistic } from 'antd';
+import { Typography, Statistic, Descriptions } from 'antd';
 
 const { Text: TextAntd } = Typography;
 
@@ -16,6 +16,15 @@ export const InteractiveStatistic = styled(Statistic)`
     img {
       height: 24px;
       margin: 0 5px 4px 0;
+    }
+  }
+`;
+
+export const InteractiveDescriptions = styled(Descriptions)`
+  .hoverable {
+    .ant-statistic-content:hover {
+      cursor: pointer;
+      user-select: none;
     }
   }
 `;

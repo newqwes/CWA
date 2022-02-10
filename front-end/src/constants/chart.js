@@ -1,1 +1,1 @@
-export const MAX_PIE_LENGTH = 11;
+export const MAX_PIE_LENGTH = 16;

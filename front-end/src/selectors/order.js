@@ -12,6 +12,7 @@ import {
   head,
   last,
 } from 'lodash/fp';
+
 import { round } from 'lodash';
 import { createSelector } from 'reselect';
 import moment from 'moment';
@@ -174,6 +175,24 @@ export const getChartData = createSelector(
       },
       {
         options: {
+          tooltip: {
+            enabled: false,
+          },
+          legend: {
+            show: true,
+          },
+          plotOptions: {
+            pie: {
+              donut: {
+                labels: {
+                  show: true,
+                  name: {},
+                  value: { formatter: n => `${n} $` },
+                },
+              },
+              expandOnClick: false,
+            },
+          },
           labels: [],
         },
         series: [],
@@ -216,10 +235,29 @@ export const getChartData = createSelector(
             align: 'left',
           },
           xaxis: {
-            type: 'number',
+            type: 'category',
+            labels: {
+              show: false,
+            },
           },
           yaxis: {
-            opposite: true,
+            labels: {
+              show: true,
+              align: 'right',
+              minWidth: 0,
+              maxWidth: 160,
+              style: {
+                colors: [],
+                fontSize: '12px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 400,
+                cssClass: 'apexcharts-yaxis-label',
+              },
+              offsetX: 0,
+              offsetY: 0,
+              rotate: 0,
+              formatter: value => `${value} $`,
+            },
           },
           legend: {
             horizontalAlign: 'left',

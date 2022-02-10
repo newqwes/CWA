@@ -10,15 +10,15 @@ const Chart = ({ chartData }) => {
 
   return (
     <ChartWrapper>
-      <Col span={12}>
+      <Col span={7}>
         <Apexchar
           options={donut.options}
           series={donut.series}
-          type='pie'
+          type='donut'
           height={CHART_HEIGHT}
         />
       </Col>
-      <Col span={12}>
+      <Col span={16} offset={1}>
         <Apexchar options={area.options} series={area.series} type='area' height={CHART_HEIGHT} />
       </Col>
     </ChartWrapper>

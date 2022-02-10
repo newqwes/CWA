@@ -12,7 +12,7 @@ import {
 
 const initialState = {
   loading: true,
-  collapsedSideMenu: false,
+  collapsedSideMenu: true,
   authModalVisible: false,
   registrationModalVisible: false,
 };
