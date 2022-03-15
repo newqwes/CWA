@@ -13,10 +13,21 @@ class IconCellRenderer extends React.Component {
     const { value } = this.props;
 
     const iconSrc = get(['node', 'aggData', 'icon'], this.props);
+    const coinId = get(['node', 'aggData', 'coinId'], this.props);
 
     return (
       <Wrapper>
-        {iconSrc ? <img src={iconSrc} alt={value} /> : ''} {value}
+        {iconSrc ? (
+          <a
+            target='_blank'
+            href={`https://coinmarketcap.com/ru/currencies/${coinId}`}
+            rel='noreferrer'>
+            <img src={iconSrc} alt={value} />
+          </a>
+        ) : (
+          ''
+        )}{' '}
+        {value}
       </Wrapper>
     );
   }

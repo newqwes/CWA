@@ -26,6 +26,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     cellRenderer: 'actualPriceCellRenderer',
     aggFunc: 'last',
+    minWidth: 100,
   },
   {
     headerName: 'Ср. Цена покупки',
@@ -33,6 +34,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     cellRenderer: 'totalBuyCellRenderer',
     aggFunc: getPriceAvg,
+    minWidth: 120,
   },
   {
     headerName: 'Количество',
@@ -40,6 +42,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     aggFunc: 'sum',
     cellRenderer: 'amountCellRenderer',
+    minWidth: 120,
   },
   {
     headerName: 'Вложил',
@@ -47,6 +50,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     aggFunc: 'sum',
     cellRenderer: 'totalBuyCellRenderer',
+    minWidth: 120,
   },
   {
     headerName: 'Состояние',
@@ -54,6 +58,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     aggFunc: 'sum',
     cellRenderer: 'totalBuyCellRenderer',
+    minWidth: 130,
   },
   {
     headerName: 'Прибыли (убытков)',
@@ -61,6 +66,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     aggFunc: 'sum',
     cellRenderer: 'priceCellRenderer',
+    minWidth: 130,
   },
   {
     headerName: '% Прибыли (убытков)',
@@ -68,6 +74,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     aggFunc: getProfitPercentAvg,
     cellRenderer: 'percentCellRenderer',
+    minWidth: 130,
   },
   {
     headerName: 'Изменение',
@@ -75,6 +82,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     cellRenderer: 'lastChangeCellRenderer',
     aggFunc: 'sum',
+    minWidth: 130,
   },
   {
     headerName: '% Изменение',
@@ -83,18 +91,21 @@ export const columnDefs = ({ deleteOrder }) => [
     aggFunc: getlastModifiedPercentAvg,
     cellRenderer: 'percentCellRenderer',
     sort: 'desc',
+    minWidth: 130,
   },
   {
     headerName: 'Дата',
     field: 'date',
     sortable: true,
     aggFunc: 'last',
+    minWidth: 130,
   },
   {
     headerName: 'Продать',
     field: 'priceToSell',
     sortable: true,
     aggFunc: getSellPrice,
+    minWidth: 130,
   },
   {
     headerName: 'Иконка',

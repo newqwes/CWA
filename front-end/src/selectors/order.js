@@ -299,8 +299,12 @@ export const getEdgeCoins = createSelector(getGridRowData, gridData => {
     ({ differenceChange }, b) => b.differenceChange - differenceChange,
   );
 
-  const bestCoin = head(sortedGridData);
-  const worstCoin = last(sortedGridData);
+  const filteredGridData = toArray(sortedGridData).filter(
+    ({ totalBuyActual }) => totalBuyActual > 1,
+  );
+
+  const bestCoin = head(filteredGridData);
+  const worstCoin = last(filteredGridData);
 
   if (!bestCoin || !worstCoin) {
     return {

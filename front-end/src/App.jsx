@@ -39,7 +39,11 @@ class App extends React.Component {
 
     return (
       <AppWrapper loading={loading.toString()}>
-        <Sider collapsible collapsed={collapsedSideMenu} onCollapse={handleCollapseSideMenu}>
+        <Sider
+          collapsedWidth={0}
+          collapsible
+          collapsed={collapsedSideMenu}
+          onCollapse={handleCollapseSideMenu}>
           <Link to={DEFAULT_SELECTED_MENU}>
             <Logo collapsed={collapsedSideMenu}>
               <SketchOutlined />
@@ -50,8 +54,8 @@ class App extends React.Component {
         </Sider>
         <Layout>
           <HeaderContainer>{authorized ? <LogoutContainer /> : <AuthContainer />}</HeaderContainer>
-          <Content style={{ margin: '0 16px' }}>
-            <div style={{ padding: 24, minHeight: 360 }}>
+          <Content>
+            <div>
               {authorized ? (
                 <>
                   <Route exact path={MENU_KEYS.statistics} component={StatisticsContainer} />

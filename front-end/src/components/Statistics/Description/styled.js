@@ -27,4 +27,14 @@ export const InteractiveDescriptions = styled(Descriptions)`
       user-select: none;
     }
   }
+
+  .ant-statistic-content,
+  .ant-statistic-title {
+    @media (max-width: 1370px) {
+      font-size: 14px;
+    }
+    @media (max-width: 1070px) {
+      font-size: 11px;
+    }
+  }
 `;

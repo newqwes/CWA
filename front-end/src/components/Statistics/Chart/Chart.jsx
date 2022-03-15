@@ -10,7 +10,7 @@ const Chart = ({ chartData }) => {
 
   return (
     <ChartWrapper>
-      <Col span={7}>
+      <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={9}>
         <Apexchar
           options={donut.options}
           series={donut.series}
@@ -18,7 +18,7 @@ const Chart = ({ chartData }) => {
           height={CHART_HEIGHT}
         />
       </Col>
-      <Col span={16} offset={1}>
+      <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={{ span: 14, offset: 1 }}>
         <Apexchar options={area.options} series={area.series} type='area' height={CHART_HEIGHT} />
       </Col>
     </ChartWrapper>
