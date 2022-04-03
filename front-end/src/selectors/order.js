@@ -262,7 +262,7 @@ export const getChartData = createSelector(
               offsetX: 0,
               offsetY: 0,
               rotate: 0,
-              formatter: value => `${value} %`,
+              formatter: value => `${round(value, 2)} %`,
             },
           },
           legend: {
