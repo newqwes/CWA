@@ -73,3 +73,7 @@ export const AppWrapper = styled(Layout)`
   transition: 0.5s;
   ${({ loading }) => isEqual(loading, 'true') && appLoading};
 `;
+
+export const ContentWrapper = styled(Layout.Content)`
+  padding: 15px;
+`;

@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { floor } from 'lodash/fp';
-
-import { HeaderWrapper, Button, Text, Title } from './styled';
+import { HeaderWrapper, Button, Text, Title, AuthBlock } from './styled';
 
 const UPDATE_TIMER_MILLISECONDS = 1000;
 
@@ -72,26 +71,49 @@ class Header extends React.Component {
 
     return (
       <HeaderWrapper>
-        {/* NOTE: Separate to component like name CountScore */}
-        {authorized && (
-          <>
-            <Title level={4}>score: {score}</Title>
-            {refreshDisabled ? (
-              <Text>Осталось: {time}</Text>
-            ) : (
-              <div>
-                <Button
-                  onClick={handleRefresh}
-                  type='primary'
-                  loading={refreshDisabled}
-                  disabled={refreshDisabled}>
-                  Обновить
-                </Button>
-              </div>
-            )}
-          </>
-        )}
-        {children}
+        <div>
+          <Button shape='circle' href='https://www.coingecko.com' target='_blank' type='link'>
+            Gecko
+          </Button>
+          <Button shape='circle' href='https://coinmarketcap.com/ru/' target='_blank' type='link'>
+            Marketcap
+          </Button>
+          <Button
+            shape='circle'
+            href='https://ru.tradingview.com/chart/1G7G96B4/'
+            target='_blank'
+            type='link'>
+            TradingView
+          </Button>
+          <Button
+            shape='circle'
+            href='https://www.coinglass.com/LiquidationData'
+            target='_blank'
+            type='link'>
+            Coinglass
+          </Button>
+        </div>
+        <AuthBlock>
+          {authorized && (
+            <>
+              <Title level={4}>score: {score}</Title>
+              {refreshDisabled ? (
+                <Text>Осталось: {time}</Text>
+              ) : (
+                <div>
+                  <Button
+                    onClick={handleRefresh}
+                    type='primary'
+                    loading={refreshDisabled}
+                    disabled={refreshDisabled}>
+                    Обновить
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
+          {children}
+        </AuthBlock>
       </HeaderWrapper>
     );
   }

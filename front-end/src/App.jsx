@@ -12,7 +12,7 @@ import UsersContainer from './containers/UsersContainer';
 import ChatContainer from './containers/ChatContainer';
 import HeaderContainer from './containers/HeaderContainer';
 
-import { AppWrapper, Logo, Owerlay } from './style/AppWrapper';
+import { AppWrapper, Logo, Owerlay, ContentWrapper } from './style/AppWrapper';
 import { DEFAULT_SELECTED_MENU, MENU_KEYS } from './constants/menu';
 
 const { Content, Sider } = Layout;
@@ -43,6 +43,7 @@ class App extends React.Component {
           collapsedWidth={0}
           collapsible
           collapsed={collapsedSideMenu}
+          zeroWidthTriggerStyle={{ width: 0 }}
           onCollapse={handleCollapseSideMenu}>
           <Link to={DEFAULT_SELECTED_MENU}>
             <Logo collapsed={collapsedSideMenu}>
@@ -57,12 +58,12 @@ class App extends React.Component {
           <Content>
             <div>
               {authorized ? (
-                <>
+                <ContentWrapper>
                   <Route exact path={MENU_KEYS.statistics} component={StatisticsContainer} />
                   <Route exact path={MENU_KEYS.users} component={UsersContainer} />
                   <Route exact path={MENU_KEYS.chat} component={ChatContainer} />
                   <Redirect from='/' to={DEFAULT_SELECTED_MENU} />
-                </>
+                </ContentWrapper>
               ) : (
                 <Result
                   status='403'

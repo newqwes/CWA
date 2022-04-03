@@ -6,8 +6,7 @@ const { Header } = Layout;
 
 export const HeaderWrapper = styled(Header)`
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 45px;
+  justify-content: space-between;
 `;
 
 export const Button = styled(ButtonAnt)`
@@ -22,4 +21,8 @@ export const Text = styled(TextAnt)`
 export const Title = styled.h3`
   color: #fff;
   padding: 0 25px;
+`;
+
+export const AuthBlock = styled.div`
+  display: flex;
 `;

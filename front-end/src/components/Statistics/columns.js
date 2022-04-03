@@ -91,21 +91,21 @@ export const columnDefs = ({ deleteOrder }) => [
     aggFunc: getlastModifiedPercentAvg,
     cellRenderer: 'percentCellRenderer',
     sort: 'desc',
-    minWidth: 130,
+    minWidth: 100,
   },
   {
     headerName: 'Дата',
     field: 'date',
     sortable: true,
     aggFunc: 'last',
-    minWidth: 130,
+    minWidth: 100,
   },
   {
     headerName: 'Продать',
     field: 'priceToSell',
     sortable: true,
     aggFunc: getSellPrice,
-    minWidth: 130,
+    minWidth: 100,
   },
   {
     headerName: 'Иконка',
@@ -130,6 +130,11 @@ export const defaultColDef = {
   resizable: true,
 };
 
-export const autoGroupColumnDef = { field: 'name', headerName: 'Наименование', minWidth: 250 };
+export const autoGroupColumnDef = {
+  field: 'name',
+  headerName: 'Наименование',
+  minWidth: 250,
+  cellStyle: { fontWeight: 'bold', fontSize: '13px' },
+};
 
 export const groupDisplayType = 'singleColumn';

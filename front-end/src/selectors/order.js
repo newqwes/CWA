@@ -83,6 +83,12 @@ export const getWalletState = createSelector(
   (netProfit, totalInvested) => netProfit + totalInvested,
 );
 
+export const getNetProfitPercent = createSelector(
+  getNetProfit,
+  getTotalInvested,
+  (netProfit, totalInvested) => (netProfit * 100) / totalInvested,
+);
+
 export const getTotalTransactionCount = createSelector(getOrderList, list => list.length);
 
 export const getLastModified = createSelector(
@@ -149,8 +155,8 @@ export const getGridRowData = createSelector(
 export const getChartData = createSelector(
   getComparisonOrdersAndPriceList,
   getUserHistory,
-  getNetProfit,
-  (comparisonOrdersAndPriceList, userHistory, netProfit) => {
+  getNetProfitPercent,
+  (comparisonOrdersAndPriceList, userHistory, netProfitPercent) => {
     const sortedOrders = toArray(comparisonOrdersAndPriceList).sort(
       ({ totalBuy }, b) => b.totalBuy - totalBuy,
     );
@@ -215,7 +221,7 @@ export const getChartData = createSelector(
           {
             name: 'Чистая прибыль',
             // eslint-disable-next-line no-plusplus
-            data: drop(1, [...seriesData, { x: x++, y: round(netProfit, 1) }]),
+            data: drop(1, [...seriesData, { x: x++, y: round(netProfitPercent, 1) }]),
           },
         ],
         options: {
@@ -231,7 +237,7 @@ export const getChartData = createSelector(
             align: 'left',
           },
           subtitle: {
-            text: 'Изменение цены',
+            text: 'Изменение цены в процентах',
             align: 'left',
           },
           xaxis: {
@@ -256,7 +262,7 @@ export const getChartData = createSelector(
               offsetX: 0,
               offsetY: 0,
               rotate: 0,
-              formatter: value => `${value} $`,
+              formatter: value => `${value} %`,
             },
           },
           legend: {

@@ -12,13 +12,18 @@ import { HANDLE_REFRESH, HANDLE_REFRESH_FAILURE, HANDLE_REFRESH_SUCCESS } from '
 import { setUserDataAC, setUserHistoryAC } from '../actionCreators/user';
 import { NOTIFICATION_TYPE } from '../constants/notification';
 import { handleRefreshFailureAC, handleRefreshSuccessAC } from '../actionCreators/refresh';
-import { getNetProfit, getWalletState, getGridRowData, getOrderCoinList } from '../selectors/order';
+import {
+  getNetProfitPercent,
+  getWalletState,
+  getGridRowData,
+  getOrderCoinList,
+} from '../selectors/order';
 
 function* refresh() {
   try {
     yield put(loadingPendingAC());
 
-    const netProfit = yield select(getNetProfit);
+    const netProfit = yield select(getNetProfitPercent);
     const walletState = yield select(getWalletState);
     const gridRowData = yield select(getGridRowData);
     const coinList = yield select(getOrderCoinList);

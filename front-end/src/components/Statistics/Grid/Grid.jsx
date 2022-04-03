@@ -48,6 +48,7 @@ class Grid extends React.Component {
           suppressAggFuncInHeader
           animateRows
           showOpenedGroup
+          domLayout='autoHeight'
         />
       </Wrapper>
     );
