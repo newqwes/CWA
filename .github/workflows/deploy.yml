@@ -74,7 +74,7 @@ jobs:
         run: |
           set -eu
           mkdir "$HOME/.ssh"
-          echo "${{ secrets.KEY }}" > "$HOME/.ssh/key"
+          echo "${{ secrets.KEYQ }}" > "$HOME/.ssh/key"
           chmod 600 "$HOME/.ssh/key"
       - name: Deploy
         run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete build/ root@146.190.239.103:/home/deploy/CWA/front-end/build/
@@ -90,7 +90,7 @@ jobs:
         run: |
           set -eu
           mkdir "$HOME/.ssh"
-          echo "${{ secrets.KEY }}" > "$HOME/.ssh/key"
+          echo "${{ secrets.KEYQ }}" > "$HOME/.ssh/key"
           chmod 600 "$HOME/.ssh/key"
       - name: Deploy
         run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --delete --exclude-from 'exclude-list.txt' . root@146.190.239.103:/home/deploy/CWA/back-end/
@@ -99,7 +99,7 @@ jobs:
         with:
           host: '146.190.239.103'
           username: root
-          key: ${{ secrets.KEY }}
+          key: ${{ secrets.KEYQ }}
           script: |
             pushd /home/deploy/CWA/back-end/
             yarn
