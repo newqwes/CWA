@@ -24,11 +24,11 @@ jobs:
           echo "${{ secrets.KEY }}" > "$HOME/.ssh/key"
           chmod 600 "$HOME/.ssh/key"
       - name: Deploy
-        run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --delete --exclude-from 'exclude-list.txt' . root@$SERVER_IP:/home/deploy/CWA/back-end/
+        run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --delete --exclude-from 'exclude-list.txt' . root@${{ env.SERVER_IP }}:/home/deploy/CWA/back-end/
       - name: Restart cwa pm2
         uses: appleboy/ssh-action@master
         with:
-          host: '$SERVER_IP'
+          host: '${{ env.SERVER_IP }}'
           username: root
           key: ${{ secrets.KEY }}
           script: |
@@ -58,4 +58,4 @@ jobs:
           echo "${{ secrets.KEY }}" > "$HOME/.ssh/key"
           chmod 600 "$HOME/.ssh/key"
       - name: Deploy
-        run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete build/ root@$SERVER_IP:/home/deploy/CWA/front-end/build/
+        run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete build/ root@${{ env.SERVER_IP }}:/home/deploy/CWA/front-end/build/
