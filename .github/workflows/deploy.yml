@@ -56,28 +56,28 @@ jobs:
   #     - name: Deploy
   #       run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete build/ root@185.20.227.11:/home/deploy/CWA/front-end/build/
 
-  deploy-frontend:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./front-end
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 16
-      - name: Install dependencies
-        run: npm install
-      - name: Run build
-        run: CI=false npm run build
-      - name: Setup key
-        run: |
-          set -eu
-          mkdir "$HOME/.ssh"
-          echo "${{ secrets.KEYQ }}" > "$HOME/.ssh/key"
-          chmod 600 "$HOME/.ssh/key"
-      - name: Deploy
-        run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete build/ root@146.190.239.103:/home/deploy/CWA/front-end/build/
+  # deploy-frontend:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./front-end
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 16
+  #     - name: Install dependencies
+  #       run: npm install
+  #     - name: Run build
+  #       run: CI=false npm run build
+  #     - name: Setup key
+  #       run: |
+  #         set -eu
+  #         mkdir "$HOME/.ssh"
+  #         echo "${{ secrets.KEYQ }}" > "$HOME/.ssh/key"
+  #         chmod 600 "$HOME/.ssh/key"
+  #     - name: Deploy
+  #       run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete build/ root@146.190.239.103:/home/deploy/CWA/front-end/build/
 
   deploy-backend:
     runs-on: ubuntu-latest
@@ -90,7 +90,7 @@ jobs:
         run: |
           set -eu
           mkdir "$HOME/.ssh"
-          echo "${{ secrets.KEYQ }}" > "$HOME/.ssh/key"
+          echo "${{ secrets.KEY }}" > "$HOME/.ssh/key"
           chmod 600 "$HOME/.ssh/key"
       - name: Deploy
         run: rsync -a --progress --human-readable -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --delete --exclude-from 'exclude-list.txt' . root@146.190.239.103:/home/deploy/CWA/back-end/
@@ -99,7 +99,7 @@ jobs:
         with:
           host: '146.190.239.103'
           username: root
-          key: ${{ secrets.KEYQ }}
+          key: ${{ secrets.KEY }}
           script: |
             pushd /home/deploy/CWA/back-end/
             yarn
