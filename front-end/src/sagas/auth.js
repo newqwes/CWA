@@ -1,4 +1,4 @@
-import { takeEvery, all, call, put, delay } from 'redux-saga/effects';
+import { takeEvery, all, call, put, delay, race, take } from 'redux-saga/effects';
 
 import {
   closeAuthorizationModalsAC,
@@ -16,6 +16,7 @@ import {
   registrationSuccessAC,
   getAuthorizationStatusAC,
 } from '../actionCreators/auth';
+import { handleRefreshAC } from '../actionCreators/refresh';
 import { authAPI, googleLoginURL } from '../api';
 
 import {
@@ -27,6 +28,8 @@ import {
   GET_AUTHORIZATION_STATUS_PENDING,
   GET_AUTHORIZATION_STATUS_SUCCESS,
   GET_GOOGLE_AUTHORIZATION_PENDING,
+  GET_USER_ORDERS_FAILURE,
+  GET_USER_ORDERS_SUCCESS,
   REGISTRATION_FAILURE,
   REGISTRATION_PENDING,
   REGISTRATION_SUCCESS,
@@ -36,6 +39,7 @@ import { AUTH_TOKEN } from '../constants/authModal';
 import { setSession } from '../utils/localStore';
 import { NOTIFICATION_TYPE } from '../constants/notification';
 import { openCenteredWindow } from '../utils/openCenteredWindow';
+import { getRefreshTimer } from '../utils/refresh';
 import { setUserDataAC } from '../actionCreators/user';
 import { getOrdersAC } from '../actionCreators/order';
 
@@ -107,7 +111,6 @@ function* authorizationStatus() {
 
     if (user.isActivated) {
       yield put(getAuthorizationStatusSuccessAC(user));
-      yield put(loadingSuccessAC());
 
       return;
     }
@@ -195,7 +198,25 @@ function* registrationFailure({ payload }) {
 }
 
 function* authorizationStatusSuccess({ payload }) {
+  const { lastDateUpdate, dataRefreshLimitPerMinute } = payload;
+
   yield put(setUserDataAC(payload));
+
+  const remainingTimeUntilRefresh = yield getRefreshTimer(
+    lastDateUpdate,
+    dataRefreshLimitPerMinute,
+  );
+
+  if (remainingTimeUntilRefresh <= 0) {
+    const [success] = yield race([take(GET_USER_ORDERS_SUCCESS), take(GET_USER_ORDERS_FAILURE)]);
+
+    if (success) {
+      yield put(handleRefreshAC());
+    }
+  }
+
+  yield put(loadingSuccessAC());
+
   yield put(
     setNotificationAC({
       message: `С возвращение ${payload.login}!`,

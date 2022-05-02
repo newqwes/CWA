@@ -2,7 +2,7 @@ import UserDto from '../dto/userDto';
 import ApiError from '../exceptions/apiError';
 import userService from './userService';
 import History from '../database/models/history';
-import { CoinGeckoClient } from '../utils/coinGeckoClient';
+import { getGeckoCoins } from '../utils/coinGeckoClient';
 
 class RefreshService {
   async refresh({ userId, prevData, coinList }) {
@@ -12,11 +12,7 @@ class RefreshService {
       throw ApiError.BadRequest('Пользователь с таким ID не существует');
     }
 
-    const { data } = await CoinGeckoClient.coins.markets({
-      per_page: 300,
-      localization: false,
-      ids: coinList,
-    });
+    const data = await getGeckoCoins(coinList);
 
     user.score += 1;
     user.prevData = prevData;

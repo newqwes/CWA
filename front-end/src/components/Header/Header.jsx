@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { floor } from 'lodash/fp';
 import { HeaderWrapper, Button, Text, Title, AuthBlock } from './styled';
+import { getRefreshTimer } from '../../utils/refresh';
 
 const UPDATE_TIMER_MILLISECONDS = 1000;
 
@@ -24,8 +25,7 @@ class Header extends React.Component {
     const { lastDateUpdate, dataRefreshLimitPerMinute } = this.props;
 
     if (lastDateUpdate !== prevProps.lastDateUpdate) {
-      const refreshTimer =
-        (Date.parse(lastDateUpdate) + dataRefreshLimitPerMinute * 60 * 1000 - Date.now()) / 1000;
+      const refreshTimer = getRefreshTimer(lastDateUpdate, dataRefreshLimitPerMinute);
 
       if (refreshTimer <= 0) {
         return;

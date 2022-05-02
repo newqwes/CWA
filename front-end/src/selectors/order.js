@@ -19,6 +19,7 @@ import moment from 'moment';
 
 import { getPrevGridRowData, getUserHistory, getUserLastPriceList, getUserPrevData } from './user';
 import { MAX_PIE_LENGTH } from '../constants/chart';
+import { TIME_FORMAT } from '../constants/time';
 
 const localState = get('order');
 
@@ -122,7 +123,7 @@ export const getGridRowData = createSelector(
       const totalBuyActual = round(count * actualPrice, 2);
       const totalProfit = round((actualPrice - price) * count, 2);
       const prevCell = find(['id', id], prevGridRowData);
-      const formatDate = moment(date).format('YYYY-MM-DD h:mm');
+      const formatDate = moment(date).format(TIME_FORMAT);
 
       const totalProfitPercent = count > 0 ? ((actualPrice - price) / price) * 100 : 0;
 
@@ -244,6 +245,19 @@ export const getChartData = createSelector(
             type: 'category',
             labels: {
               show: false,
+            },
+          },
+          tooltip: {
+            x: {
+              show: true,
+              format: 'dd MMM',
+              formatter: value => {
+                if (userHistory.length <= value) {
+                  return moment().format(TIME_FORMAT);
+                }
+
+                return moment(userHistory[value].date).format(TIME_FORMAT);
+              },
             },
           },
           yaxis: {

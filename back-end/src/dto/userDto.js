@@ -3,6 +3,8 @@ class UserDto {
 
   login;
 
+  telegramUserName;
+
   userType;
 
   id;
@@ -22,6 +24,7 @@ class UserDto {
   constructor(model) {
     this.email = model.email;
     this.login = model.login;
+    this.telegramUserName = model.telegramUserName;
     this.userType = model.userType;
     this.id = model.id;
     this.isActivated = model.isActivated;
