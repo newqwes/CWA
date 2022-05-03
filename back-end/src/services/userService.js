@@ -9,9 +9,13 @@ class UserService {
   }
 
   async findByTelegramUserName(telegramUserName) {
-    const user = await User.findOne({ where: { telegramUserName }, raw: true });
+    try {
+      const user = await User.findOne({ where: { telegramUserName }, raw: true });
 
-    return user;
+      return user;
+    } catch (error) {
+      return false;
+    }
   }
 
   async findOrCreateByEmail(email, defaults) {

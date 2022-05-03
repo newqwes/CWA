@@ -70,143 +70,150 @@ const runNotification = async (userId, trigerPersent, chatId, oldPriceList) => {
 };
 
 const runTelegramBotService = async () => {
-  MyBot.on('message', async ({ text, chat: { id, username, first_name: firstName } }) => {
-    try {
-      const userExist = await userService.findByTelegramUserName(username);
+  MyBot.on(
+    'message',
+    async ({ text, chat: { id, first_name: firstName }, from: { id: telegramUserId } }) => {
+      try {
+        const userExist = await userService.findByTelegramUserName(telegramUserId);
 
-      const textLikeNumber = Number(text);
+        const textLikeNumber = Number(text);
 
-      if (text === '/start') {
-        return MyBot.sendMessage(
-          id,
-          `${firstName}, добро пожаловать в Coinlitics!`,
-          MESSAGE_OPTIONS,
-        );
-      }
-
-      if (isAuthCode(text)) {
-        const user = await userService.findByKey(removeAuthCode(text), 'id');
-
-        if (!user) {
+        if (text === '/start') {
           return MyBot.sendMessage(
             id,
-            `ОШИБКА! Код авторизации не правельный! ${text}`,
+            `${firstName}, добро пожаловать в Coinlitics!`,
             MESSAGE_OPTIONS,
           );
         }
 
-        if (user.telegramUserName) {
+        if (isAuthCode(text)) {
+          const user = await userService.findByKey(removeAuthCode(text), 'id');
+
+          if (!user) {
+            return MyBot.sendMessage(
+              id,
+              `ОШИБКА! Код авторизации не правельный! ${text}`,
+              MESSAGE_OPTIONS,
+            );
+          }
+
+          if (user.telegramUserName) {
+            return MyBot.sendMessage(
+              id,
+              'Данный код авторизации уже был использован!',
+              MESSAGE_OPTIONS,
+            );
+          }
+
+          user.telegramUserName = telegramUserId;
+          await user.save();
+
+          return MyBot.sendMessage(id, 'Код авторизации принят успешно!', MESSAGE_OPTIONS);
+        }
+
+        if (!userExist) {
           return MyBot.sendMessage(
             id,
-            'Данный код авторизации уже был использован!',
+            `${firstName}, вы не авторизованны, отправте нам ключ авторизации с сайта: coinlitics.ru`,
             MESSAGE_OPTIONS,
           );
         }
 
-        user.telegramUserName = username;
-        await user.save();
+        if (text === '🔄🔄🔄') {
+          const { dataRefreshLimitPerMinute, lastDateUpdate } = pick(
+            ['dataRefreshLimitPerMinute', 'lastDateUpdate'],
+            userExist,
+          );
 
-        return MyBot.sendMessage(id, 'Код авторизации принят успешно!', MESSAGE_OPTIONS);
-      }
+          const timeLimitOver = isTimeLimitOver(dataRefreshLimitPerMinute, lastDateUpdate);
+          const remainingTime = getRemainingTime(dataRefreshLimitPerMinute, lastDateUpdate);
 
-      if (!userExist) {
-        return MyBot.sendMessage(
-          id,
-          `${firstName}, вы не авторизованны, отправте нам ключ авторизации с сайта: coinlitics.ru`,
-          MESSAGE_OPTIONS,
-        );
-      }
+          if (!timeLimitOver) {
+            return MyBot.sendMessage(
+              id,
+              `Обновить можно только через: ${remainingTime} секунд`,
+              MESSAGE_OPTIONS,
+            );
+          }
 
-      if (text === '🔄🔄🔄') {
-        const { dataRefreshLimitPerMinute, lastDateUpdate } = pick(
-          ['dataRefreshLimitPerMinute', 'lastDateUpdate'],
-          userExist,
-        );
+          const orders = await orderService.getRawUserOrders(userExist.id);
 
-        const timeLimitOver = isTimeLimitOver(dataRefreshLimitPerMinute, lastDateUpdate);
-        const remainingTime = getRemainingTime(dataRefreshLimitPerMinute, lastDateUpdate);
+          const coinNameList = getUniqNameOrders(orders);
 
-        if (!timeLimitOver) {
+          const gridRowData = getGridRowData(
+            orders,
+            userExist.list,
+            userExist.prevData.gridRowData,
+          );
+
+          const comparisonOrdersAndPriceList = getComparisonOrdersAndPriceList(
+            orders,
+            userExist.list,
+          );
+          const netProfitRaw = getNetProfit(comparisonOrdersAndPriceList);
+          const totalInvested = getTotalInvested(orders);
+
+          const netProfitPercent = getNetProfitPercent(netProfitRaw, totalInvested);
+          const walletState = getWalletState(netProfitRaw, totalInvested);
+
+          const prevData = {
+            netProfit: netProfitPercent,
+            walletState,
+            gridRowData,
+          };
+
+          const refreshData = await refreshService.refresh({
+            userId: userExist.id,
+            prevData,
+            coinList: coinNameList,
+          });
+
+          const result = compareResults(refreshData);
+          const resultMessage = getResultMessage(result);
+
+          return MyBot.sendMessage(id, resultMessage, MESSAGE_OPTIONS);
+        }
+
+        if (text === '⏰⏰⏰') {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+
+            return MyBot.sendMessage(id, 'Оповещение остановленно!', MESSAGE_OPTIONS);
+          }
+
           return MyBot.sendMessage(
             id,
-            `Обновить можно только через: ${remainingTime} секунд`,
+            'Введите % изменения за рамками которого придет уведомление:',
+            AGAIN_MESSAGE_OPTIONS,
+          );
+        }
+
+        if (isFinite(textLikeNumber) && textLikeNumber >= 0 && textLikeNumber < 30) {
+          if (timeoutId) clearTimeout(timeoutId);
+
+          timeoutId = setInterval(
+            runNotification,
+            TEN_MINUTE,
+            userExist.id,
+            textLikeNumber,
+            id,
+            userExist.list,
+          );
+
+          return MyBot.sendMessage(
+            id,
+            `Оповещение задано на каждые ${TEN_MINUTE / MINUTE} минут при изменение в ${text}%!`,
             MESSAGE_OPTIONS,
           );
         }
 
-        const orders = await orderService.getRawUserOrders(userExist.id);
-
-        const coinNameList = getUniqNameOrders(orders);
-
-        const gridRowData = getGridRowData(orders, userExist.list, userExist.prevData.gridRowData);
-
-        const comparisonOrdersAndPriceList = getComparisonOrdersAndPriceList(
-          orders,
-          userExist.list,
-        );
-        const netProfitRaw = getNetProfit(comparisonOrdersAndPriceList);
-        const totalInvested = getTotalInvested(orders);
-
-        const netProfitPercent = getNetProfitPercent(netProfitRaw, totalInvested);
-        const walletState = getWalletState(netProfitRaw, totalInvested);
-
-        const prevData = {
-          netProfit: netProfitPercent,
-          walletState,
-          gridRowData,
-        };
-
-        const refreshData = await refreshService.refresh({
-          userId: userExist.id,
-          prevData,
-          coinList: coinNameList,
-        });
-
-        const result = compareResults(refreshData);
-        const resultMessage = getResultMessage(result);
-
-        return MyBot.sendMessage(id, resultMessage, MESSAGE_OPTIONS);
+        return MyBot.sendMessage(id, 'Я тебя не понимаю, попробуй еще раз!)', MESSAGE_OPTIONS);
+      } catch (error) {
+        return MyBot.sendMessage(id, 'Произошла какая то ошибочка!)', MESSAGE_OPTIONS);
       }
-
-      if (text === '⏰⏰⏰') {
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-          timeoutId = null;
-
-          return MyBot.sendMessage(id, 'Оповещение остановленно!', MESSAGE_OPTIONS);
-        }
-
-        return MyBot.sendMessage(
-          id,
-          'Введите % изменения за рамками которого придет уведомление:',
-          AGAIN_MESSAGE_OPTIONS,
-        );
-      }
-
-      if (isFinite(textLikeNumber) && textLikeNumber >= 0 && textLikeNumber < 30) {
-        if (timeoutId) clearTimeout(timeoutId);
-
-        timeoutId = setInterval(
-          runNotification,
-          TEN_MINUTE,
-          userExist.id,
-          textLikeNumber,
-          id,
-          userExist.list,
-        );
-
-        return MyBot.sendMessage(
-          id,
-          `Оповещение задано на каждые ${TEN_MINUTE / MINUTE} минут при изменение в ${text}%!`,
-          MESSAGE_OPTIONS,
-        );
-      }
-
-      return MyBot.sendMessage(id, 'Я тебя не понимаю, попробуй еще раз!)', MESSAGE_OPTIONS);
-    } catch (error) {
-      return MyBot.sendMessage(id, 'Произошла какая то ошибочка!)', MESSAGE_OPTIONS);
-    }
-  });
+    },
+  );
 };
 
 export default runTelegramBotService;
