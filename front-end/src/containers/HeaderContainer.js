@@ -1,6 +1,11 @@
 import { connect } from 'react-redux';
 
-import { getLastDateUpdate, getScore, getDataRefreshLimitPerMinute } from '../selectors/user';
+import {
+  getLastDateUpdate,
+  getScore,
+  getUserId,
+  getDataRefreshLimitPerMinute,
+} from '../selectors/user';
 import { isAuthorized } from '../selectors/authorization';
 
 import { handleRefreshAC } from '../actionCreators/refresh';
@@ -9,6 +14,7 @@ import Header from '../components/Header';
 const mapStateToProps = state => ({
   lastDateUpdate: getLastDateUpdate(state),
   score: getScore(state),
+  userId: getUserId(state),
   dataRefreshLimitPerMinute: getDataRefreshLimitPerMinute(state),
   authorized: isAuthorized(state),
 });

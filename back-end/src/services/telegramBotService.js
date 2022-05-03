@@ -1,42 +1,80 @@
 import TelegraAPI from 'node-telegram-bot-api';
-import { map, find } from 'lodash/fp';
-import { MESSAGE_OPTIONS } from '../constants/telegram';
-import { isAuthCode, removeAuthCode } from '../utils/telegram';
+import { forEach, isEmpty, isFinite, round } from 'lodash';
+import { get, isEqual, pick } from 'lodash/fp';
+
+import { AGAIN_MESSAGE_OPTIONS, MESSAGE_OPTIONS, MINUTE, TEN_MINUTE } from '../constants/telegram';
+import { compareResults, getResultMessage, isAuthCode, removeAuthCode } from '../utils/telegram';
 import userService from './userService';
-import Order from '../database/models/order';
+import orderService from './orderService';
+
+import {
+  getComparisonOrdersAndPriceList,
+  getGridRowData,
+  getNetProfit,
+  getNetProfitPercent,
+  getTotalInvested,
+  getUniqNameOrders,
+  getWalletState,
+} from '../utils/extractData';
+import refreshService from './refreshService';
+import { getRemainingTime, isTimeLimitOver } from '../utils/toMinute';
 import { getGeckoCoins } from '../utils/coinGeckoClient';
 
 const MyBot = new TelegraAPI(process.env.BOT_TOKEN, { polling: true });
 
+let timeoutId = null;
+
+const runNotification = async (userId, trigerPersent, chatId, oldPriceList) => {
+  const orders = await orderService.getRawUserOrders(userId);
+
+  const coinNameList = getUniqNameOrders(orders);
+
+  const listCoin = await getGeckoCoins(coinNameList);
+
+  const result = {};
+
+  coinNameList.forEach(myCoinName => {
+    const currency = listCoin.find(({ id }) => isEqual(id, myCoinName));
+
+    const currentPrice = get(['current_price'], currency);
+
+    const oldCurrency = oldPriceList.find(({ id }) => isEqual(id, myCoinName));
+    const prevCurrentPrice = get(['current_price'], oldCurrency);
+
+    if (!currentPrice || !prevCurrentPrice) return;
+
+    const changesPricePersent = round((currentPrice * 100) / prevCurrentPrice - 100, 4);
+
+    if (changesPricePersent > trigerPersent) {
+      result[currency.name] = changesPricePersent;
+    }
+
+    if (changesPricePersent < -trigerPersent) {
+      result[currency.name] = changesPricePersent;
+    }
+  });
+
+  const arrResult = [];
+
+  forEach(result, (value, key) => {
+    arrResult.push(
+      result[key] > 0
+        ? `🔼${key}\nподнялся на ${round(value, 2)}%`
+        : `🔻${key}\nупал на ${round(value, 2)}%`,
+    );
+  });
+
+  if (!isEmpty(arrResult)) {
+    MyBot.sendMessage(chatId, arrResult.join('\n\n'), MESSAGE_OPTIONS);
+  }
+};
+
 const runTelegramBotService = async () => {
   MyBot.on('message', async ({ text, chat: { id, username, first_name: firstName } }) => {
     try {
-      const userExist = await userService.findByKey(username, 'telegramUserName');
+      const userExist = await userService.findByTelegramUserName(username);
 
-      if (userExist && text === '🔄🔄🔄') {
-        const orders = await Order.findAll({
-          where: { userId: userExist.id },
-          attributes: ['name', 'price', 'count'],
-          raw: true,
-        });
-
-        const coinNameList = map(({ name }) => name, orders);
-
-        const geckoCoins = await getGeckoCoins(coinNameList);
-
-        console.log(orders);
-
-        // name, current_price
-        const test = map(geckoCoin => {
-          const order = find(['name', geckoCoin.id], orders);
-
-          const diffPrice = geckoCoin.current_price - order.price;
-
-          return `${geckoCoin.name}: ${diffPrice}$`;
-        }, geckoCoins);
-
-        return MyBot.sendMessage(id, test.join('\n'), MESSAGE_OPTIONS);
-      }
+      const textLikeNumber = Number(text);
 
       if (text === '/start') {
         return MyBot.sendMessage(
@@ -57,6 +95,14 @@ const runTelegramBotService = async () => {
           );
         }
 
+        if (user.telegramUserName) {
+          return MyBot.sendMessage(
+            id,
+            'Данный код авторизации уже был использован!',
+            MESSAGE_OPTIONS,
+          );
+        }
+
         user.telegramUserName = username;
         await user.save();
 
@@ -67,6 +113,91 @@ const runTelegramBotService = async () => {
         return MyBot.sendMessage(
           id,
           `${firstName}, вы не авторизованны, отправте нам ключ авторизации с сайта: coinlitics.ru`,
+          MESSAGE_OPTIONS,
+        );
+      }
+
+      if (text === '🔄🔄🔄') {
+        const { dataRefreshLimitPerMinute, lastDateUpdate } = pick(
+          ['dataRefreshLimitPerMinute', 'lastDateUpdate'],
+          userExist,
+        );
+
+        const timeLimitOver = isTimeLimitOver(dataRefreshLimitPerMinute, lastDateUpdate);
+        const remainingTime = getRemainingTime(dataRefreshLimitPerMinute, lastDateUpdate);
+
+        if (!timeLimitOver) {
+          return MyBot.sendMessage(
+            id,
+            `Обновить можно только через: ${remainingTime} секунд`,
+            MESSAGE_OPTIONS,
+          );
+        }
+
+        const orders = await orderService.getRawUserOrders(userExist.id);
+
+        const coinNameList = getUniqNameOrders(orders);
+
+        const gridRowData = getGridRowData(orders, userExist.list, userExist.prevData.gridRowData);
+
+        const comparisonOrdersAndPriceList = getComparisonOrdersAndPriceList(
+          orders,
+          userExist.list,
+        );
+        const netProfitRaw = getNetProfit(comparisonOrdersAndPriceList);
+        const totalInvested = getTotalInvested(orders);
+
+        const netProfitPercent = getNetProfitPercent(netProfitRaw, totalInvested);
+        const walletState = getWalletState(netProfitRaw, totalInvested);
+
+        const prevData = {
+          netProfit: netProfitPercent,
+          walletState,
+          gridRowData,
+        };
+
+        const refreshData = await refreshService.refresh({
+          userId: userExist.id,
+          prevData,
+          coinList: coinNameList,
+        });
+
+        const result = compareResults(refreshData);
+        const resultMessage = getResultMessage(result);
+
+        return MyBot.sendMessage(id, resultMessage, MESSAGE_OPTIONS);
+      }
+
+      if (text === '⏰⏰⏰') {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
+
+          return MyBot.sendMessage(id, 'Оповещение остановленно!', MESSAGE_OPTIONS);
+        }
+
+        return MyBot.sendMessage(
+          id,
+          'Введите % изменения за рамками которого придет уведомление:',
+          AGAIN_MESSAGE_OPTIONS,
+        );
+      }
+
+      if (isFinite(textLikeNumber) && textLikeNumber >= 0 && textLikeNumber < 30) {
+        if (timeoutId) clearTimeout(timeoutId);
+
+        timeoutId = setInterval(
+          runNotification,
+          TEN_MINUTE,
+          userExist.id,
+          textLikeNumber,
+          id,
+          userExist.list,
+        );
+
+        return MyBot.sendMessage(
+          id,
+          `Оповещение задано на каждые ${TEN_MINUTE / MINUTE} минут при изменение в ${text}%!`,
           MESSAGE_OPTIONS,
         );
       }

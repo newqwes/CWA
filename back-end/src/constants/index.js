@@ -5,3 +5,5 @@ export const USER_ROLES = {
 };
 
 export const REFRESH_TOKEN_AGE = 30 * 24 * 60 * 60 * 1000;
+
+export const TIME_FORMAT = 'DD.MM.YY HH:mm';

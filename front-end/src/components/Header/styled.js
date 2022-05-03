@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Layout, Button as ButtonAnt, Typography } from 'antd';
 
-const { Text: TextAnt } = Typography;
+const { Text: TextAnt, Paragraph: ParagraphAnt } = Typography;
 const { Header } = Layout;
 
 export const HeaderWrapper = styled(Header)`
@@ -25,4 +25,8 @@ export const Title = styled.h3`
 
 export const AuthBlock = styled.div`
   display: flex;
+`;
+
+export const Paragraph = styled(ParagraphAnt)`
+  color: #fff;
 `;

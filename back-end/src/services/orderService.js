@@ -24,6 +24,20 @@ class OrderService {
     }
   }
 
+  async getRawUserOrders(userId) {
+    try {
+      const orders = Order.findAll({
+        where: { userId },
+        attributes: ['name', 'price', 'count', 'date', 'id'],
+        raw: true,
+      });
+
+      return orders;
+    } catch (error) {
+      return error;
+    }
+  }
+
   async deleteUserOrder(orderId) {
     try {
       const isFound = await Order.destroy({ where: { id: orderId } });

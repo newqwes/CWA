@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { floor } from 'lodash/fp';
-import { HeaderWrapper, Button, Text, Title, AuthBlock } from './styled';
+
+import { HeaderWrapper, Button, Text, Title, AuthBlock, Paragraph } from './styled';
 import { getRefreshTimer } from '../../utils/refresh';
+import { AUTH_TELEGRAM_CODE_PREFIX } from '../../constants/telegram';
 
 const UPDATE_TIMER_MILLISECONDS = 1000;
 
@@ -14,11 +16,13 @@ class Header extends React.Component {
     dataRefreshLimitPerMinute: PropTypes.number,
     children: PropTypes.node.isRequired,
     authorized: PropTypes.bool.isRequired,
+    userId: PropTypes.string,
   };
 
   state = {
     refreshTimer: 0,
     refreshDisabled: false,
+    userId: '',
   };
 
   componentDidUpdate(prevProps) {
@@ -63,7 +67,7 @@ class Header extends React.Component {
   }
 
   render() {
-    const { score, handleRefresh, children, authorized } = this.props;
+    const { score, handleRefresh, children, authorized, userId } = this.props;
     const { refreshTimer, refreshDisabled } = this.state;
 
     const time =
@@ -92,7 +96,21 @@ class Header extends React.Component {
             type='link'>
             Coinglass
           </Button>
+          <Button
+            shape='circle'
+            href='https://t.me/count_in_wallet_bot'
+            target='_blank'
+            type='link'>
+            Telegram Bot
+          </Button>
         </div>
+        <Paragraph
+          copyable={{
+            text: AUTH_TELEGRAM_CODE_PREFIX + userId,
+            tooltips: ['Скопировать Ваш личный ключ для телеграмма', 'Ключ скопирован!'],
+          }}>
+          Ключ для авторизации в телеграм
+        </Paragraph>
         <AuthBlock>
           {authorized && (
             <>

@@ -26,7 +26,7 @@ class RefreshService {
       date: Date.now(),
     });
 
-    const history = await History.findAll({ where: { userId } });
+    const history = await History.findAll({ where: { userId }, raw: true });
 
     const userDto = new UserDto(user);
     const userData = { ...userDto, history };
