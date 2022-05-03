@@ -17,11 +17,18 @@ import {
   getWalletState,
   getGridRowData,
   getOrderCoinList,
+  isNotOrderList,
 } from '../selectors/order';
 
 function* refresh() {
   try {
     yield put(loadingPendingAC());
+
+    const noData = yield select(isNotOrderList);
+
+    if (noData) {
+      return;
+    }
 
     const netProfit = yield select(getNetProfitPercent);
     const walletState = yield select(getWalletState);

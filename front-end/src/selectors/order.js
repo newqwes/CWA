@@ -25,6 +25,8 @@ const localState = get('order');
 
 export const getOrderList = createSelector(localState, get('list'));
 
+export const isNotOrderList = createSelector(getOrderList, isEmpty);
+
 export const getOrderCoinList = createSelector(getOrderList, compose(uniq, map('name')));
 
 export const getTotalInvested = createSelector(getOrderList, orderList => {

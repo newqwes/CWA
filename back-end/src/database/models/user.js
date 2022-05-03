@@ -19,8 +19,8 @@ User.init(
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    telegramUserName: {
-      type: DataTypes.STRING(50),
+    telegramUserId: {
+      type: DataTypes.DOUBLE,
       allowNull: true,
     },
     password: {

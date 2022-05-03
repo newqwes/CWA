@@ -17,12 +17,12 @@ class Header extends React.Component {
     children: PropTypes.node.isRequired,
     authorized: PropTypes.bool.isRequired,
     userId: PropTypes.string,
+    noData: PropTypes.bool,
   };
 
   state = {
     refreshTimer: 0,
     refreshDisabled: false,
-    userId: '',
   };
 
   componentDidUpdate(prevProps) {
@@ -67,7 +67,7 @@ class Header extends React.Component {
   }
 
   render() {
-    const { score, handleRefresh, children, authorized, userId } = this.props;
+    const { score, handleRefresh, children, authorized, userId, noData } = this.props;
     const { refreshTimer, refreshDisabled } = this.state;
 
     const time =
@@ -123,7 +123,7 @@ class Header extends React.Component {
                     onClick={handleRefresh}
                     type='primary'
                     loading={refreshDisabled}
-                    disabled={refreshDisabled}>
+                    disabled={refreshDisabled || noData}>
                     Обновить
                   </Button>
                 </div>

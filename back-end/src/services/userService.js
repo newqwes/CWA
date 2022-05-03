@@ -8,9 +8,10 @@ class UserService {
     return user;
   }
 
-  async findByTelegramUserName(telegramUserName) {
+  async findByTelegramUserId(telegramUserId) {
     try {
-      const user = await User.findOne({ where: { telegramUserName }, raw: true });
+      console.log(telegramUserId);
+      const user = await User.findOne({ where: { telegramUserId }, raw: true });
 
       return user;
     } catch (error) {

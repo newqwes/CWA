@@ -74,7 +74,7 @@ const runTelegramBotService = async () => {
     'message',
     async ({ text, chat: { id, first_name: firstName }, from: { id: telegramUserId } }) => {
       try {
-        const userExist = await userService.findByTelegramUserName(telegramUserId);
+        const userExist = await userService.findByTelegramUserId(telegramUserId);
 
         const textLikeNumber = Number(text);
 
@@ -97,7 +97,7 @@ const runTelegramBotService = async () => {
             );
           }
 
-          if (user.telegramUserName) {
+          if (user.telegramUserId) {
             return MyBot.sendMessage(
               id,
               'Данный код авторизации уже был использован!',
@@ -105,7 +105,7 @@ const runTelegramBotService = async () => {
             );
           }
 
-          user.telegramUserName = telegramUserId;
+          user.telegramUserId = telegramUserId;
           await user.save();
 
           return MyBot.sendMessage(id, 'Код авторизации принят успешно!', MESSAGE_OPTIONS);

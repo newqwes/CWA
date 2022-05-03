@@ -6,6 +6,7 @@ import {
   getUserId,
   getDataRefreshLimitPerMinute,
 } from '../selectors/user';
+import { isNotOrderList } from '../selectors/order';
 import { isAuthorized } from '../selectors/authorization';
 
 import { handleRefreshAC } from '../actionCreators/refresh';
@@ -15,6 +16,7 @@ const mapStateToProps = state => ({
   lastDateUpdate: getLastDateUpdate(state),
   score: getScore(state),
   userId: getUserId(state),
+  noData: isNotOrderList(state),
   dataRefreshLimitPerMinute: getDataRefreshLimitPerMinute(state),
   authorized: isAuthorized(state),
 });
