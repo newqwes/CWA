@@ -11,10 +11,10 @@ import StatisticsContainer from './containers/StatisticsContainer';
 import UsersContainer from './containers/UsersContainer';
 import ChatContainer from './containers/ChatContainer';
 import HeaderContainer from './containers/HeaderContainer';
+import GitContainer from './containers/GitContainer';
 
 import { AppWrapper, Logo, Owerlay, ContentWrapper } from './style/AppWrapper';
 import { DEFAULT_SELECTED_MENU, MENU_KEYS } from './constants/menu';
-import GitHelperComponent from './components/GitHelperComponent';
 
 const { Content, Sider } = Layout;
 
@@ -57,13 +57,13 @@ class App extends React.Component {
         <Layout>
           <HeaderContainer>{authorized ? <LogoutContainer /> : <AuthContainer />}</HeaderContainer>
           <Content>
-            <Route exact path='/git' component={GitHelperComponent} />
             <div>
               {authorized ? (
                 <ContentWrapper>
                   <Route exact path={MENU_KEYS.statistics} component={StatisticsContainer} />
                   <Route exact path={MENU_KEYS.users} component={UsersContainer} />
                   <Route exact path={MENU_KEYS.chat} component={ChatContainer} />
+                  <Route exact path={MENU_KEYS.git} component={GitContainer} />
                 </ContentWrapper>
               ) : (
                 <Result

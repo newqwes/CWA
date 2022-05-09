@@ -5,6 +5,7 @@ export const MENU_KEYS = {
   statistics: '/statistics',
   users: '/users',
   chat: '/chat',
+  git: '/git',
 };
 
 export const DEFAULT_SELECTED_MENU = MENU_KEYS.statistics;
@@ -19,4 +20,5 @@ export const MENU = [
   },
   { link: MENU_KEYS.users, title: 'Пользователи', icon: <UserOutlined /> },
   { link: MENU_KEYS.chat, title: 'Чат', icon: <WechatOutlined /> },
+  { link: MENU_KEYS.git, title: 'Гит', icon: <WechatOutlined /> },
 ];
