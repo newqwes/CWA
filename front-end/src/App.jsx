@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Redirect, Link } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Button, Layout, Result } from 'antd';
 import { SketchOutlined } from '@ant-design/icons';
@@ -14,6 +14,7 @@ import HeaderContainer from './containers/HeaderContainer';
 
 import { AppWrapper, Logo, Owerlay, ContentWrapper } from './style/AppWrapper';
 import { DEFAULT_SELECTED_MENU, MENU_KEYS } from './constants/menu';
+import GitHelperComponent from './components/GitHelperComponent';
 
 const { Content, Sider } = Layout;
 
@@ -59,10 +60,10 @@ class App extends React.Component {
             <div>
               {authorized ? (
                 <ContentWrapper>
-                  <Route exact path={MENU_KEYS.statistics} component={StatisticsContainer} />
+                  <Route exact path='/' component={StatisticsContainer} />
                   <Route exact path={MENU_KEYS.users} component={UsersContainer} />
                   <Route exact path={MENU_KEYS.chat} component={ChatContainer} />
-                  <Redirect from='/' to={DEFAULT_SELECTED_MENU} />
+                  <Route path='/git' component={GitHelperComponent} />
                 </ContentWrapper>
               ) : (
                 <Result
