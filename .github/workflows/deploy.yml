@@ -2,7 +2,7 @@ name: Deploy project
 
 env:
   # SERVER_IP: 185.20.227.11
-  SERVER_IP: 146.190.239.103
+  SERVER_IP: 142.93.107.170
 
 on:
   push:
