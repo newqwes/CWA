@@ -7,7 +7,7 @@ import { SketchOutlined } from '@ant-design/icons';
 import SideMenuContainer from './containers/SideMenuContainer';
 import AuthContainer from './containers/AuthContainer';
 import LogoutContainer from './containers/LogoutContainer';
-// import StatisticsContainer from './containers/StatisticsContainer';
+import StatisticsContainer from './containers/StatisticsContainer';
 import UsersContainer from './containers/UsersContainer';
 import ChatContainer from './containers/ChatContainer';
 import HeaderContainer from './containers/HeaderContainer';
@@ -57,14 +57,13 @@ class App extends React.Component {
         <Layout>
           <HeaderContainer>{authorized ? <LogoutContainer /> : <AuthContainer />}</HeaderContainer>
           <Content>
+            <Route exact path='/git' component={GitHelperComponent} />
             <div>
               {authorized ? (
                 <ContentWrapper>
-                  {/* <Route exact
-                  path={MENU_KEYS.statistics} component={StatisticsContainer} /> */}
+                  <Route exact path={MENU_KEYS.statistics} component={StatisticsContainer} />
                   <Route exact path={MENU_KEYS.users} component={UsersContainer} />
                   <Route exact path={MENU_KEYS.chat} component={ChatContainer} />
-                  <Route path='/git' component={GitHelperComponent} />
                 </ContentWrapper>
               ) : (
                 <Result
