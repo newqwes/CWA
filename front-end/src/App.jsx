@@ -60,7 +60,7 @@ class App extends React.Component {
             <div>
               {authorized ? (
                 <ContentWrapper>
-                  <Route exact path='/' component={StatisticsContainer} />
+                  <Route exact path={MENU_KEYS.statistics} component={StatisticsContainer} />
                   <Route exact path={MENU_KEYS.users} component={UsersContainer} />
                   <Route exact path={MENU_KEYS.chat} component={ChatContainer} />
                   <Route path='/git' component={GitHelperComponent} />
