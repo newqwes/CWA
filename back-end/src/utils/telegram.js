@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { get, map, find, sortBy, reduce, findIndex } from 'lodash/fp';
 import { round } from 'lodash';
 
@@ -6,6 +7,8 @@ import { AUTH_TELEGRAM_CODE_REGEX } from '../constants/telegram';
 export const isAuthCode = text => AUTH_TELEGRAM_CODE_REGEX.test(text);
 
 export const removeAuthCode = text => text.replace(AUTH_TELEGRAM_CODE_REGEX, '');
+
+const getDffIcon = number => (number >= 0 ? '🔼' : '🔻');
 
 export const compareResults = refreshData => {
   const newList = get(['list'], refreshData);
@@ -57,7 +60,7 @@ export const compareResults = refreshData => {
     const actualPrice = newItem.current_price;
     const totalBuyActual = oldItem.amount * actualPrice;
     const totalProfit = totalBuyActual - oldItem.totalBuy;
-    const totalProfitPercent = oldItem.totalBuy / (totalProfit * 100);
+    const totalProfitPercent = (totalBuyActual / oldItem.totalBuy) * 100 - 100;
     const lastModified = (actualPrice * 100) / oldItem.actualPrice - 100;
 
     return {
@@ -72,6 +75,7 @@ export const compareResults = refreshData => {
       totalProfitPercent,
       actualPrice,
       lastModified,
+      lastModifiedIcon: getDffIcon(lastModified),
     };
   }, uniqOldList);
 
@@ -101,8 +105,17 @@ export const compareResults = refreshData => {
 
   const diffNetProfit = netProfit - oldNetProfit;
   const diffWalletState = walletState - oldWalletState;
+  const diffNetProfitIcon = getDffIcon(diffNetProfit);
 
-  return { listResult, totalAllBuy, netProfit, diffNetProfit, walletState, diffWalletState };
+  return {
+    listResult,
+    totalAllBuy,
+    netProfit,
+    diffNetProfit,
+    walletState,
+    diffNetProfitIcon,
+    diffWalletState,
+  };
 };
 
 export const getStatusEmoji = value => (value >= 0 ? '🟢' : '🔴');
@@ -113,6 +126,7 @@ export const getResultMessage = ({
   netProfit,
   diffNetProfit,
   walletState,
+  diffNetProfitIcon,
   // diffWalletState,
 }) => {
   const sortedResult = sortBy(['lastModified'], listResult).reverse();
@@ -123,27 +137,32 @@ export const getResultMessage = ({
       totalProfit,
       totalBuy,
       lastModified,
+      totalBuyActual,
+      totalProfitPercent,
+      lastModifiedIcon,
       // amount,
       // date,
       // price,
-      // totalBuyActual,
-      // totalProfitPercent,
       // actualPrice,
     }) =>
-      `${getStatusEmoji(totalProfit)} ${name}:\n${round(totalBuy, 2)}$ (${round(
-        totalProfit,
+      `${getStatusEmoji(totalProfit)} ${name}: ${round(totalBuyActual, 1)}$ (${round(
+        totalProfitPercent,
+        1,
+      )}%)
+      ${round(totalBuy, 2)}$ (${round(totalProfit, 2)}$) ${round(
+        lastModified,
         2,
-      )}$) ${round(lastModified, 2)}%`,
+      )}% ${lastModifiedIcon}`,
     sortedResult,
   );
 
-  const sumMessage = `\nВсего вложил: ${round(totalAllBuy, 2)}$\nСостояние кошелька: ${round(
-    walletState,
-    2,
-  )}$\n ${netProfit >= 0 ? 'Доход' : 'Убыток'}: ${round(netProfit, 2)}% (${round(
+  const sumMessage = `
+  Всего вложил: ${round(totalAllBuy, 2)}$
+  Состояние кошелька: ${round(walletState, 2)}$
+  ${netProfit >= 0 ? 'Доход' : 'Убыток'}: ${round(netProfit, 2)}% (${round(
     diffNetProfit,
     2,
-  )}%)`;
+  )}%) ${diffNetProfitIcon}`;
 
-  return `${arrOfMessages.join('\n\n')}\n${sumMessage}`;
+  return `${arrOfMessages.join('\n')}\n${sumMessage}`;
 };
