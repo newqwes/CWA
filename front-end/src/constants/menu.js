@@ -5,6 +5,7 @@ export const MENU_KEYS = {
   statistics: '/statistics',
   users: '/users',
   chat: '/chat',
+  git: '/git',
 };
 
 export const DEFAULT_SELECTED_MENU = MENU_KEYS.statistics;
