@@ -17,7 +17,7 @@ import errorMiddleware from './middleware/errorMiddleware';
 import authRoute from './routes/authRoute';
 import orderRoute from './routes/orderRoute';
 import refreshRoute from './routes/refreshRoute';
-// import runTelegramBotService from './services/telegramBotService';
+import runTelegramBotService from './services/telegramBotService';
 
 dotenv.config();
 const app = express();
@@ -57,7 +57,7 @@ const start = async () => {
       console.log('GOOGLE_CALLBACK_URL: ', process.env.GOOGLE_CALLBACK_URL);
     });
 
-    // await runTelegramBotService();
+    await runTelegramBotService();
   } catch (e) {
     console.log(e);
   }
