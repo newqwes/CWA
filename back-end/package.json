@@ -4,10 +4,10 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "startD": "nodemon --exec babel-node src/index.js",
+    "start": "nodemon --exec babel-node src/index.js",
     "lint": "eslint .",
     "resetDb": "yarn sequelize-cli db:migrate && yarn sequelize-cli db:migrate:undo:all && yarn sequelize-cli db:migrate",
-    "start": "yarn resetDb && yarn startD"
+    "startD": "yarn resetDb && yarn startD"
   },
   "author": "Nazar Ashyrov <newnewqwes@gmail.com>",
   "license": "ISC",
