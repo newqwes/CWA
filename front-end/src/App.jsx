@@ -40,12 +40,7 @@ class App extends React.Component {
 
     return (
       <AppWrapper loading={loading.toString()}>
-        <Sider
-          collapsedWidth={0}
-          collapsible
-          collapsed={collapsedSideMenu}
-          zeroWidthTriggerStyle={{ width: 0 }}
-          onCollapse={handleCollapseSideMenu}>
+        <Sider collapsible collapsed={collapsedSideMenu} onCollapse={handleCollapseSideMenu}>
           <Link to={DEFAULT_SELECTED_MENU}>
             <Logo collapsed={collapsedSideMenu}>
               <SketchOutlined />
