@@ -2,13 +2,14 @@ import React from 'react';
 import { PieChartOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons';
 
 export const MENU_KEYS = {
+  home: '/',
   statistics: '/statistics',
   users: '/users',
   chat: '/chat',
   git: '/git',
 };
 
-export const DEFAULT_SELECTED_MENU = MENU_KEYS.statistics;
+export const DEFAULT_SELECTED_MENU = MENU_KEYS.home;
 
 export const DEFAULT_MODE_MENU = 'inline';
 
