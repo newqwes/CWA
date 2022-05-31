@@ -13,6 +13,7 @@ import ChatContainer from './containers/ChatContainer';
 import HeaderContainer from './containers/HeaderContainer';
 import GitContainer from './containers/GitContainer';
 import HomePageContainer from './containers/HomePageContainer';
+import PrivateRoute from './components/PrivateRoute';
 
 import { AppWrapper, Logo, Owerlay, ContentWrapper } from './style/AppWrapper';
 import { DEFAULT_SELECTED_MENU, MENU_KEYS } from './constants/menu';
@@ -53,9 +54,24 @@ class App extends React.Component {
           <Content>
             <ContentWrapper>
               <Route exact path={MENU_KEYS.home} component={HomePageContainer} />
-              <Route exact path={MENU_KEYS.statistics} component={StatisticsContainer} />
-              <Route exact path={MENU_KEYS.users} component={UsersContainer} />
-              <Route exact path={MENU_KEYS.chat} component={ChatContainer} />
+              <PrivateRoute
+                exact
+                path={MENU_KEYS.statistics}
+                component={StatisticsContainer}
+                authorized={authorized}
+              />
+              <PrivateRoute
+                exact
+                path={MENU_KEYS.users}
+                component={UsersContainer}
+                authorized={authorized}
+              />
+              <PrivateRoute
+                exact
+                path={MENU_KEYS.chat}
+                component={ChatContainer}
+                authorized={authorized}
+              />
               <Route exact path={MENU_KEYS.git} component={GitContainer} />
             </ContentWrapper>
           </Content>
