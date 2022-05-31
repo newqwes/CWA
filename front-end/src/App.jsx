@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Button, Layout, Result } from 'antd';
+import { Layout } from 'antd';
 import { SketchOutlined } from '@ant-design/icons';
 
 import SideMenuContainer from './containers/SideMenuContainer';
@@ -12,6 +12,7 @@ import UsersContainer from './containers/UsersContainer';
 import ChatContainer from './containers/ChatContainer';
 import HeaderContainer from './containers/HeaderContainer';
 import GitContainer from './containers/GitContainer';
+import HomePageContainer from './containers/HomePageContainer';
 
 import { AppWrapper, Logo, Owerlay, ContentWrapper } from './style/AppWrapper';
 import { DEFAULT_SELECTED_MENU, MENU_KEYS } from './constants/menu';
@@ -22,7 +23,6 @@ class App extends React.Component {
   static propTypes = {
     handleCollapseSideMenu: PropTypes.func.isRequired,
     getAutharizationStatus: PropTypes.func.isRequired,
-    handleShowAuthModal: PropTypes.func.isRequired,
     collapsedSideMenu: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     authorized: PropTypes.bool.isRequired,
@@ -35,8 +35,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { handleCollapseSideMenu, collapsedSideMenu, authorized, loading, handleShowAuthModal } =
-      this.props;
+    const { handleCollapseSideMenu, collapsedSideMenu, authorized, loading } = this.props;
 
     return (
       <AppWrapper loading={loading.toString()}>
@@ -52,27 +51,13 @@ class App extends React.Component {
         <Layout>
           <HeaderContainer>{authorized ? <LogoutContainer /> : <AuthContainer />}</HeaderContainer>
           <Content>
-            <div>
-              {authorized ? (
-                <ContentWrapper>
-                  <Route exact path={MENU_KEYS.statistics} component={StatisticsContainer} />
-                  <Route exact path={MENU_KEYS.users} component={UsersContainer} />
-                  <Route exact path={MENU_KEYS.chat} component={ChatContainer} />
-                  <Route exact path={MENU_KEYS.git} component={GitContainer} />
-                </ContentWrapper>
-              ) : (
-                <Result
-                  status='403'
-                  title='403'
-                  subTitle='Извините, у вас нет прав доступа к этой странице.'
-                  extra={
-                    <Button onClick={handleShowAuthModal} type='primary'>
-                      Войти
-                    </Button>
-                  }
-                />
-              )}
-            </div>
+            <ContentWrapper>
+              <Route exact path={MENU_KEYS.home} component={HomePageContainer} />
+              <Route exact path={MENU_KEYS.statistics} component={StatisticsContainer} />
+              <Route exact path={MENU_KEYS.users} component={UsersContainer} />
+              <Route exact path={MENU_KEYS.chat} component={ChatContainer} />
+              <Route exact path={MENU_KEYS.git} component={GitContainer} />
+            </ContentWrapper>
           </Content>
         </Layout>
         <Owerlay />
