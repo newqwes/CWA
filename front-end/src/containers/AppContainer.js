@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import { getAuthorizationStatusAC } from '../actionCreators/auth';
-import { handleCollapseSideMenuAC, handleShowAuthModalAC } from '../actionCreators/aplication';
+import { handleCollapseSideMenuAC } from '../actionCreators/aplication';
 
 import { isAuthorized } from '../selectors/authorization';
 import { getLastDateUpdate, getScore, getDataRefreshLimitPerMinute } from '../selectors/user';
@@ -21,7 +21,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   handleCollapseSideMenu: handleCollapseSideMenuAC,
   getAutharizationStatus: getAuthorizationStatusAC,
-  handleShowAuthModal: handleShowAuthModalAC,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
