@@ -4,21 +4,26 @@ import PropTypes from 'prop-types';
 import { Button, Result } from 'antd';
 import { SketchOutlined } from '@ant-design/icons';
 
-const HomePage = ({ handleShowAuthModal, authorized }) => (
+const HomePage = ({ handleShowAuthModal, handleShowRegistrationModal, authorized }) => (
   <Result
     icon={<SketchOutlined />}
-    title='Добро Пожаловать в Coinlitics!'
+    title='Добро пожаловать в Coinlitics.ru'
     subTitle={
-      !authorized
-        ? 'Для того чтобы начать, войдите или зарегистриуруйтесь, пожалуйста'
-        : 'Теперь вы можете начать пользоваться'
+      authorized
+        ? 'Сервис находится на стадии разработки, пока доступна возожность просмотра статистики по криптокошельку'
+        : 'Для того чтобы начать, войдите или зарегистриуруйтесь, пожалуйста'
     }
     extra={
-      !authorized ? (
-        <Button onClick={handleShowAuthModal} type='primary'>
-          Войти
-        </Button>
-      ) : null
+      authorized ? null : (
+        <>
+          <Button onClick={handleShowAuthModal} type='primary'>
+            Войти
+          </Button>
+          <Button onClick={handleShowRegistrationModal} type='default'>
+            Регистрация
+          </Button>
+        </>
+      )
     }
   />
 );
@@ -26,6 +31,7 @@ const HomePage = ({ handleShowAuthModal, authorized }) => (
 export default HomePage;
 
 HomePage.propTypes = {
-  handleShowAuthModal: PropTypes.object.isRequired,
+  handleShowAuthModal: PropTypes.func.isRequired,
+  handleShowRegistrationModal: PropTypes.func.isRequired,
   authorized: PropTypes.bool.isRequired,
 };
