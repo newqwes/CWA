@@ -27,6 +27,7 @@ export const Logo = styled.div`
     font-weight: 500;
     letter-spacing: 0.2px;
     margin: 0;
+    white-space: nowrap;
     ${({ collapsed }) => collapsed && logoParagraph}
   }
 

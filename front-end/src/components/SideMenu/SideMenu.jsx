@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { map } from 'lodash/fp';
 import { Menu } from 'antd';
 
+import { MENU, DEFAULT_MODE_MENU } from '../../constants/menu';
 import { DEFAULT_THEME } from '../../constants/theme';
-import { DEFAULT_MODE_MENU } from '../../constants/menu';
 
-const SideMenu = ({ menuItems, location }) => {
+const SideMenu = ({ location }) => {
   const getMainMenu = () =>
     map(
       ({ link, title, icon }) => (
@@ -15,7 +15,7 @@ const SideMenu = ({ menuItems, location }) => {
           <Link to={link}>{title}</Link>
         </Menu.Item>
       ),
-      menuItems,
+      MENU,
     );
 
   return (
@@ -26,7 +26,6 @@ const SideMenu = ({ menuItems, location }) => {
 };
 
 SideMenu.propTypes = {
-  menuItems: PropTypes.arrayOf(PropTypes.object).isRequired,
   location: PropTypes.object.isRequired,
 };
 
