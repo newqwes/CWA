@@ -1,4 +1,6 @@
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withAuthRedirect } from '../hoc/withAuthRedirect';
 
 import Statistics from '../components/Statistics';
 import { deleteOrderAC, setOrderAC, setOrdersAC } from '../actionCreators/order';
@@ -30,4 +32,4 @@ const mapDispatchToProps = {
   deleteOrder: deleteOrderAC,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Statistics);
+export default compose(connect(mapStateToProps, mapDispatchToProps), withAuthRedirect)(Statistics);
