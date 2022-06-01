@@ -17,6 +17,8 @@ import errorMiddleware from './middleware/errorMiddleware';
 import authRoute from './routes/authRoute';
 import orderRoute from './routes/orderRoute';
 import refreshRoute from './routes/refreshRoute';
+import userRoute from './routes/userRoute';
+
 import runTelegramBotService from './services/telegramBotService';
 
 dotenv.config();
@@ -41,6 +43,7 @@ app.use(passport.session());
 app.use('/api/auth', authRoute);
 app.use('/api/order', orderRoute);
 app.use('/api/refresh', refreshRoute);
+app.use('/api/user', userRoute);
 
 app.use(errorMiddleware);
 
