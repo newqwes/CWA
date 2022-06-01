@@ -1,10 +1,9 @@
 import React from 'react';
-import { Route, Link } from 'react-router-dom';
+import { Route, Link, Routes } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Layout } from 'antd';
 import { SketchOutlined } from '@ant-design/icons';
 
-import SideMenuContainer from './containers/SideMenuContainer';
 import AuthContainer from './containers/AuthContainer';
 import LogoutContainer from './containers/LogoutContainer';
 import StatisticsContainer from './containers/StatisticsContainer';
@@ -14,6 +13,7 @@ import HeaderContainer from './containers/HeaderContainer';
 import GitContainer from './containers/GitContainer';
 import HomePageContainer from './containers/HomePageContainer';
 import PrivateRoute from './components/PrivateRoute';
+import SideMenu from './components/SideMenu';
 
 import { AppWrapper, Logo, Owerlay, ContentWrapper } from './style/AppWrapper';
 import { DEFAULT_SELECTED_MENU, MENU_KEYS } from './constants/menu';
@@ -47,32 +47,31 @@ class App extends React.Component {
               <p>Crypto Wallet Analytics</p>
             </Logo>
           </Link>
-          <SideMenuContainer />
+          <SideMenu />
         </Sider>
         <Layout>
           <HeaderContainer>{authorized ? <LogoutContainer /> : <AuthContainer />}</HeaderContainer>
           <Content>
             <ContentWrapper>
-              <Route exact path={MENU_KEYS.home} component={HomePageContainer} />
+              <Routes>
+                <Route path={MENU_KEYS.home} element={<HomePageContainer />} />
+                <Route path={MENU_KEYS.git} element={<GitContainer />} />
+              </Routes>
               <PrivateRoute
-                exact
                 path={MENU_KEYS.statistics}
                 component={StatisticsContainer}
                 authorized={authorized}
               />
               <PrivateRoute
-                exact
-                path={MENU_KEYS.users}
+                path={`${MENU_KEYS.users}/*`}
                 component={UsersContainer}
                 authorized={authorized}
               />
               <PrivateRoute
-                exact
                 path={MENU_KEYS.chat}
                 component={ChatContainer}
                 authorized={authorized}
               />
-              <Route exact path={MENU_KEYS.git} component={GitContainer} />
             </ContentWrapper>
           </Content>
         </Layout>
