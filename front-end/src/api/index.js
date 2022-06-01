@@ -75,6 +75,18 @@ export const refreshAPI = {
   },
 };
 
+export const userAPI = {
+  deleteUser: async () => {
+    try {
+      const { data } = await axios.delete('user/delete');
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+};
+
 export const orderAPI = {
   setUserOrder: async ({ count, coinId, price, date }) => {
     try {
