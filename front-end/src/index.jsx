@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { DEFAULT_THEME } from './constants/theme';
 import store from './store/configureStore';
@@ -19,8 +19,13 @@ ReactDOM.render(
       <ThemeProvider theme={theme[DEFAULT_THEME]}>
         <GlobalStyle />
         <BrowserRouter>
-          <Route path='/' component={AppContainer} />
-          <Route path={['/login/success', '/login/failure']} component={CloseWindow} />
+          <Routes>
+            <Route path='*' element={<AppContainer />} />
+            <Route path='login'>
+              <Route path='success' element={<CloseWindow />} />
+              <Route path='failure' element={<CloseWindow />} />
+            </Route>
+          </Routes>
         </BrowserRouter>
       </ThemeProvider>
     </Provider>
