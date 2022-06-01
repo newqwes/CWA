@@ -75,35 +75,6 @@ class Header extends React.Component {
 
     return (
       <HeaderWrapper>
-        <div>
-          <Button shape='circle' href='https://www.coingecko.com' target='_blank' type='link'>
-            Gecko
-          </Button>
-          <Button shape='circle' href='https://coinmarketcap.com/ru/' target='_blank' type='link'>
-            Marketcap
-          </Button>
-          <Button
-            shape='circle'
-            href='https://ru.tradingview.com/chart/1G7G96B4/'
-            target='_blank'
-            type='link'>
-            TradingView
-          </Button>
-          <Button
-            shape='circle'
-            href='https://www.coinglass.com/LiquidationData'
-            target='_blank'
-            type='link'>
-            Coinglass
-          </Button>
-          <Button
-            shape='circle'
-            href='https://t.me/count_in_wallet_bot'
-            target='_blank'
-            type='link'>
-            Telegram Bot
-          </Button>
-        </div>
         <Paragraph
           copyable={{
             text: AUTH_TELEGRAM_CODE_PREFIX + userId,
@@ -114,7 +85,7 @@ class Header extends React.Component {
         <AuthBlock>
           {authorized && (
             <>
-              <Title level={4}>score: {score}</Title>
+              <Title level={4}>Счетчик: {score}</Title>
               {refreshDisabled ? (
                 <Text>Осталось: {time}</Text>
               ) : (

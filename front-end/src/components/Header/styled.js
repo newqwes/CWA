@@ -28,5 +28,6 @@ export const AuthBlock = styled.div`
 `;
 
 export const Paragraph = styled(ParagraphAnt)`
+  margin-left: auto;
   color: #fff;
 `;

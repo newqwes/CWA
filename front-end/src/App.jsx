@@ -44,7 +44,7 @@ class App extends React.Component {
           <Link to={DEFAULT_SELECTED_MENU}>
             <Logo collapsed={collapsedSideMenu}>
               <SketchOutlined />
-              <p>CryptoWalletAnalytics</p>
+              <p>Crypto Wallet Analytics</p>
             </Logo>
           </Link>
           <SideMenuContainer />
