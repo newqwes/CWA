@@ -1,14 +1,14 @@
 /* eslint-disable indent */
-import { get, map, find, sortBy, reduce, findIndex } from 'lodash/fp';
+import { get, map, find, sortBy, reduce, findIndex, meanBy } from 'lodash/fp';
 import { round } from 'lodash';
 
-import { AUTH_TELEGRAM_CODE_REGEX } from '../constants/telegram';
+import { AUTH_TELEGRAM_CODE_REGEX, TELEGRAM_MESSAGE_MAX_LIMIT } from '../constants/telegram';
 
 export const isAuthCode = text => AUTH_TELEGRAM_CODE_REGEX.test(text);
 
 export const removeAuthCode = text => text.replace(AUTH_TELEGRAM_CODE_REGEX, '');
 
-const getDffIcon = number => (number >= 0 ? '🔼' : '🔻');
+const getDffIcon = number => (number >= 0 ? '📈' : '📉');
 
 export const compareResults = refreshData => {
   const newList = get(['list'], refreshData);
@@ -61,7 +61,8 @@ export const compareResults = refreshData => {
     const totalBuyActual = oldItem.amount * actualPrice;
     const totalProfit = totalBuyActual - oldItem.totalBuy;
     const totalProfitPercent = (totalBuyActual / oldItem.totalBuy) * 100 - 100;
-    const lastModified = (actualPrice * 100) / oldItem.actualPrice - 100;
+    const lastModifiedPercent = (actualPrice * 100) / oldItem.actualPrice - 100;
+    const lastModified = totalBuyActual * (lastModifiedPercent / 100);
 
     return {
       name: oldItem.name,
@@ -75,7 +76,8 @@ export const compareResults = refreshData => {
       totalProfitPercent,
       actualPrice,
       lastModified,
-      lastModifiedIcon: getDffIcon(lastModified),
+      lastModifiedPercent,
+      lastModifiedIcon: getDffIcon(lastModifiedPercent),
     };
   }, uniqOldList);
 
@@ -120,6 +122,8 @@ export const compareResults = refreshData => {
 
 export const getStatusEmoji = value => (value >= 0 ? '🟢' : '🔴');
 
+const isMessageResultOverThanLimit = message => message.length >= TELEGRAM_MESSAGE_MAX_LIMIT;
+
 export const getResultMessage = ({
   listResult,
   totalAllBuy,
@@ -129,30 +133,31 @@ export const getResultMessage = ({
   diffNetProfitIcon,
   // diffWalletState,
 }) => {
-  const sortedResult = sortBy(['lastModified'], listResult).reverse();
+  const sortedResult = sortBy(['lastModifiedPercent'], listResult).reverse();
+
+  const meanTotal = meanBy('totalBuyActual', sortedResult);
 
   const arrOfMessages = map(
     ({
       name,
       totalProfit,
       totalBuy,
-      lastModified,
+      lastModifiedPercent,
       totalBuyActual,
       totalProfitPercent,
       lastModifiedIcon,
+      lastModified,
       // amount,
       // date,
       // price,
-      // actualPrice,
+      actualPrice,
     }) =>
-      `${getStatusEmoji(totalProfit)} ${name}: ${round(totalBuyActual, 1)}$ (${round(
-        totalProfitPercent,
-        1,
-      )}%)
-      ${round(totalBuy, 2)}$ (${round(totalProfit, 2)}$) ${round(
-        lastModified,
-        2,
-      )}% ${lastModifiedIcon}`,
+      `${name}: ${actualPrice}$
+Вложил: ${round(totalBuy, 2)}$ (${round(totalProfit, 2)}$) ${getStatusEmoji(totalProfit)}
+Состояние: ${round(totalBuyActual, 1)}$ (${round(totalProfitPercent, 1)}%) ${
+        meanTotal < totalBuyActual ? '💰' : ''
+      }
+Изменение: ${round(lastModified, 2)}$ (${round(lastModifiedPercent, 2)}%) ${lastModifiedIcon}\n`,
     sortedResult,
   );
 
@@ -164,5 +169,11 @@ export const getResultMessage = ({
     2,
   )}%) ${diffNetProfitIcon}`;
 
-  return `${arrOfMessages.join('\n')}\n${sumMessage}`;
+  const messageResult = `${arrOfMessages.join('\n')}${sumMessage}`;
+
+  return {
+    arrOfMessages,
+    sumMessage,
+    overThanLimit: isMessageResultOverThanLimit(messageResult),
+  };
 };
