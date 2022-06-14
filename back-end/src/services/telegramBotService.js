@@ -1,6 +1,6 @@
 import TelegraAPI from 'node-telegram-bot-api';
 import { forEach, isEmpty, isFinite, round } from 'lodash';
-import { get, isEqual, pick } from 'lodash/fp';
+import { get, isEqual, pick, chunk } from 'lodash/fp';
 
 import { AGAIN_MESSAGE_OPTIONS, MESSAGE_OPTIONS, MINUTE, TEN_MINUTE } from '../constants/telegram';
 import { compareResults, getResultMessage, isAuthCode, removeAuthCode } from '../utils/telegram';
@@ -169,9 +169,21 @@ const runTelegramBotService = async () => {
           });
 
           const result = compareResults(refreshData);
-          const resultMessage = getResultMessage(result);
+          const { arrOfMessages, sumMessage, overThanLimit } = getResultMessage(result);
 
-          return MyBot.sendMessage(id, resultMessage, MESSAGE_OPTIONS);
+          if (overThanLimit) {
+            const [mes1, mes2] = chunk(round(arrOfMessages.length / 2), arrOfMessages);
+
+            MyBot.sendMessage(id, mes1.join('\n'), MESSAGE_OPTIONS);
+
+            setTimeout(() => {
+              MyBot.sendMessage(id, `${mes2.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
+            }, 500);
+
+            return;
+          }
+
+          return MyBot.sendMessage(id, `${arrOfMessages.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
         }
 
         if (text === '⏰⏰⏰') {
@@ -189,7 +201,7 @@ const runTelegramBotService = async () => {
           );
         }
 
-        if (isFinite(textLikeNumber) && textLikeNumber >= 0 && textLikeNumber < 30) {
+        if (isFinite(textLikeNumber) && textLikeNumber > 0) {
           if (timeoutId) clearTimeout(timeoutId);
 
           timeoutId = setInterval(
