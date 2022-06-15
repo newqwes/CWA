@@ -1,5 +1,11 @@
 import { assoc, compose, pick } from 'lodash/fp';
-import { AUTH_LOGOUT, SET_USER_DATA, SET_USER_HISTORY } from '../actions';
+import {
+  AUTH_LOGOUT,
+  DELETE_USER_DATA_FAILURE,
+  DELETE_USER_DATA_SUCCESS,
+  SET_USER_DATA,
+  SET_USER_HISTORY,
+} from '../actions';
 
 const initialState = {
   email: '',
@@ -67,6 +73,14 @@ const user = (state = initialState, { type, payload }) => {
     }
     case AUTH_LOGOUT: {
       return initialState;
+    }
+
+    case DELETE_USER_DATA_SUCCESS: {
+      return initialState;
+    }
+
+    case DELETE_USER_DATA_FAILURE: {
+      return state;
     }
 
     default:
