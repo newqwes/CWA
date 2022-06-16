@@ -1,11 +1,11 @@
 import React from 'react';
 import { Route, Link, Routes } from 'react-router-dom';
 import PropTypes from 'prop-types';
+
 import { Layout } from 'antd';
 import { SketchOutlined } from '@ant-design/icons';
 
 import AuthContainer from './containers/AuthContainer';
-import LogoutContainer from './containers/LogoutContainer';
 import StatisticsContainer from './containers/StatisticsContainer';
 import UsersContainer from './containers/UsersContainer';
 import ChatContainer from './containers/ChatContainer';
@@ -14,6 +14,7 @@ import GitContainer from './containers/GitContainer';
 import HomePageContainer from './containers/HomePageContainer';
 import PrivateRoute from './components/PrivateRoute';
 import SideMenu from './components/SideMenu';
+import AvatarMenuContainer from './containers/AvatarMenuContainer';
 
 import { AppWrapper, Logo, Owerlay, ContentWrapper } from './style/AppWrapper';
 import { DEFAULT_SELECTED_MENU, MENU_KEYS } from './constants/menu';
@@ -50,7 +51,9 @@ class App extends React.Component {
           <SideMenu />
         </Sider>
         <Layout>
-          <HeaderContainer>{authorized ? <LogoutContainer /> : <AuthContainer />}</HeaderContainer>
+          <HeaderContainer>
+            {authorized ? <AvatarMenuContainer /> : <AuthContainer />}
+          </HeaderContainer>
           <Content>
             <ContentWrapper>
               <Routes>
