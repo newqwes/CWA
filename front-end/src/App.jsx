@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Link, Routes } from 'react-router-dom';
+import { Route, Link, Routes, Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { Layout } from 'antd';
@@ -57,16 +57,26 @@ class App extends React.Component {
           <Content>
             <ContentWrapper>
               <Routes>
-                <Route path={MENU_KEYS.home} element={<HomePageContainer />} />
+                <Route
+                  path={'/'}
+                  element={
+                    authorized ? <Navigate to={MENU_KEYS.statistics} /> : <HomePageContainer />
+                  }
+                />
                 <Route path={MENU_KEYS.git} element={<GitContainer />} />
               </Routes>
+              <PrivateRoute
+                path={MENU_KEYS.home}
+                component={HomePageContainer}
+                authorized={authorized}
+              />
               <PrivateRoute
                 path={MENU_KEYS.statistics}
                 component={StatisticsContainer}
                 authorized={authorized}
               />
               <PrivateRoute
-                path={`${MENU_KEYS.users}/*`}
+                path={MENU_KEYS.users}
                 component={UsersContainer}
                 authorized={authorized}
               />

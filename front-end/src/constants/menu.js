@@ -2,7 +2,7 @@ import React from 'react';
 import { PieChartOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons';
 
 export const MENU_KEYS = {
-  home: '/',
+  home: '/home',
   statistics: '/statistics',
   users: '/users',
   chat: '/chat',
