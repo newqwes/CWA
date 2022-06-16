@@ -1,8 +1,4 @@
-import {
-  DELETE_USER_DATA_SUCCESS,
-  GET_USER_ORDERS_SUCCESS,
-  SET_USER_ORDER_SUCCESS,
-} from '../actions';
+import { DELETE_USER_SUCCESS, GET_USER_ORDERS_SUCCESS, SET_USER_ORDER_SUCCESS } from '../actions';
 
 const initialState = {
   list: [],
@@ -15,7 +11,7 @@ const order = (state = initialState, { type, payload }) => {
       return { ...state, list: payload };
     }
 
-    case DELETE_USER_DATA_SUCCESS: {
+    case DELETE_USER_SUCCESS: {
       return initialState;
     }
 

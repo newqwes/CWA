@@ -4,9 +4,8 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import { MADAL_BUTTONS } from '../constants/modal';
 
-export const deleteUserDataModalConfig = {
-  title: 'Вы действительно хотите удалить данные?',
-  buttonText: 'Удалить данные',
+export const deleteUserModalConfig = {
+  title: 'Вы действительно хотите удалить аккаунт?',
   okType: 'danger',
   okText: MADAL_BUTTONS.yes,
   cancelText: MADAL_BUTTONS.no,

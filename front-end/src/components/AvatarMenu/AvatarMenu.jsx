@@ -6,12 +6,7 @@ import { Dropdown, Menu, Avatar, Badge, Modal } from 'antd';
 
 const { confirm } = Modal;
 
-const AvatarMenu = ({
-  authLogout,
-  logoutModalConfig,
-  deleteUserData,
-  deleteUserDataModalConfig,
-}) => {
+const AvatarMenu = ({ authLogout, logoutModalConfig, deleteUser, deleteUserModalConfig }) => {
   const showConfirmForLogout = () => {
     confirm({
       ...logoutModalConfig,
@@ -21,19 +16,19 @@ const AvatarMenu = ({
     });
   };
 
-  const showConfirmForDeleteData = () => {
+  const showConfirmForDeleteUser = () => {
     confirm({
-      ...deleteUserDataModalConfig,
+      ...deleteUserModalConfig,
       onOk() {
-        deleteUserData();
+        deleteUser();
       },
     });
   };
 
   const menuItems = (
     <Menu>
-      <Menu.Item key={0} onClick={showConfirmForDeleteData} icon={<DeleteOutlined />} danger>
-        Удалить данные
+      <Menu.Item key={0} onClick={showConfirmForDeleteUser} icon={<DeleteOutlined />} danger>
+        Удалить аккаунт
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key={1} onClick={showConfirmForLogout} icon={<LogoutOutlined />}>
@@ -58,6 +53,6 @@ export default AvatarMenu;
 AvatarMenu.propTypes = {
   authLogout: PropTypes.func.isRequired,
   logoutModalConfig: PropTypes.object.isRequired,
-  deleteUserData: PropTypes.func.isRequired,
-  deleteUserDataModalConfig: PropTypes.object.isRequired,
+  deleteUser: PropTypes.func.isRequired,
+  deleteUserModalConfig: PropTypes.object.isRequired,
 };

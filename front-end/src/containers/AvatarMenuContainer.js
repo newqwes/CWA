@@ -1,23 +1,23 @@
 import { connect } from 'react-redux';
 
-import { deleteUserDataAC } from '../actionCreators/user';
+import { deleteUserAC } from '../actionCreators/user';
 import { authLogoutAC } from '../actionCreators/auth';
 
 import AvatarMenu from '../components/AvatarMenu';
 
-import { deleteUserDataModalConfig } from '../configuration/deleteDataConfig';
+import { deleteUserModalConfig } from '../configuration/deleteUserConfig';
 import { logoutModalConfig } from '../configuration/authConfig';
 
 const mapDispatchToProps = {
-  deleteUserData: deleteUserDataAC,
+  deleteUser: deleteUserAC,
   authLogout: authLogoutAC,
 };
 
-const mergeProps = (_, { authLogout, deleteUserData }, ownProps) => ({
+const mergeProps = (_, { authLogout, deleteUser }, ownProps) => ({
   ...ownProps,
   authLogout,
-  deleteUserData,
-  deleteUserDataModalConfig,
+  deleteUser,
+  deleteUserModalConfig,
   logoutModalConfig,
 });
 

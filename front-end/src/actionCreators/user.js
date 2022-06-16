@@ -1,7 +1,7 @@
 import {
-  DELETE_USER_DATA_FAILURE,
-  DELETE_USER_DATA_PENDING,
-  DELETE_USER_DATA_SUCCESS,
+  DELETE_USER_FAILURE,
+  DELETE_USER_PENDING,
+  DELETE_USER_SUCCESS,
   SET_USER_DATA,
   SET_USER_HISTORY,
 } from '../actions';
@@ -16,14 +16,14 @@ export const setUserHistoryAC = payload => ({
   payload,
 });
 
-export const deleteUserDataAC = () => ({
-  type: DELETE_USER_DATA_PENDING,
+export const deleteUserAC = () => ({
+  type: DELETE_USER_PENDING,
 });
 
-export const deleteUserDataSuccessAC = () => ({
-  type: DELETE_USER_DATA_SUCCESS,
+export const deleteUserSuccessAC = () => ({
+  type: DELETE_USER_SUCCESS,
 });
 
-export const deleteUserDataFailureAC = () => ({
-  type: DELETE_USER_DATA_FAILURE,
+export const deleteUserFailureAC = () => ({
+  type: DELETE_USER_FAILURE,
 });

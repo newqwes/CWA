@@ -80,7 +80,6 @@ export const authModalConfig = {
 
 export const logoutModalConfig = {
   title: 'Вы действительно хотите выйти?',
-  buttonText: 'Выйти',
   okText: MADAL_BUTTONS.yes,
   cancelText: MADAL_BUTTONS.no,
   icon: <ExclamationCircleOutlined />,
