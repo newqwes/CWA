@@ -18,10 +18,7 @@ class IconCellRenderer extends React.Component {
     return (
       <Wrapper>
         {iconSrc ? (
-          <a
-            target='_blank'
-            href={`https://coinmarketcap.com/ru/currencies/${coinId}`}
-            rel='noreferrer'>
+          <a target='_blank' href={`https://www.coingecko.com/en/coins/${coinId}`} rel='noreferrer'>
             <img src={iconSrc} alt={value} />
           </a>
         ) : (

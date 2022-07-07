@@ -20,9 +20,9 @@ class PriceCellRenderer extends React.Component {
       return <Wrapper positive={positive}>{toNormalNumber(valueWithoutExponential)} $</Wrapper>;
     }
 
-    const positive = value > 0;
+    const positive = value >= 0;
 
-    return <Wrapper positive={positive}>{value ? `${toNormalNumber(value)} $` : ''}</Wrapper>;
+    return <Wrapper positive={positive}>{value ? `${toNormalNumber(value)}` : '0'} $</Wrapper>;
   }
 }
 

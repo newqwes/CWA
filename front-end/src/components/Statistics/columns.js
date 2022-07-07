@@ -133,7 +133,7 @@ export const defaultColDef = {
 export const autoGroupColumnDef = {
   field: 'name',
   headerName: 'Наименование',
-  minWidth: 250,
+  minWidth: 220,
   cellStyle: { fontWeight: 'bold', fontSize: '13px' },
 };
 

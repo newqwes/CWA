@@ -76,5 +76,5 @@ export const AppWrapper = styled(Layout)`
 `;
 
 export const ContentWrapper = styled(Layout.Content)`
-  padding: 15px;
+  padding: 10px 25px 25px 10px;
 `;

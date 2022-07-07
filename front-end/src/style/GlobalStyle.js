@@ -17,6 +17,15 @@ ul {
   margin: 0;
   list-style-type: none;
 }
+
+.ag-group-contracted, .ag-group-expanded {
+  margin-right: 10px !important;
+}
+
+.ag-cell, .ag-header-cell {
+  padding-left: 10px !important;
+}
+
 `;
 
 export default GlobalStyle;
