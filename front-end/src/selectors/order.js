@@ -155,11 +155,43 @@ export const getGridRowData = createSelector(
     }, orders),
 );
 
+export const getFilteredGridData = createSelector(getGridRowData, gridData => {
+  const groupedByCoinId = reduce(
+    (acc, { coinId, lastModified, totalBuyActual, name, icon }) => {
+      if (acc[coinId]) {
+        acc[coinId].lastModified += lastModified;
+        acc[coinId].totalBuyActual += totalBuyActual;
+        acc[coinId].differenceChange =
+          (acc[coinId].lastModified * 100) / acc[coinId].totalBuyActual;
+      } else {
+        acc[coinId] = {
+          lastModified,
+          name,
+          icon,
+          totalBuyActual,
+          differenceChange: (lastModified * 100) / totalBuyActual,
+        };
+      }
+
+      return acc;
+    },
+    {},
+    gridData,
+  );
+
+  const filteredGridData = toArray(groupedByCoinId).filter(
+    ({ totalBuyActual, lastModified }) => totalBuyActual > 1 && Math.abs(lastModified) >= 0.01,
+  );
+
+  return filteredGridData;
+});
+
 export const getChartData = createSelector(
   getComparisonOrdersAndPriceList,
   getUserHistory,
   getNetProfitPercent,
-  (comparisonOrdersAndPriceList, userHistory, netProfitPercent) => {
+  getFilteredGridData,
+  (comparisonOrdersAndPriceList, userHistory, netProfitPercent, filteredGridData) => {
     const sortedOrders = toArray(comparisonOrdersAndPriceList).sort(
       ({ totalBuy }, b) => b.totalBuy - totalBuy,
     );
@@ -217,116 +249,146 @@ export const getChartData = createSelector(
       userHistory,
     );
 
-    return {
-      donut,
-      area: {
-        series: [
-          {
-            name: 'Чистая прибыль',
-            // eslint-disable-next-line no-plusplus
-            data: drop(1, [...seriesData, { x: x++, y: round(netProfitPercent, 1) }]),
+    const area = {
+      series: [
+        {
+          name: 'Чистая прибыль',
+          // eslint-disable-next-line no-plusplus
+          data: drop(1, [...seriesData, { x: x++, y: round(netProfitPercent, 1) }]),
+        },
+      ],
+      options: {
+        stroke: {
+          show: true,
+          curve: 'smooth',
+          lineCap: 'butt',
+          width: 2,
+          dashArray: 0,
+        },
+        title: {
+          text: 'Общий анализ прибыли',
+          align: 'left',
+        },
+        subtitle: {
+          text: 'Изменение цены в процентах',
+          align: 'left',
+        },
+        xaxis: {
+          type: 'category',
+          labels: {
+            show: false,
           },
-        ],
-        options: {
-          stroke: {
+        },
+        tooltip: {
+          x: {
             show: true,
-            curve: 'smooth',
-            lineCap: 'butt',
-            width: 2,
-            dashArray: 0,
-          },
-          title: {
-            text: 'Общий анализ прибыли',
-            align: 'left',
-          },
-          subtitle: {
-            text: 'Изменение цены в процентах',
-            align: 'left',
-          },
-          xaxis: {
-            type: 'category',
-            labels: {
-              show: false,
-            },
-          },
-          tooltip: {
-            x: {
-              show: true,
-              format: 'dd MMM',
-              formatter: value => {
-                if (userHistory.length <= value) {
-                  return moment().format(TIME_FORMAT);
-                }
+            format: 'dd MMM',
+            formatter: value => {
+              if (userHistory.length <= value) {
+                return moment().format(TIME_FORMAT);
+              }
 
-                return moment(userHistory[value].date).format(TIME_FORMAT);
-              },
+              return moment(userHistory[value].date).format(TIME_FORMAT);
             },
           },
-          yaxis: {
-            labels: {
-              show: true,
-              align: 'right',
-              minWidth: 0,
-              maxWidth: 160,
-              style: {
-                colors: [],
-                fontSize: '12px',
-                fontFamily: 'Helvetica, Arial, sans-serif',
-                fontWeight: 400,
-                cssClass: 'apexcharts-yaxis-label',
-              },
-              offsetX: 0,
-              offsetY: 0,
-              rotate: 0,
-              formatter: value => `${round(value, 2)} %`,
+        },
+        yaxis: {
+          labels: {
+            show: true,
+            align: 'right',
+            minWidth: 0,
+            maxWidth: 160,
+            style: {
+              colors: [],
+              fontSize: '12px',
+              fontFamily: 'Helvetica, Arial, sans-serif',
+              fontWeight: 400,
+              cssClass: 'apexcharts-yaxis-label',
             },
+            offsetX: 0,
+            offsetY: 0,
+            rotate: 0,
+            formatter: value => `${round(value, 2)} %`,
           },
-          legend: {
-            horizontalAlign: 'left',
+        },
+        legend: {
+          horizontalAlign: 'left',
+        },
+        dataLabels: {
+          enabled: false,
+        },
+      },
+    };
+
+    const sortedGridData = toArray(filteredGridData).sort(
+      ({ lastModified }, b) => b.lastModified - lastModified,
+    );
+
+    const treemap = {
+      options: {
+        legend: {
+          show: false,
+        },
+        title: {
+          text: 'Последние изменения монет в $ к Вашему кошельку',
+        },
+        dataLabels: {
+          enabled: true,
+          style: {
+            fontSize: '12px',
           },
-          dataLabels: {
-            enabled: false,
+          formatter(text, op) {
+            return [text, `${op.value}$`];
+          },
+          offsetY: -4,
+        },
+        tooltip: {
+          y: {
+            formatter: value => `${value}$`,
+          },
+        },
+        plotOptions: {
+          treemap: {
+            enableShades: true,
+            shadeIntensity: 0,
+            reverseNegativeShade: true,
+            colorScale: {
+              ranges: [
+                {
+                  from: -100,
+                  to: 0,
+                  color: '#CD363A',
+                },
+                {
+                  from: 0.001,
+                  to: 100,
+                  color: '#52B12C',
+                },
+              ],
+            },
           },
         },
       },
+      series: [
+        { data: map(({ name, lastModified }) => ({ x: name, y: lastModified }), sortedGridData) },
+      ],
+    };
+
+    return {
+      donut,
+      area,
+      treemap,
     };
   },
 );
 
-export const getEdgeCoins = createSelector(getGridRowData, gridData => {
-  const groupedByCoinId = reduce(
-    (acc, { coinId, lastModified, totalBuyActual, name, icon }) => {
-      if (acc[coinId]) {
-        acc[coinId].lastModified += lastModified;
-        acc[coinId].totalBuyActual += totalBuyActual;
-        acc[coinId].differenceChange =
-          (acc[coinId].lastModified * 100) / acc[coinId].totalBuyActual;
-      } else {
-        acc[coinId] = {
-          lastModified,
-          name,
-          icon,
-          totalBuyActual,
-          differenceChange: (lastModified * 100) / totalBuyActual,
-        };
-      }
-
-      return acc;
-    },
-    {},
-    gridData,
-  );
-
-  const sortedGridData = toArray(groupedByCoinId).sort(
+export const getEdgeCoins = createSelector(getFilteredGridData, filteredGridData => {
+  const sortedGridData = toArray(filteredGridData).sort(
     ({ differenceChange }, b) => b.differenceChange - differenceChange,
   );
 
-  const filteredGridData = toArray(sortedGridData).filter(
-    ({ totalBuyActual }) => totalBuyActual > 1,
-  );
-
-  const bestCoin = head(filteredGridData);
-  const worstCoin = last(filteredGridData);
+  const bestCoin = head(sortedGridData);
+  const worstCoin = last(sortedGridData);
 
   if (!bestCoin || !worstCoin) {
     return {
