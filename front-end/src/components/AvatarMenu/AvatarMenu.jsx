@@ -33,5 +33,5 @@ const AvatarMenu = ({ menuItems }) => {
 export default AvatarMenu;
 
 AvatarMenu.propTypes = {
-  menuItems: PropTypes.object.isRequired,
+  menuItems: PropTypes.array.isRequired,
 };

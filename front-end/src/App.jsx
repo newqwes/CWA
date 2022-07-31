@@ -11,6 +11,7 @@ import UsersContainer from './containers/UsersContainer';
 import ChatContainer from './containers/ChatContainer';
 import HeaderContainer from './containers/HeaderContainer';
 import GitContainer from './containers/GitContainer';
+import CalculatorContainer from './containers/CalculatorContainer';
 import HomePageContainer from './containers/HomePageContainer';
 import PrivateRoute from './components/PrivateRoute';
 import SideMenu from './components/SideMenu';
@@ -83,6 +84,11 @@ class App extends React.Component {
               <PrivateRoute
                 path={MENU_KEYS.chat}
                 component={ChatContainer}
+                authorized={authorized}
+              />
+              <PrivateRoute
+                path={MENU_KEYS.calculator}
+                component={CalculatorContainer}
                 authorized={authorized}
               />
             </ContentWrapper>
