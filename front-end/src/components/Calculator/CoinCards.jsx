@@ -3,31 +3,29 @@ import { Avatar } from 'antd';
 import { map } from 'lodash/fp';
 import PropTypes from 'prop-types';
 
-import { Select, Card } from './styled';
+import { Card } from './styled';
 
 const { Meta } = Card;
 
-const CoinCards = ({ fetchOptions, debounceTimeout }) =>
+const CoinCards = ({ coins }) =>
   map(
-    ({ label, value, src }) => (
-      <Card>
-        <Meta
-          avatar={<Avatar src='https://joeschmoe.io/api/v1/random' />}
-          title='Card title'
-          description='This is the description'
-        />
+    ({ label, price, src, id, priceChange }) => (
+      <Card key={id}>
+        <Meta avatar={<Avatar src={src} />} title={label} />
+        <div>Цена: {price}$</div>
+        <div>Изменение: {priceChange}%</div>
+        <div>Купить на: 12$</div>
       </Card>
     ),
-    options,
+    coins,
   );
 
 CoinCards.propTypes = {
-  fetchOptions: PropTypes.func.isRequired,
-  debounceTimeout: PropTypes.number,
+  coins: PropTypes.array,
 };
 
 CoinCards.defaultProps = {
-  debounceTimeout: 800,
+  coins: [],
 };
 
 export default CoinCards;

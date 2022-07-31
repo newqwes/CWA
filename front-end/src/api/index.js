@@ -126,3 +126,31 @@ export const orderAPI = {
     }
   },
 };
+
+export const coingeckoAPI = {
+  searchCoin: async coinname => {
+    try {
+      return fetch(`https://api.coingecko.com/api/v3/search?query=${coinname}`)
+        .then(response => response.json())
+        .then(body =>
+          body.coins.map(coin => ({
+            label: coin.name,
+            value: coin.id,
+            smallImg: coin.thumb,
+            largeImg: coin.large,
+          })),
+        );
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+  getCoinData: async coins => {
+    try {
+      const { data } = await axios.post('coin', coins);
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+};

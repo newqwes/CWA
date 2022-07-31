@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React from 'react';
 import { Spin } from 'antd';
 import debounce from 'lodash/debounce';
 import { map } from 'lodash/fp';
@@ -8,37 +8,13 @@ import { OptionImg, Select } from './styled';
 
 const { Option } = Select;
 
-const DebounceSelect = ({ fetchOptions, debounceTimeout, ...props }) => {
-  const [fetching, setFetching] = useState(false);
-  const [options, setOptions] = useState([]);
-  const fetchRef = useRef(0);
-
-  const debounceFetcher = useMemo(() => {
-    const loadOptions = value => {
-      fetchRef.current += 1;
-      const fetchId = fetchRef.current;
-
-      setOptions([]);
-      setFetching(true);
-
-      fetchOptions(value).then(newOptions => {
-        if (fetchId !== fetchRef.current) {
-          // for fetch callback order
-          return;
-        }
-
-        setOptions(newOptions);
-        setFetching(false);
-      });
-    };
-
-    return debounce(loadOptions, debounceTimeout);
-  }, [fetchOptions, debounceTimeout]);
+const DebounceSelect = ({ getCoinList, debounceTimeout, options, loading, ...props }) => {
+  const debounceFetcher = debounce(getCoinList, debounceTimeout);
 
   const optoinsComponents = map(
-    ({ label, value, src }) => (
-      <Option value={value} label={label}>
-        <OptionImg src={src} alt={label} />
+    ({ label, value, smallImg, largeImg }) => (
+      <Option value={value} label={label} key={value} largeImg={largeImg}>
+        <OptionImg src={smallImg} alt={label} />
         <span>{label}</span>
       </Option>
     ),
@@ -47,10 +23,8 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout, ...props }) => {
 
   return (
     <Select
-      labelInValue
-      filterOption={false}
       onSearch={debounceFetcher}
-      notFoundContent={fetching ? <Spin size='small' /> : null}
+      notFoundContent={loading ? <Spin size='small' /> : null}
       {...props}>
       {optoinsComponents}
     </Select>
@@ -58,12 +32,15 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout, ...props }) => {
 };
 
 DebounceSelect.propTypes = {
-  fetchOptions: PropTypes.func.isRequired,
+  getCoinList: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
   debounceTimeout: PropTypes.number,
+  options: PropTypes.array,
 };
 
 DebounceSelect.defaultProps = {
   debounceTimeout: 800,
+  options: [],
 };
 
 export default DebounceSelect;
