@@ -13,56 +13,24 @@ import {
   InputNumberWrapper,
 } from './styled';
 
-// TODO: Implement it
-const currency = ['BTC', 'ETH', 'LTC', 'BCH', 'BCH', 'BCH', 'BCH'];
-const budget = 200;
-const gap = 5;
-
-const result = currency.map((item, key) => {
-  let multiplier = Math.floor(currency.length / 2) - key;
-
-  if (!(currency.length % 2) && multiplier > 0) {
-    multiplier -= 1;
-  }
-
-  return {
-    currency: item,
-    ammount: budget / currency.length + multiplier * gap,
-  };
-});
-
-console.log(result);
-
 const Calculator = ({
   getCoinList,
-  coins,
+  searchInputCoins,
   selectedCoins,
   loading,
   selectCoins,
   generateCoinCards,
   showCards,
-  budgetValue,
+  budget,
   changeBudget,
-  differenceValue,
-  changeDifference,
+  gap,
+  changeGap,
 }) => (
   <Wrapper>
     <HeaderWrapper>
       <InputNumberWrapper>
-        <InputNumber
-          addonBefore='Бюджет'
-          prefix='$'
-          defaultValue={200}
-          value={budgetValue}
-          onChange={changeBudget}
-        />
-        <InputNumber
-          addonBefore='Разница'
-          prefix='$'
-          defaultValue={15}
-          value={differenceValue}
-          onChange={changeDifference}
-        />
+        <InputNumber addonBefore='Бюджет' prefix='$' value={budget} onChange={changeBudget} />
+        <InputNumber addonBefore='Разница' prefix='$' value={gap} onChange={changeGap} />
       </InputNumberWrapper>
       <Button type='primary' onClick={generateCoinCards}>
         Посчитать
@@ -74,16 +42,12 @@ const Calculator = ({
       placeholder='Выберите криптовалюту'
       getCoinList={getCoinList}
       onChange={selectCoins}
-      options={coins}
+      options={searchInputCoins}
       loading={loading}
     />
     {showCards && (
       <CardWrapper>
-        <CoinCards
-          coins={selectedCoins}
-          budgetValue={budgetValue}
-          differenceValue={differenceValue}
-        />
+        <CoinCards coins={selectedCoins} />
       </CardWrapper>
     )}
   </Wrapper>
@@ -95,12 +59,12 @@ Calculator.propTypes = {
   generateCoinCards: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   showCards: PropTypes.bool.isRequired,
-  budgetValue: PropTypes.number.isRequired,
+  budget: PropTypes.number.isRequired,
   changeBudget: PropTypes.func.isRequired,
-  differenceValue: PropTypes.number.isRequired,
-  changeDifference: PropTypes.func.isRequired,
+  gap: PropTypes.number.isRequired,
+  changeGap: PropTypes.func.isRequired,
   selectedCoins: PropTypes.array,
-  coins: PropTypes.array,
+  searchInputCoins: PropTypes.array,
 };
 
 export default Calculator;

@@ -1,10 +1,15 @@
-import { assoc, compose, map } from 'lodash/fp';
+import { assoc, compose, find, isEqual, map } from 'lodash/fp';
+import { round } from 'lodash';
+
+import { toNormalNumber } from '../utils/toNormalNumber';
 import {
   GET_COIN_LIST_PENDING,
   GET_COIN_LIST_SUCCESS,
   GET_COIN_LIST_FAILURE,
   SELECT_COINS,
   GENERATE_COIN_CARDS_SUCCESS,
+  CHANGE_BUDGET,
+  CHANGE_GAP,
 } from '../actions';
 
 const initialState = {
@@ -12,10 +17,20 @@ const initialState = {
   loading: true,
   selectedCoins: [],
   showCards: false,
+  budget: 200,
+  gap: 5,
 };
 
 const calculator = (state = initialState, { type, payload }) => {
   switch (type) {
+    case CHANGE_BUDGET: {
+      return assoc(['budget'], payload, state);
+    }
+
+    case CHANGE_GAP: {
+      return assoc(['gap'], payload, state);
+    }
+
     case GET_COIN_LIST_SUCCESS: {
       return compose(assoc(['coins'], payload), assoc(['loading'], false))(state);
     }
@@ -35,17 +50,25 @@ const calculator = (state = initialState, { type, payload }) => {
     }
 
     case GENERATE_COIN_CARDS_SUCCESS: {
-      const selectedCoins = map(
-        // eslint-disable-next-line camelcase
-        ({ id, name, image, current_price, price_change_percentage_24h }) => ({
+      const selectedCoins = map.convert({ cap: false })(({ id }, key) => {
+        const rawCoin = find(coin => isEqual(coin.id, id), payload);
+
+        let multiplier = Math.floor(state.selectedCoins.length / 2) - key;
+
+        if (!(state.selectedCoins.length % 2) && multiplier > 0) {
+          multiplier -= 1;
+        }
+        const ammount = state.budget / state.selectedCoins.length + multiplier * state.gap;
+
+        return {
           id,
-          label: name,
-          src: image,
-          price: current_price,
-          priceChange: price_change_percentage_24h,
-        }),
-        payload,
-      );
+          label: rawCoin.name,
+          src: rawCoin.image,
+          price: toNormalNumber(rawCoin.current_price),
+          priceChange: round(rawCoin.price_change_percentage_24h, 2),
+          ammount: round(ammount, 2),
+        };
+      }, state.selectedCoins);
 
       return compose(assoc(['selectedCoins'], selectedCoins), assoc(['showCards'], true))(state);
     }

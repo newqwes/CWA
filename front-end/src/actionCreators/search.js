@@ -7,7 +7,7 @@ import {
   GENERATE_COIN_CARDS_SUCCESS,
   GENERATE_COIN_CARDS_FAILURE,
   CHANGE_BUDGET,
-  CHANGE_DIFFERENCE,
+  CHANGE_GAP,
 } from '../actions';
 
 export const getCoinListAC = value => ({
@@ -47,7 +47,7 @@ export const changeBudgetAC = value => ({
   payload: value,
 });
 
-export const changeDifferenceAC = value => ({
-  type: CHANGE_DIFFERENCE,
+export const changeGapAC = value => ({
+  type: CHANGE_GAP,
   payload: value,
 });

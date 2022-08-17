@@ -1,22 +1,29 @@
 import { connect } from 'react-redux';
 
-import { isLoading, getSelectedCoins, getCoins, isShowCards } from '../selectors/calculator';
+import {
+  isLoading,
+  getSelectedCoins,
+  getCoins,
+  isShowCards,
+  getBudget,
+  getGap,
+} from '../selectors/calculator';
 import {
   getCoinListAC,
   selectCoinsAC,
   generateCoinCardsAC,
   changeBudgetAC,
-  changeDifferenceAC,
+  changeGapAC,
 } from '../actionCreators/search';
 import Calculator from '../components/Calculator';
 
 const mapStateToProps = state => ({
   loading: isLoading(state),
   selectedCoins: getSelectedCoins(state),
-  coins: getCoins(state),
+  searchInputCoins: getCoins(state),
   showCards: isShowCards(state),
-  budgetValue: 200,
-  differenceValue: 5,
+  budget: getBudget(state),
+  gap: getGap(state),
 });
 
 const mapDispatchToProps = {
@@ -24,7 +31,7 @@ const mapDispatchToProps = {
   selectCoins: selectCoinsAC,
   generateCoinCards: generateCoinCardsAC,
   changeBudget: changeBudgetAC,
-  changeDifference: changeDifferenceAC,
+  changeGap: changeGapAC,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Calculator);

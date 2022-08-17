@@ -7,14 +7,14 @@ import { Card } from './styled';
 
 const { Meta } = Card;
 
-const CoinCards = ({ coins, budgetValue }) =>
+const CoinCards = ({ coins }) =>
   map(
-    ({ label, price, src, id, priceChange }) => (
+    ({ label, price, src, id, priceChange, ammount }) => (
       <Card key={id}>
         <Meta avatar={<Avatar src={src} />} title={label} />
         <div>Цена: {price}$</div>
         <div>Изменение: {priceChange}%</div>
-        <div>Купить на: 12$ {budgetValue}</div>
+        {ammount && <div>Купить на: {ammount}$</div>}
       </Card>
     ),
     coins,
@@ -22,12 +22,10 @@ const CoinCards = ({ coins, budgetValue }) =>
 
 CoinCards.propTypes = {
   coins: PropTypes.array,
-  budgetValue: PropTypes.string,
 };
 
 CoinCards.defaultProps = {
   coins: [],
-  budgetValue: '',
 };
 
 export default CoinCards;
