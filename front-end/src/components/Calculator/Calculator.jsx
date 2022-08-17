@@ -79,7 +79,11 @@ const Calculator = ({
     />
     {showCards && (
       <CardWrapper>
-        <CoinCards coins={selectedCoins} />
+        <CoinCards
+          coins={selectedCoins}
+          budgetValue={budgetValue}
+          differenceValue={differenceValue}
+        />
       </CardWrapper>
     )}
   </Wrapper>
