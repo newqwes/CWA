@@ -7,7 +7,7 @@ services:
     ports:
       - '3015:3015'
     environment:
-      HOST: 'coinlitics.ru'
+      HOST: 'coinlitics.space'
   client:
     build: ./front-end
     restart: always

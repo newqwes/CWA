@@ -114,7 +114,7 @@ const runTelegramBotService = async () => {
         if (!userExist) {
           return MyBot.sendMessage(
             id,
-            `${firstName}, вы не авторизованны, отправте нам ключ авторизации с сайта: coinlitics.ru`,
+            `${firstName}, вы не авторизованны, отправте нам ключ авторизации с сайта: coinlitics.space`,
             MESSAGE_OPTIONS,
           );
         }
