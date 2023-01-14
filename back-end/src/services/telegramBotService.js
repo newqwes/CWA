@@ -204,6 +204,7 @@ const runTelegramBotService = async () => {
         }
 
         if (text === '⏰⏰') {
+          MyBot.sendMessage(id, 'cdssdds', MESSAGE_OPTIONS);
           if (remainderTask) {
             remainderTask.stop();
             remainderTask = null;
