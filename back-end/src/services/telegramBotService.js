@@ -206,6 +206,7 @@ const runTelegramBotService = async () => {
         if (text === '⏰⏰') {
           if (remainderTask) {
             remainderTask.stop();
+            remainderTask = null;
             MyBot.sendMessage(id, 'Изменения за день отключены!', MESSAGE_OPTIONS);
           } else {
             remainderTask = cron.schedule('* * * * *', () => {
