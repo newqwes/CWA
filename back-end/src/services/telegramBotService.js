@@ -204,14 +204,12 @@ const runTelegramBotService = async () => {
         }
 
         if (text === '⏰⏰') {
-          const schedule = '* * * * *';
-
           if (remainderTask) {
             remainderTask.stop();
             remainderTask = null;
-            MyBot.sendMessage(id, `Изменения за ${schedule} отключены!`, MESSAGE_OPTIONS);
+            MyBot.sendMessage(id, 'Изменения за * * * * * отключены!', MESSAGE_OPTIONS);
           } else {
-            remainderTask = cron.schedule(schedule, async () => {
+            remainderTask = cron.schedule('* * * * *', async () => {
               const orders = await orderService.getRawUserOrders(userExist.id);
 
               const coinNameList = getUniqNameOrders(orders);
@@ -255,7 +253,7 @@ const runTelegramBotService = async () => {
               );
             });
 
-            MyBot.sendMessage(id, `Изменения за ${schedule} включены!`, MESSAGE_OPTIONS);
+            MyBot.sendMessage(id, 'Изменения за * * * * * включены!', MESSAGE_OPTIONS);
           }
 
           return;
