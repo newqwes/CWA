@@ -204,58 +204,52 @@ const runTelegramBotService = async () => {
         }
 
         if (text === '⏰⏰') {
-          MyBot.sendMessage(id, 'cdssdds', MESSAGE_OPTIONS);
           if (remainderTask) {
             remainderTask.stop();
             remainderTask = null;
-            return MyBot.sendMessage(id, 'Изменения за * * * * * отключены!', MESSAGE_OPTIONS);
-          }
-          remainderTask = cron.schedule('* * * * *', async () => {
-            const orders = await orderService.getRawUserOrders(userExist.id);
-
-            const coinNameList = getUniqNameOrders(orders);
-
-            const gridRowData = getGridRowData(
-              orders,
-              userExist.list,
-              userExist.prevData.gridRowData
-            );
-
-            const comparisonOrdersAndPriceList = getComparisonOrdersAndPriceList(
-              orders,
-              userExist.list
-            );
-            const netProfitRaw = getNetProfit(comparisonOrdersAndPriceList);
-            const totalInvested = getTotalInvested(orders);
-
-            const netProfitPercent = getNetProfitPercent(netProfitRaw, totalInvested);
-            const oldWalletState = getWalletState(netProfitRaw, totalInvested);
-
-            const prevData = {
-              netProfit: netProfitPercent,
-              walletState: oldWalletState,
-              gridRowData
-            };
-
-            const refreshData = await refreshService.refresh({
-              userId: userExist.id,
-              prevData,
-              coinList: coinNameList
+            MyBot.sendMessage(id, 'Изменения за отключены!', MESSAGE_OPTIONS);
+          } else {
+            remainderTask = cron.schedule('* * * * *', async () => {
+              const orders = await orderService.getRawUserOrders(userExist.id);
+              const coinNameList = getUniqNameOrders(orders);
+              const gridRowData = getGridRowData(
+                orders,
+                userExist.list,
+                userExist.prevData.gridRowData
+              );
+              const comparisonOrdersAndPriceList = getComparisonOrdersAndPriceList(
+                orders,
+                userExist.list
+              );
+              const netProfitRaw = getNetProfit(comparisonOrdersAndPriceList);
+              const totalInvested = getTotalInvested(orders);
+              const netProfitPercent = getNetProfitPercent(netProfitRaw, totalInvested);
+              const oldWalletState = getWalletState(netProfitRaw, totalInvested);
+              const prevData = {
+                netProfit: netProfitPercent,
+                walletState: oldWalletState,
+                gridRowData
+              };
+              const refreshData = await refreshService.refresh({
+                userId: userExist.id,
+                prevData,
+                coinList: coinNameList
+              });
+              const { diffWalletState, walletState, diffNetProfit } = compareResults(refreshData);
+              MyBot.sendMessage(
+                id,
+                `Было: ${round(oldWalletState, 2)}$\nCтало: ${round(
+                  walletState,
+                  2
+                )}$\nРазница: ${round(diffWalletState, 2)}$(${round(diffNetProfit, 2)}%)`,
+                MESSAGE_OPTIONS
+              );
             });
 
-            const { diffWalletState, walletState, diffNetProfit } = compareResults(refreshData);
+            MyBot.sendMessage(id, 'Изменения за включены!', MESSAGE_OPTIONS);
+          }
 
-            return MyBot.sendMessage(
-              id,
-              `Было: ${round(oldWalletState, 2)}$\nCтало: ${round(
-                walletState,
-                2
-              )}$\nРазница: ${round(diffWalletState, 2)}$(${round(diffNetProfit, 2)}%)`,
-              MESSAGE_OPTIONS
-            );
-          });
-
-          return MyBot.sendMessage(id, 'Изменения за * * * * * включены!', MESSAGE_OPTIONS);
+          return;
         }
 
         if (isFinite(textLikeNumber) && textLikeNumber > 0) {
