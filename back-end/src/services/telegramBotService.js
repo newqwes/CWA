@@ -204,12 +204,14 @@ const runTelegramBotService = async () => {
         }
 
         if (text === '⏰⏰') {
+          const schedule = '* * * * *';
+
           if (remainderTask) {
             remainderTask.stop();
             remainderTask = null;
-            MyBot.sendMessage(id, 'Изменения за день отключены!', MESSAGE_OPTIONS);
+            MyBot.sendMessage(id, `Изменения за ${schedule} отключены!`, MESSAGE_OPTIONS);
           } else {
-            remainderTask = cron.schedule('* * * * *', async () => {
+            remainderTask = cron.schedule(schedule, async () => {
               const { dataRefreshLimitPerMinute, lastDateUpdate } = pick(
                 ['dataRefreshLimitPerMinute', 'lastDateUpdate'],
                 userExist
@@ -244,11 +246,11 @@ const runTelegramBotService = async () => {
               const totalInvested = getTotalInvested(orders);
 
               const netProfitPercent = getNetProfitPercent(netProfitRaw, totalInvested);
-              const walletState = getWalletState(netProfitRaw, totalInvested);
+              const oldWalletState = getWalletState(netProfitRaw, totalInvested);
 
               const prevData = {
                 netProfit: netProfitPercent,
-                walletState,
+                walletState: oldWalletState,
                 gridRowData
               };
 
@@ -258,16 +260,17 @@ const runTelegramBotService = async () => {
                 coinList: coinNameList
               });
 
-              const { totalAllBuy, netProfit, diffNetProfit, diffWalletState } =
-                compareResults(refreshData);
+              const { diffWalletState, walletState, diffNetProfit } = compareResults(refreshData);
 
               return MyBot.sendMessage(
                 id,
-                `walletState: ${walletState}, totalAllBuy: ${totalAllBuy}, netProfit: ${netProfit}, diffNetProfit: ${diffNetProfit}, diffWalletState: ${diffWalletState}`,
+                `Было: ${round(oldWalletState, 2)}$
+                Cтало: ${round(walletState, 2)}$
+                Разница: ${round(diffWalletState, 2)}$(${round(diffNetProfit, 2)}%)`,
                 MESSAGE_OPTIONS
               );
             });
-            MyBot.sendMessage(id, 'Изменения за день включены!', MESSAGE_OPTIONS);
+            MyBot.sendMessage(id, `Изменения за ${schedule} включены!`, MESSAGE_OPTIONS);
           }
 
           return;
