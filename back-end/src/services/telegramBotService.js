@@ -210,7 +210,7 @@ const runTelegramBotService = async () => {
             MyBot.sendMessage(id, 'Изменения за день отключены!', MESSAGE_OPTIONS);
           } else {
             remainderTask = cron.schedule(
-              '0 18 * * *',
+              '0 19 * * *',
               async () => {
                 const orders = await orderService.getRawUserOrders(userExist.id);
                 const coinNameList = getUniqNameOrders(orders);
