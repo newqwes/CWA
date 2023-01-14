@@ -258,10 +258,14 @@ const runTelegramBotService = async () => {
                 coinList: coinNameList
               });
 
-              const result = compareResults(refreshData);
-              const { sumMessage } = getResultMessage(result);
+              const { totalAllBuy, netProfit, diffNetProfit, diffWalletState } =
+                compareResults(refreshData);
 
-              return MyBot.sendMessage(id, sumMessage, MESSAGE_OPTIONS);
+              return MyBot.sendMessage(
+                id,
+                `walletState: ${walletState}, totalAllBuy: ${totalAllBuy}, netProfit: ${netProfit}, diffNetProfit: ${diffNetProfit}, diffWalletState: ${diffWalletState}`,
+                MESSAGE_OPTIONS
+              );
             });
             MyBot.sendMessage(id, 'Изменения за день включены!', MESSAGE_OPTIONS);
           }
