@@ -61,7 +61,7 @@ export const status = async (req, res, next) => {
     const userDto = new UserDto(req.user);
     const userData = { ...userDto };
 
-    const history = await History.findAll({ where: { userId: userData.id }, order: [['date', 'DESC']] });
+    const history = await History.findAll({ where: { userId: userData.id }, order: [['date', 'ASC']] });
 
     return res.status('200').json({ ...userData, history });
   } catch (e) {

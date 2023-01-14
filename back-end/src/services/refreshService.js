@@ -29,7 +29,7 @@ class RefreshService {
     const history = await History.findAll({
       where: { userId },
       raw: true,
-      order: [['date', 'DESC']]
+      order: [['date', 'ASC']]
     });
 
     const userDto = new UserDto(user);
