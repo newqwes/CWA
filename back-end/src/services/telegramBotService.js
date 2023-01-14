@@ -207,9 +207,9 @@ const runTelegramBotService = async () => {
           if (remainderTask) {
             remainderTask.stop();
             remainderTask = null;
-            MyBot.sendMessage(id, 'Изменения за отключены!', MESSAGE_OPTIONS);
+            MyBot.sendMessage(id, 'Изменения за день отключены!', MESSAGE_OPTIONS);
           } else {
-            remainderTask = cron.schedule('* * * * *', async () => {
+            remainderTask = cron.schedule('0 21 * * *', async () => {
               const orders = await orderService.getRawUserOrders(userExist.id);
               const coinNameList = getUniqNameOrders(orders);
               const gridRowData = getGridRowData(
@@ -246,7 +246,7 @@ const runTelegramBotService = async () => {
               );
             });
 
-            MyBot.sendMessage(id, 'Изменения за включены!', MESSAGE_OPTIONS);
+            MyBot.sendMessage(id, 'Изменения за день включены!', MESSAGE_OPTIONS);
           }
 
           return;
