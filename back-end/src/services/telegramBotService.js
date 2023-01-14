@@ -212,22 +212,6 @@ const runTelegramBotService = async () => {
             MyBot.sendMessage(id, `Изменения за ${schedule} отключены!`, MESSAGE_OPTIONS);
           } else {
             remainderTask = cron.schedule(schedule, async () => {
-              const { dataRefreshLimitPerMinute, lastDateUpdate } = pick(
-                ['dataRefreshLimitPerMinute', 'lastDateUpdate'],
-                userExist
-              );
-
-              const timeLimitOver = isTimeLimitOver(dataRefreshLimitPerMinute, lastDateUpdate);
-              const remainingTime = getRemainingTime(dataRefreshLimitPerMinute, lastDateUpdate);
-
-              if (!timeLimitOver) {
-                return MyBot.sendMessage(
-                  id,
-                  `Обновить можно только через: ${remainingTime} секунд`,
-                  MESSAGE_OPTIONS
-                );
-              }
-
               const orders = await orderService.getRawUserOrders(userExist.id);
 
               const coinNameList = getUniqNameOrders(orders);
@@ -270,6 +254,7 @@ const runTelegramBotService = async () => {
                 MESSAGE_OPTIONS
               );
             });
+
             MyBot.sendMessage(id, `Изменения за ${schedule} включены!`, MESSAGE_OPTIONS);
           }
 
