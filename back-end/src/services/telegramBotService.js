@@ -209,8 +209,59 @@ const runTelegramBotService = async () => {
             remainderTask = null;
             MyBot.sendMessage(id, 'Изменения за день отключены!', MESSAGE_OPTIONS);
           } else {
-            remainderTask = cron.schedule('* * * * *', () => {
-              MyBot.sendMessage(id, 'Изменения за день ...', MESSAGE_OPTIONS);
+            remainderTask = cron.schedule('* * * * *', async () => {
+              const { dataRefreshLimitPerMinute, lastDateUpdate } = pick(
+                ['dataRefreshLimitPerMinute', 'lastDateUpdate'],
+                userExist
+              );
+
+              const timeLimitOver = isTimeLimitOver(dataRefreshLimitPerMinute, lastDateUpdate);
+              const remainingTime = getRemainingTime(dataRefreshLimitPerMinute, lastDateUpdate);
+
+              if (!timeLimitOver) {
+                return MyBot.sendMessage(
+                  id,
+                  `Обновить можно только через: ${remainingTime} секунд`,
+                  MESSAGE_OPTIONS
+                );
+              }
+
+              const orders = await orderService.getRawUserOrders(userExist.id);
+
+              const coinNameList = getUniqNameOrders(orders);
+
+              const gridRowData = getGridRowData(
+                orders,
+                userExist.list,
+                userExist.prevData.gridRowData
+              );
+
+              const comparisonOrdersAndPriceList = getComparisonOrdersAndPriceList(
+                orders,
+                userExist.list
+              );
+              const netProfitRaw = getNetProfit(comparisonOrdersAndPriceList);
+              const totalInvested = getTotalInvested(orders);
+
+              const netProfitPercent = getNetProfitPercent(netProfitRaw, totalInvested);
+              const walletState = getWalletState(netProfitRaw, totalInvested);
+
+              const prevData = {
+                netProfit: netProfitPercent,
+                walletState,
+                gridRowData
+              };
+
+              const refreshData = await refreshService.refresh({
+                userId: userExist.id,
+                prevData,
+                coinList: coinNameList
+              });
+
+              const result = compareResults(refreshData);
+              const { sumMessage } = getResultMessage(result);
+
+              return MyBot.sendMessage(id, sumMessage, MESSAGE_OPTIONS);
             });
             MyBot.sendMessage(id, 'Изменения за день включены!', MESSAGE_OPTIONS);
           }
