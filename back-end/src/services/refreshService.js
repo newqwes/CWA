@@ -23,10 +23,14 @@ class RefreshService {
     await History.create({
       lastModified: prevData.netProfit,
       userId,
-      date: Date.now(),
+      date: Date.now()
     });
 
-    const history = await History.findAll({ where: { userId }, raw: true });
+    const history = await History.findAll({
+      where: { userId },
+      raw: true,
+      order: [['date', 'DESC']]
+    });
 
     const userDto = new UserDto(user);
     const userData = { ...userDto, history };

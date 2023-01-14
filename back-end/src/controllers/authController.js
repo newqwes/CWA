@@ -1,11 +1,7 @@
 import { validationResult } from 'express-validator';
 import { pick, values, omit, get } from 'lodash/fp';
 
-import {
-  REGISTRATION_REQUEST_BODY,
-  AUTHORIZATION_REQUEST_BODY,
-  LINK_REQUEST_PARAM,
-} from '../constants/requestBody';
+import { REGISTRATION_REQUEST_BODY, AUTHORIZATION_REQUEST_BODY, LINK_REQUEST_PARAM } from '../constants/requestBody';
 import History from '../database/models/history';
 
 import ApiError from '../exceptions/apiError';
@@ -39,7 +35,7 @@ export const registration = async (req, res, next) => {
     res.cookie('refreshToken', userData.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: true, // if have https
+      secure: true // if have https
     });
 
     return res.status('201').json(omit(['refreshToken'], userData));
@@ -65,7 +61,7 @@ export const status = async (req, res, next) => {
     const userDto = new UserDto(req.user);
     const userData = { ...userDto };
 
-    const history = await History.findAll({ where: { userId: userData.id } });
+    const history = await History.findAll({ where: { userId: userData.id }, order: [['date', 'DESC']] });
 
     return res.status('200').json({ ...userData, history });
   } catch (e) {
