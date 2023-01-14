@@ -1,6 +1,7 @@
 import TelegraAPI from 'node-telegram-bot-api';
 import { forEach, isEmpty, isFinite, round } from 'lodash';
 import { get, isEqual, pick, chunk } from 'lodash/fp';
+import cron from 'node-cron';
 
 import { AGAIN_MESSAGE_OPTIONS, MESSAGE_OPTIONS, MINUTE, TEN_MINUTE } from '../constants/telegram';
 import { compareResults, getResultMessage, isAuthCode, removeAuthCode } from '../utils/telegram';
@@ -14,7 +15,7 @@ import {
   getNetProfitPercent,
   getTotalInvested,
   getUniqNameOrders,
-  getWalletState,
+  getWalletState
 } from '../utils/extractData';
 import refreshService from './refreshService';
 import { getRemainingTime, isTimeLimitOver } from '../utils/toMinute';
@@ -23,6 +24,7 @@ import { getGeckoCoins } from '../utils/coinGeckoClient';
 const MyBot = new TelegraAPI(process.env.BOT_TOKEN, { polling: true });
 
 let timeoutId = null;
+let remainderTask = null;
 
 const runNotification = async (userId, trigerPersent, chatId, oldPriceList) => {
   const orders = await orderService.getRawUserOrders(userId);
@@ -60,7 +62,7 @@ const runNotification = async (userId, trigerPersent, chatId, oldPriceList) => {
     arrResult.push(
       result[key] > 0
         ? `🔼${key}\nподнялся на ${round(value, 2)}%`
-        : `🔻${key}\nупал на ${round(value, 2)}%`,
+        : `🔻${key}\nупал на ${round(value, 2)}%`
     );
   });
 
@@ -82,7 +84,7 @@ const runTelegramBotService = async () => {
           return MyBot.sendMessage(
             id,
             `${firstName}, добро пожаловать в Coinlitics!`,
-            MESSAGE_OPTIONS,
+            MESSAGE_OPTIONS
           );
         }
 
@@ -93,7 +95,7 @@ const runTelegramBotService = async () => {
             return MyBot.sendMessage(
               id,
               `ОШИБКА! Код авторизации не правельный! ${text}`,
-              MESSAGE_OPTIONS,
+              MESSAGE_OPTIONS
             );
           }
 
@@ -101,7 +103,7 @@ const runTelegramBotService = async () => {
             return MyBot.sendMessage(
               id,
               'Данный код авторизации уже был использован!',
-              MESSAGE_OPTIONS,
+              MESSAGE_OPTIONS
             );
           }
 
@@ -115,14 +117,14 @@ const runTelegramBotService = async () => {
           return MyBot.sendMessage(
             id,
             `${firstName}, вы не авторизованны, отправте нам ключ авторизации с сайта: coinlitics.space`,
-            MESSAGE_OPTIONS,
+            MESSAGE_OPTIONS
           );
         }
 
         if (text === '🔄🔄🔄') {
           const { dataRefreshLimitPerMinute, lastDateUpdate } = pick(
             ['dataRefreshLimitPerMinute', 'lastDateUpdate'],
-            userExist,
+            userExist
           );
 
           const timeLimitOver = isTimeLimitOver(dataRefreshLimitPerMinute, lastDateUpdate);
@@ -132,7 +134,7 @@ const runTelegramBotService = async () => {
             return MyBot.sendMessage(
               id,
               `Обновить можно только через: ${remainingTime} секунд`,
-              MESSAGE_OPTIONS,
+              MESSAGE_OPTIONS
             );
           }
 
@@ -143,12 +145,12 @@ const runTelegramBotService = async () => {
           const gridRowData = getGridRowData(
             orders,
             userExist.list,
-            userExist.prevData.gridRowData,
+            userExist.prevData.gridRowData
           );
 
           const comparisonOrdersAndPriceList = getComparisonOrdersAndPriceList(
             orders,
-            userExist.list,
+            userExist.list
           );
           const netProfitRaw = getNetProfit(comparisonOrdersAndPriceList);
           const totalInvested = getTotalInvested(orders);
@@ -159,13 +161,13 @@ const runTelegramBotService = async () => {
           const prevData = {
             netProfit: netProfitPercent,
             walletState,
-            gridRowData,
+            gridRowData
           };
 
           const refreshData = await refreshService.refresh({
             userId: userExist.id,
             prevData,
-            coinList: coinNameList,
+            coinList: coinNameList
           });
 
           const result = compareResults(refreshData);
@@ -197,8 +199,22 @@ const runTelegramBotService = async () => {
           return MyBot.sendMessage(
             id,
             'Введите % изменения за рамками которого придет уведомление:',
-            AGAIN_MESSAGE_OPTIONS,
+            AGAIN_MESSAGE_OPTIONS
           );
+        }
+
+        if (text === '⏰⏰') {
+          if (remainderTask) {
+            remainderTask.stop();
+            MyBot.sendMessage(id, 'Изменения за день отключены!', MESSAGE_OPTIONS);
+          } else {
+            remainderTask = cron.schedule('* * * * *', () => {
+              MyBot.sendMessage(id, 'Изменения за день ...', MESSAGE_OPTIONS);
+            });
+            MyBot.sendMessage(id, 'Изменения за день включены!', MESSAGE_OPTIONS);
+          }
+
+          return;
         }
 
         if (isFinite(textLikeNumber) && textLikeNumber > 0) {
@@ -210,13 +226,13 @@ const runTelegramBotService = async () => {
             userExist.id,
             textLikeNumber,
             id,
-            userExist.list,
+            userExist.list
           );
 
           return MyBot.sendMessage(
             id,
             `Оповещение задано на каждые ${TEN_MINUTE / MINUTE} минут при изменение в ${text}%!`,
-            MESSAGE_OPTIONS,
+            MESSAGE_OPTIONS
           );
         }
 
@@ -224,7 +240,7 @@ const runTelegramBotService = async () => {
       } catch (error) {
         return MyBot.sendMessage(id, 'Произошла какая то ошибочка!)', MESSAGE_OPTIONS);
       }
-    },
+    }
   );
 };
 

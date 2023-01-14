@@ -4,8 +4,8 @@ export const MESSAGE_OPTIONS = {
   parse_mode: 'markdown',
   reply_markup: {
     resize_keyboard: true,
-    keyboard: [['🔄🔄🔄', '⏰⏰⏰']],
-  },
+    keyboard: [['🔄🔄🔄', '⏰⏰⏰', '⏰⏰']]
+  }
 };
 
 export const AGAIN_MESSAGE_OPTIONS = {
@@ -15,9 +15,9 @@ export const AGAIN_MESSAGE_OPTIONS = {
     keyboard: [
       ['0.05', '0.1', '0.5', '1'],
       ['2', '5', '10', '20'],
-      ['30', '50', '100', '200'],
-    ],
-  },
+      ['30', '50', '100', '200']
+    ]
+  }
 };
 
 export const MINUTE = 1000 * 60;
