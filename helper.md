@@ -30,4 +30,3 @@ pm2 monit
 pm2 status
 pm2 delete
 pm2 save
-cx
