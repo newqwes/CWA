@@ -7,6 +7,7 @@ import History from '../database/models/history';
 import ApiError from '../exceptions/apiError';
 import authService from '../services/authService';
 import UserDto from '../dto/userDto';
+import userService from "../services/userService";
 
 export const login = async (req, res, next) => {
   try {
@@ -58,8 +59,16 @@ export const activate = async (req, res, next) => {
 
 export const status = async (req, res, next) => {
   try {
-    const userDto = new UserDto(req.user);
+    const email = get(['user', 'email'], req);
+    const user = await userService.findByKey(email, 'email');
+
+    if (!user) {
+      return next(ApiError.BadRequest(`Пользователь с почтовым адресом ${email} не существует`));
+    }
+
+    const userDto = new UserDto(user);
     const userData = { ...userDto };
+    await user.save();
 
     const history = await History.findAll({ where: { userId: userData.id }, order: [['date', 'ASC']] });
 

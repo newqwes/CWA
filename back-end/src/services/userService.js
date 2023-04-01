@@ -4,9 +4,8 @@ import createResponse from '../utils/createResponse';
 
 class UserService {
   async findByKey(value, key) {
-    const user = await User.findOne({ where: { [key]: value } });
-
-    return user;
+    if(!value) return null;
+    return await User.findOne({where: {[key]: value}});
   }
 
   async findByTelegramUserId(telegramUserId) {
