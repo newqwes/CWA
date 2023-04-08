@@ -108,8 +108,9 @@ function* authorizationStatus() {
     yield put(loadingPendingAC());
 
     const user = yield call(authAPI.status);
+    console.log(user);
 
-    if (user.isActivated) {
+    if (user?.isActivated) {
       yield put(getAuthorizationStatusSuccessAC(user));
 
       return;

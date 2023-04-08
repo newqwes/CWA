@@ -3,7 +3,7 @@ import { round } from 'lodash';
 export const toNormalNumber = value => {
   if (!value) return 0;
 
-  let normalNumber = value;
+  let normalNumber = Number(value);
 
   if (Math.abs(normalNumber) > 100) {
     normalNumber = round(normalNumber, 0);

@@ -60,6 +60,10 @@ const start = async () => {
       await sequelize.authenticate();
       console.log('Database Connected!');
       console.log('GOOGLE_CALLBACK_URL: ', process.env.GOOGLE_CALLBACK_URL);
+      console.log(`API_URL ${process.env.API_URL}`);
+      console.log(`HOST_NAME ${process.env.HOST_NAME}`);
+      console.log(`CLIENT_URL ${process.env.CLIENT_URL}`);
+      console.log(`CLIENT_URL_VISUAL ${process.env.CLIENT_URL_VISUAL}`);
     });
 
     await runTelegramBotService();

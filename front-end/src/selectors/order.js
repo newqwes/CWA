@@ -338,7 +338,7 @@ export const getChartData = createSelector(
             fontSize: '12px',
           },
           formatter(text, op) {
-            return [text, `${op.value}$`];
+            return [text, `${round(op.value, 2)}$`];
           },
           offsetY: -4,
         },
