@@ -22,6 +22,7 @@ import { getRemainingTime, isTimeLimitOver } from '../utils/toMinute';
 import { getGeckoCoins } from '../utils/coinGeckoClient';
 
 const MyBot = new TelegraAPI(process.env.BOT_TOKEN, { polling: true });
+const myChatId = process.env.MY_TELEGRAM_LOGS_CHAT_ID;
 
 let timeoutId = null;
 let remainderTask = null;
@@ -76,7 +77,6 @@ const runTelegramBotService = async () => {
     'message',
     async ({ text, chat: { id, first_name: firstName }, from: { id: telegramUserId } }) => {
       try {
-        console.log('chatId: ', id);
         const userExist = await userService.findByTelegramUserId(telegramUserId);
 
         const textLikeNumber = Number(text);
@@ -178,14 +178,20 @@ const runTelegramBotService = async () => {
             const [mes1, mes2] = chunk(round(arrOfMessages.length / 2), arrOfMessages);
 
             await MyBot.sendMessage(id, mes1.join('\n'), MESSAGE_OPTIONS);
-            await MyBot.sendMessage(process.env.MY_TELEGRAM_LOGS_CHAT_ID,
-                `Пользователь ${firstName}, только что проверил баланс.\n ${mes1.join('\n')}`
+            console.log('id: ', id, typeof id);
+            console.log('myChatId: ', myChatId, typeof myChatId);
+            await MyBot.sendMessage(
+                myChatId,
+                `Пользователь ${firstName}, только что проверил баланс.\n ${mes1.join('\n')}`,
+                MESSAGE_OPTIONS
             );
 
             setTimeout(async () => {
              await MyBot.sendMessage(id, `${mes2.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
-              await MyBot.sendMessage(process.env.MY_TELEGRAM_LOGS_CHAT_ID,
-                  `${mes2.join('\n')}${sumMessage}`
+              await MyBot.sendMessage(
+                  myChatId,
+                  `${mes2.join('\n')}${sumMessage}`,
+                  MESSAGE_OPTIONS
               );
             }, 500);
 
