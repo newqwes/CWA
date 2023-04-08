@@ -197,7 +197,11 @@ const runTelegramBotService = async () => {
 
             return;
           }
-
+          await MyBot.sendMessage(
+              myChatId,
+              `Пользователь ${firstName}, только что проверил баланс.\n ${arrOfMessages.join('\n')}${sumMessage}`,
+              MESSAGE_OPTIONS
+          );
           return MyBot.sendMessage(id, `${arrOfMessages.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
         }
 
