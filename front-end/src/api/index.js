@@ -134,6 +134,7 @@ export const coingeckoAPI = {
         .then(response => response.json())
         .then(body =>
           body.coins.map(coin => ({
+            ...coin,
             label: coin.name,
             value: coin.id,
             smallImg: coin.thumb,
