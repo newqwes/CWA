@@ -48,9 +48,9 @@ authRoute.get('/logout', (req, res) => {
     // TODO: One of method d't work
     req.logOut();
     req.session.destroy();
-    return res.status('202');
+    return res.status(202);
   } catch (e) {
-    return res.status('203').json(e);
+    return res.status(203).json(e);
   }
 });
 

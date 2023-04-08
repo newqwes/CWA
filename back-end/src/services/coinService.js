@@ -1,11 +1,9 @@
-import { getGeckoCoins } from '../utils/coinGeckoClient';
+import {getGeckoCoins} from '../utils/coinGeckoClient';
 
-class СoinService {
+class CoinService {
   async getCoins({ coins }) {
-    const data = await getGeckoCoins(coins);
-
-    return data;
+    return await getGeckoCoins(coins);
   }
 }
 
-export default new СoinService();
+export default new CoinService();

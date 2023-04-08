@@ -1,7 +1,7 @@
 import createResponse from '../utils/createResponse';
 
 import Order from '../database/models/order';
-import { parseRawOrderList } from '../utils/parseRawOrderList';
+import {parseRawOrderList} from '../utils/parseRawOrderList';
 
 class OrderService {
   async setUserOrder({ userId, count, coinId, price, date = Date.now() }) {
@@ -26,13 +26,11 @@ class OrderService {
 
   async getRawUserOrders(userId) {
     try {
-      const orders = Order.findAll({
-        where: { userId },
+      return Order.findAll({
+        where: {userId},
         attributes: ['name', 'price', 'count', 'date', 'id'],
         raw: true,
       });
-
-      return orders;
     } catch (error) {
       return error;
     }

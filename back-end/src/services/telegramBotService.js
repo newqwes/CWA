@@ -26,7 +26,7 @@ const MyBot = new TelegraAPI(process.env.BOT_TOKEN, { polling: true });
 let timeoutId = null;
 let remainderTask = null;
 
-const runNotification = async (userId, trigerPersent, chatId, oldPriceList) => {
+const runNotification = async (userId, triggerPercent, chatId, oldPriceList) => {
   const orders = await orderService.getRawUserOrders(userId);
 
   const coinNameList = getUniqNameOrders(orders);
@@ -45,14 +45,14 @@ const runNotification = async (userId, trigerPersent, chatId, oldPriceList) => {
 
     if (!currentPrice || !prevCurrentPrice) return;
 
-    const changesPricePersent = round((currentPrice * 100) / prevCurrentPrice - 100, 4);
+    const changesPricePercent = round((currentPrice * 100) / prevCurrentPrice - 100, 4);
 
-    if (changesPricePersent > trigerPersent) {
-      result[currency.name] = changesPricePersent;
+    if (changesPricePercent > triggerPercent) {
+      result[currency.name] = changesPricePercent;
     }
 
-    if (changesPricePersent < -trigerPersent) {
-      result[currency.name] = changesPricePersent;
+    if (changesPricePercent < -triggerPercent) {
+      result[currency.name] = changesPricePercent;
     }
   });
 
@@ -67,7 +67,7 @@ const runNotification = async (userId, trigerPersent, chatId, oldPriceList) => {
   });
 
   if (!isEmpty(arrResult)) {
-    MyBot.sendMessage(chatId, arrResult.join('\n\n'), MESSAGE_OPTIONS);
+    await MyBot.sendMessage(chatId, arrResult.join('\n\n'), MESSAGE_OPTIONS);
   }
 };
 
@@ -176,10 +176,16 @@ const runTelegramBotService = async () => {
           if (overThanLimit) {
             const [mes1, mes2] = chunk(round(arrOfMessages.length / 2), arrOfMessages);
 
-            MyBot.sendMessage(id, mes1.join('\n'), MESSAGE_OPTIONS);
+            await MyBot.sendMessage(id, mes1.join('\n'), MESSAGE_OPTIONS);
+            await MyBot.sendMessage(process.env.MY_TELEGRAM_LOGS_CHAT_ID,
+                `Пользователь ${firstName}, только что проверил баланс.\n ${mes1.join('\n')}`
+            );
 
-            setTimeout(() => {
-              MyBot.sendMessage(id, `${mes2.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
+            setTimeout(async () => {
+             await MyBot.sendMessage(id, `${mes2.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
+              await MyBot.sendMessage(process.env.MY_TELEGRAM_LOGS_CHAT_ID,
+                  `${mes2.join('\n')}${sumMessage}`
+              );
             }, 500);
 
             return;
@@ -238,19 +244,19 @@ const runTelegramBotService = async () => {
                   coinList: coinNameList
                 });
                 const { diffWalletState, walletState, diffNetProfit } = compareResults(refreshData);
-                MyBot.sendMessage(
-                  id,
-                  `Было: ${round(oldWalletState, 2)}$\nCтало: ${round(
-                    walletState,
-                    2
-                  )}$\nРазница: ${round(diffWalletState, 2)}$(${round(diffNetProfit, 2)}%)`,
-                  MESSAGE_OPTIONS
+                await MyBot.sendMessage(
+                    id,
+                    `Было: ${round(oldWalletState, 2)}$\nCтало: ${round(
+                        walletState,
+                        2
+                    )}$\nРазница: ${round(diffWalletState, 2)}$(${round(diffNetProfit, 2)}%)`,
+                    MESSAGE_OPTIONS
                 );
               },
               { timezone: 'Europe/Minsk' }
             );
 
-            MyBot.sendMessage(id, 'Изменения за день включены!', MESSAGE_OPTIONS);
+            await MyBot.sendMessage(id, 'Изменения за день включены!', MESSAGE_OPTIONS);
           }
 
           return;
