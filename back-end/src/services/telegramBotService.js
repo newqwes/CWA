@@ -76,6 +76,7 @@ const runTelegramBotService = async () => {
     'message',
     async ({ text, chat: { id, first_name: firstName }, from: { id: telegramUserId } }) => {
       try {
+        console.log('chatId: ', id);
         const userExist = await userService.findByTelegramUserId(telegramUserId);
 
         const textLikeNumber = Number(text);

@@ -10,10 +10,7 @@ class UserService {
 
   async findByTelegramUserId(telegramUserId) {
     try {
-      console.log(telegramUserId);
-      const user = await User.findOne({ where: { telegramUserId }, raw: true });
-
-      return user;
+      return await User.findOne({where: {telegramUserId}, raw: true});
     } catch (error) {
       return false;
     }
