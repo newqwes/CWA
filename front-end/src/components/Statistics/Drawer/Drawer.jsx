@@ -19,7 +19,7 @@ import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
 import { coingeckoAPI } from '../../../api';
 import { OptionImg } from '../../Calculator/styled';
-import { InputPriceSpan } from './styled';
+import { LabelPrice } from './styled';
 
 class Drawer extends React.Component {
   static propTypes = {
@@ -96,15 +96,9 @@ class Drawer extends React.Component {
     this.onSearchCoin();
   };
 
-  onChangeSelectedCoinPrice = (event) => {
-    this.setState({ selectedCoinPrice: event.target ? event.target.value : event });
-  }
-
   render() {
     const { visible, closeDrawer } = this.props;
     const { selectedCoinName, coins, loading, selectedCoinPrice } = this.state;
-
-    console.log(selectedCoinPrice);
     return (
       <DrawerAntd
         title="Добавить транзакцию"
@@ -164,18 +158,18 @@ class Drawer extends React.Component {
             <Col span={12}>
               <Form.Item
                 name="price"
-                label="Цена покупки"
+                label={<LabelPrice
+                  onClick={() => { navigator.clipboard.writeText(selectedCoinPrice); }}>
+                  Цена покупки {selectedCoinPrice}
+                </LabelPrice>}
                 rules={[{ required: true, message: 'Пожалуйста введите цену' }]}
               >
-                <InputPriceSpan>{selectedCoinPrice}</InputPriceSpan>
                 <InputNumber
                   style={{ width: '100%' }}
                   defaultValue="0"
                   min="0"
                   step="1"
                   stringMode
-                  onChange={this.onChangeSelectedCoinPrice}
-                  value={selectedCoinPrice}
                 />
               </Form.Item>
             </Col>

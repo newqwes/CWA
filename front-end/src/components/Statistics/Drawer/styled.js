@@ -15,6 +15,6 @@ export const InteractiveStatistic = styled(Statistic)`
   }
 `;
 
-export const InputPriceSpan = styled.span`
-  position: absolute;
+export const LabelPrice = styled.span`
+  cursor: pointer;
 `;
