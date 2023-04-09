@@ -55,10 +55,9 @@ io.on('connection', socket => {
   console.log(socket);
 });
 
-cron.schedule('*/1 * * * *', () => { HistoryService.removeDuplicateHistory(); });
-// cron.schedule('0 3 * * *', () => { HistoryService.removeDuplicateHistory(); }, {
-//   timeZone: 'Europe/Minsk'
-// });
+cron.schedule('0 3 * * *', () => { HistoryService.removeDuplicateHistory(); }, {
+  timeZone: 'Europe/Minsk'
+});
 const start = async () => {
   try {
     server.listen(process.env.SERVER_PORT, async () => {
