@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { get } from 'lodash/fp';
-import { Typography, Statistic } from 'antd';
+import { Statistic, Typography } from 'antd';
 
 const { Text: TextAntd } = Typography;
 
@@ -13,4 +13,8 @@ export const InteractiveStatistic = styled(Statistic)`
   .ant-statistic-content {
     color: ${({ positive, theme }) => get([positive ? 'positive' : 'negative'], theme)};
   }
+`;
+
+export const InputPriceSpan = styled.span`
+  position: absolute;
 `;

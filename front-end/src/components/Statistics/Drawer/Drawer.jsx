@@ -19,6 +19,7 @@ import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
 import { coingeckoAPI } from '../../../api';
 import { OptionImg } from '../../Calculator/styled';
+import { InputPriceSpan } from './styled';
 
 class Drawer extends React.Component {
   static propTypes = {
@@ -33,6 +34,7 @@ class Drawer extends React.Component {
     coins: [],
     loading: false,
     timesOnFocusMoreThanOne: false,
+    selectedCoinPrice: '0',
   };
 
   optoinsComponents = map(
@@ -76,8 +78,11 @@ class Drawer extends React.Component {
     handleAddTransactions({ list });
   };
 
-  onSelectCoin = (coin) => {
-    this.setState({ selectedCoinName: coin });
+  onSelectCoin = async (selectedCoinId) => {
+    const selectedCoin = await coingeckoAPI.getCoinData([selectedCoinId]);
+
+    const selectedCoinPrice = selectedCoin[0].current_price;
+    this.setState({ selectedCoinPrice, selectedCoinId });
   };
 
   onFocusCoin = () => {
@@ -91,9 +96,15 @@ class Drawer extends React.Component {
     this.onSearchCoin();
   };
 
+  onChangeSelectedCoinPrice = (event) => {
+    this.setState({ selectedCoinPrice: event.target ? event.target.value : event });
+  }
+
   render() {
     const { visible, closeDrawer } = this.props;
-    const { selectedCoinName, coins, loading } = this.state;
+    const { selectedCoinName, coins, loading, selectedCoinPrice } = this.state;
+
+    console.log(selectedCoinPrice);
     return (
       <DrawerAntd
         title="Добавить транзакцию"
@@ -156,12 +167,15 @@ class Drawer extends React.Component {
                 label="Цена покупки"
                 rules={[{ required: true, message: 'Пожалуйста введите цену' }]}
               >
+                <InputPriceSpan>{selectedCoinPrice}</InputPriceSpan>
                 <InputNumber
                   style={{ width: '100%' }}
                   defaultValue="0"
                   min="0"
                   step="1"
                   stringMode
+                  onChange={this.onChangeSelectedCoinPrice}
+                  value={selectedCoinPrice}
                 />
               </Form.Item>
             </Col>
