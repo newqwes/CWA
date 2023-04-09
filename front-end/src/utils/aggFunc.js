@@ -1,4 +1,4 @@
-import { get, isEmpty, reduce } from 'lodash/fp';
+import { complement, get, isEmpty, reduce, some } from 'lodash/fp';
 import { toNormalNumber } from './toNormalNumber';
 
 export const getPriceAvg = params => {
@@ -56,3 +56,5 @@ export const getProfitPercentAvg = params => {
 
   return ((actualPrice - price) * 100) / price;
 };
+
+export const someFalsey = some(complement(Boolean));

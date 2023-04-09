@@ -33,7 +33,7 @@ class RefreshService {
     });
 
     const userDto = new UserDto(user);
-    return {...userDto, history};
+    return { ...userDto, history };
   }
 }
 

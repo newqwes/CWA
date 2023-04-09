@@ -1,4 +1,4 @@
-import { takeEvery, all, call, put, delay, race, take } from 'redux-saga/effects';
+import { all, call, delay, put, takeEvery } from 'redux-saga/effects';
 
 import {
   closeAuthorizationModalsAC,
@@ -9,14 +9,13 @@ import {
 import {
   authFailureAC,
   authSuccessAC,
+  getAuthorizationStatusAC,
   getAuthorizationStatusFailureAC,
   getAuthorizationStatusSuccessAC,
   googleAuthFailureAC,
   registrationFailureAC,
   registrationSuccessAC,
-  getAuthorizationStatusAC,
 } from '../actionCreators/auth';
-import { handleRefreshAC } from '../actionCreators/refresh';
 import { authAPI, googleLoginURL } from '../api';
 
 import {
@@ -28,8 +27,6 @@ import {
   GET_AUTHORIZATION_STATUS_PENDING,
   GET_AUTHORIZATION_STATUS_SUCCESS,
   GET_GOOGLE_AUTHORIZATION_PENDING,
-  GET_USER_ORDERS_FAILURE,
-  GET_USER_ORDERS_SUCCESS,
   REGISTRATION_FAILURE,
   REGISTRATION_PENDING,
   REGISTRATION_SUCCESS,
@@ -39,7 +36,6 @@ import { AUTH_TOKEN } from '../constants/authModal';
 import { setSession } from '../utils/localStore';
 import { NOTIFICATION_TYPE } from '../constants/notification';
 import { openCenteredWindow } from '../utils/openCenteredWindow';
-import { getRefreshTimer } from '../utils/refresh';
 import { setUserDataAC } from '../actionCreators/user';
 import { getOrdersAC } from '../actionCreators/order';
 
@@ -198,23 +194,7 @@ function* registrationFailure({ payload }) {
 }
 
 function* authorizationStatusSuccess({ payload }) {
-  const { lastDateUpdate, dataRefreshLimitPerMinute } = payload;
-
   yield put(setUserDataAC(payload));
-
-  const remainingTimeUntilRefresh = yield getRefreshTimer(
-    lastDateUpdate,
-    dataRefreshLimitPerMinute,
-  );
-
-  if (remainingTimeUntilRefresh <= 0) {
-    const [success] = yield race([take(GET_USER_ORDERS_SUCCESS), take(GET_USER_ORDERS_FAILURE)]);
-
-    if (success) {
-      yield put(handleRefreshAC());
-    }
-  }
-
   yield put(loadingSuccessAC());
 
   yield put(

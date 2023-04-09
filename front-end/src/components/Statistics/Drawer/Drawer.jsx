@@ -1,25 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  AutoComplete,
-  Button,
-  Col,
-  DatePicker,
-  Drawer as DrawerAntd,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Space,
-  Spin,
-} from 'antd';
+import { Button, Col, DatePicker, Drawer as DrawerAntd, Form, Input, Row, Space, Spin } from 'antd';
 import { map, take } from 'lodash/fp';
 import { isArray } from 'lodash';
 import debounce from 'lodash/debounce';
-import dayjs from 'dayjs';
 import { coingeckoAPI } from '../../../api';
 import { OptionImg } from '../../Calculator/styled';
-import { LabelPrice } from './styled';
+import { AutoComplete, InputNumber } from './styled';
+import { someFalsey } from '../../../utils/aggFunc';
+import { getNotification } from '../../../utils/notification';
 
 class Drawer extends React.Component {
   static propTypes = {
@@ -30,11 +19,13 @@ class Drawer extends React.Component {
   };
 
   state = {
-    selectedCoinName: '',
+    selectedCoinId: '',
     coins: [],
     loading: false,
     timesOnFocusMoreThanOne: false,
-    selectedCoinPrice: '0',
+    selectedCoinPrice: null,
+    dateTime: null,
+    count: null,
   };
 
   optoinsComponents = map(
@@ -59,15 +50,20 @@ class Drawer extends React.Component {
     this.setState({ coins: take(20, coins), loading: false });
   }, 300);
 
-  handleSubmit = ({ coinId, dateTime, price, count }) => {
+  handleSubmit = () => {
     const { closeDrawer, handleAddTransaction } = this.props;
+    const { selectedCoinId, dateTime, selectedCoinPrice, count } = this.state;
+    if (someFalsey([selectedCoinId, count, selectedCoinPrice])) {
+      getNotification({ message: 'Не все значения введены!' });
+      return;
+    }
 
     closeDrawer();
     handleAddTransaction({
-      coinId,
-      price,
+      coinId: selectedCoinId,
+      price: selectedCoinPrice,
       count,
-      date: dateTime && dateTime.format(),
+      date: dateTime ? dateTime.format() : Date.now(),
     });
   };
 
@@ -96,9 +92,20 @@ class Drawer extends React.Component {
     this.onSearchCoin();
   };
 
+  onChangeCount = (value) => {
+    this.setState({ count: value });
+  }
+
+  onChangeDateTime = (value) => {
+    this.setState({ dateTime: value });
+  }
+
   render() {
     const { visible, closeDrawer } = this.props;
-    const { selectedCoinName, coins, loading, selectedCoinPrice } = this.state;
+    const {
+      selectedCoinId, coins, loading, selectedCoinPrice, dateTime,
+      count,
+    } = this.state;
     return (
       <DrawerAntd
         title="Добавить транзакцию"
@@ -109,88 +116,57 @@ class Drawer extends React.Component {
         extra={
           <Space>
             <Button onClick={closeDrawer}>Отмена</Button>
-            <Button type="primary" htmlType="submit" form="addTransaction">
+            <Button type="primary" onClick={this.handleSubmit}>
               Принять
             </Button>
           </Space>
-        }
-      >
-        <Form
-          layout="vertical"
-          name="addTransaction"
-          onFinish={this.handleSubmit}
-        >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="coinId"
-                label="ID монеты"
-                rules={[
-                  { required: true, message: 'Пожалуйста добавьте ID монеты' },
-                ]}
-              >
-                <AutoComplete
-                  value={selectedCoinName}
-                  options={this.optoinsComponents(coins)}
-                  onSelect={this.onSelectCoin}
-                  onSearch={this.onSearchCoin}
-                  onFocus={this.onFocusCoin}
-                  notFoundContent={loading ? <Spin size='small'/> : null}
-                  placeholder="Введите ID монеты из coingecko.com"
-                >
-                  <Input.Search/>
-                </AutoComplete>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="dateTime" label="Время покупки">
-                <DatePicker
-                  showTime
-                  defaultValue={dayjs()}
-                  placeholder="Выберите дату"
-                  style={{ width: '100%' }}
-                  getPopupContainer={(trigger) => trigger.parentElement}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="price"
-                label={<LabelPrice
-                  onClick={() => { navigator.clipboard.writeText(selectedCoinPrice); }}>
-                  Цена покупки {selectedCoinPrice}
-                </LabelPrice>}
-                rules={[{ required: true, message: 'Пожалуйста введите цену' }]}
-              >
-                <InputNumber
-                  style={{ width: '100%' }}
-                  defaultValue="0"
-                  min="0"
-                  step="1"
-                  stringMode
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="count"
-                label="Количество"
-                rules={[
-                  { required: true, message: 'Пожалуйста введите количество' },
-                ]}
-              >
-                <InputNumber
-                  style={{ width: '100%' }}
-                  defaultValue="0"
-                  step="1"
-                  stringMode
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+        }>
+        <Row gutter={16}>
+          <Col span={12}>
+            <AutoComplete
+              options={this.optoinsComponents(coins)}
+              onSelect={this.onSelectCoin}
+              onSearch={this.onSearchCoin}
+              onFocus={this.onFocusCoin}
+              notFoundContent={loading ? <Spin size='small'/> : null}
+              placeholder="Введите ID монеты из coingecko.com"
+            >
+              <Input.Search
+                value={selectedCoinId}/>
+            </AutoComplete>
+          </Col>
+          <Col span={12}>
+            <DatePicker
+              showTime
+              value={dateTime}
+              onChange={this.onChangeDateTime}
+              placeholder="Выберите дату"
+              style={{ width: '100%' }}
+              getPopupContainer={(trigger) => trigger.parentElement}
+            />
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <InputNumber
+              min="0"
+              step="1"
+              placeholder='0'
+              value={selectedCoinPrice}
+              stringMode
+            />
+          </Col>
+          <Col span={12}>
+            <InputNumber
+              step="1"
+              placeholder='0'
+              value={count}
+              onChange={this.onChangeCount}
+              stringMode
+            />
+          </Col>
+        </Row>
+
         <Form
           layout="vertical"
           name="addTransactions"

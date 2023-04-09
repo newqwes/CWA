@@ -1,16 +1,16 @@
 import {
-  get,
-  reduce,
-  find,
-  map,
-  isEmpty,
   compose,
-  uniq,
-  isEqual,
   drop,
-  toArray,
+  find,
+  get,
   head,
+  isEmpty,
+  isEqual,
   last,
+  map,
+  reduce,
+  toArray,
+  uniq,
 } from 'lodash/fp';
 
 import { round } from 'lodash';

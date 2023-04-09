@@ -1,8 +1,8 @@
-import {getGeckoCoins} from '../utils/coinGeckoClient';
+import { getGeckoCoins } from '../utils/coinGeckoClient';
 
 class CoinService {
   async getCoins({ coins }) {
-    return await getGeckoCoins(coins);
+    return getGeckoCoins(coins);
   }
 }
 

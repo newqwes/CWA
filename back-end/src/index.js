@@ -7,6 +7,7 @@ import useSocket from 'socket.io';
 import { Server } from 'http';
 import cookieParser from 'cookie-parser';
 
+import cron from 'node-cron';
 import sequelize from './database';
 import cookieSession from './middleware/cookieSession';
 import cors from './middleware/cors';
@@ -21,6 +22,7 @@ import userRoute from './routes/userRoute';
 import coinRoute from './routes/coinRoute';
 
 import runTelegramBotService from './services/telegramBotService';
+import HistoryService from './services/historyService';
 
 dotenv.config();
 const app = express();
@@ -53,6 +55,10 @@ io.on('connection', socket => {
   console.log(socket);
 });
 
+cron.schedule('*/1 * * * *', () => { HistoryService.removeDuplicateHistory(); });
+// cron.schedule('0 3 * * *', () => { HistoryService.removeDuplicateHistory(); }, {
+//   timeZone: 'Europe/Minsk'
+// });
 const start = async () => {
   try {
     server.listen(process.env.SERVER_PORT, async () => {

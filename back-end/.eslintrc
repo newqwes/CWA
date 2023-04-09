@@ -8,7 +8,9 @@
     "es6": true,
     "node": true
   },
-  "extends": ["airbnb/base"],
+  "extends": [
+    "airbnb/base"
+  ],
   "rules": {
     "strict": 0,
     "no-alert": "off",
@@ -20,6 +22,8 @@
     "consistent-return": 0,
     "no-useless-escape": 0,
     "no-unused-expressions": 0,
+    "no-await-in-loop": 0,
+    "no-restricted-syntax": 0,
     "no-console": 0,
     "operator-linebreak": [
       "error",

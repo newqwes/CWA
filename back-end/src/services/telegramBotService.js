@@ -1,6 +1,6 @@
 import TelegraAPI from 'node-telegram-bot-api';
 import { forEach, isEmpty, isFinite, round } from 'lodash';
-import { get, isEqual, pick, chunk } from 'lodash/fp';
+import { chunk, get, isEqual, pick } from 'lodash/fp';
 import cron from 'node-cron';
 
 import { AGAIN_MESSAGE_OPTIONS, MESSAGE_OPTIONS, MINUTE, TEN_MINUTE } from '../constants/telegram';
@@ -178,29 +178,27 @@ const runTelegramBotService = async () => {
             const [mes1, mes2] = chunk(round(arrOfMessages.length / 2), arrOfMessages);
 
             await MyBot.sendMessage(id, mes1.join('\n'), MESSAGE_OPTIONS);
-            console.log('id: ', id, typeof id);
-            console.log('myChatId: ', myChatId, typeof myChatId);
             await MyBot.sendMessage(
-                myChatId,
-                `Пользователь ${firstName}, только что проверил баланс.\n ${mes1.join('\n')}`,
-                MESSAGE_OPTIONS
+              myChatId,
+              `Пользователь ${firstName}, только что проверил баланс.\n ${mes1.join('\n')}`,
+              MESSAGE_OPTIONS
             );
 
             setTimeout(async () => {
-             await MyBot.sendMessage(id, `${mes2.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
+              await MyBot.sendMessage(id, `${mes2.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
               await MyBot.sendMessage(
-                  myChatId,
-                  `${mes2.join('\n')}${sumMessage}`,
-                  MESSAGE_OPTIONS
+                myChatId,
+                `${mes2.join('\n')}${sumMessage}`,
+                MESSAGE_OPTIONS
               );
             }, 500);
 
             return;
           }
           await MyBot.sendMessage(
-              myChatId,
-              `Пользователь ${firstName}, только что проверил баланс.\n ${arrOfMessages.join('\n')}${sumMessage}`,
-              MESSAGE_OPTIONS
+            myChatId,
+            `Пользователь ${firstName}, только что проверил баланс.\n ${arrOfMessages.join('\n')}${sumMessage}`,
+            MESSAGE_OPTIONS
           );
           return MyBot.sendMessage(id, `${arrOfMessages.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
         }
@@ -256,12 +254,12 @@ const runTelegramBotService = async () => {
                 });
                 const { diffWalletState, walletState, diffNetProfit } = compareResults(refreshData);
                 await MyBot.sendMessage(
-                    id,
-                    `Было: ${round(oldWalletState, 2)}$\nCтало: ${round(
-                        walletState,
-                        2
-                    )}$\nРазница: ${round(diffWalletState, 2)}$(${round(diffNetProfit, 2)}%)`,
-                    MESSAGE_OPTIONS
+                  id,
+                  `Было: ${round(oldWalletState, 2)}$\nCтало: ${round(
+                    walletState,
+                    2
+                  )}$\nРазница: ${round(diffWalletState, 2)}$(${round(diffNetProfit, 2)}%)`,
+                  MESSAGE_OPTIONS
                 );
               },
               { timezone: 'Europe/Minsk' }

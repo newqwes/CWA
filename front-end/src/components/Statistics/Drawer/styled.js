@@ -1,20 +1,10 @@
 import styled from 'styled-components';
-import { get } from 'lodash/fp';
-import { Statistic, Typography } from 'antd';
+import { AutoComplete as AutoCompleteAntd, InputNumber as InputNumberAntd } from 'antd';
 
-const { Text: TextAntd } = Typography;
-
-export const Text = styled(TextAntd)`
-  display: block;
-  margin-bottom: 8px;
+const CustomStyledComponent = component => styled(component)`
+  width: 100%;
+  margin-bottom: 20px;
 `;
 
-export const InteractiveStatistic = styled(Statistic)`
-  .ant-statistic-content {
-    color: ${({ positive, theme }) => get([positive ? 'positive' : 'negative'], theme)};
-  }
-`;
-
-export const LabelPrice = styled.span`
-  cursor: pointer;
-`;
+export const AutoComplete = CustomStyledComponent(AutoCompleteAntd);
+export const InputNumber = CustomStyledComponent(InputNumberAntd);
