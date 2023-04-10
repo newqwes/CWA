@@ -96,6 +96,10 @@ class Drawer extends React.Component {
     this.setState({ count: value });
   }
 
+  onChangeCoinPrice = (value) => {
+    this.setState({ selectedCoinPrice: value });
+  }
+
   onChangeDateTime = (value) => {
     this.setState({ dateTime: value });
   }
@@ -152,6 +156,7 @@ class Drawer extends React.Component {
               min="0"
               step="1"
               placeholder='0'
+              onChange={this.onChangeCoinPrice}
               value={selectedCoinPrice}
               stringMode
             />
