@@ -18,7 +18,7 @@ service nginx restart
 
 посмотреть статус
 service nginx status
-
+st
 конфиг pm2 по адресу home/ecosystem.config.js
 после изменения конфиг файла pm2 перезапустить pm2 необходимо! pm2 start в директории конфига это всё
 
