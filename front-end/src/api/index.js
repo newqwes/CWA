@@ -85,6 +85,24 @@ export const userAPI = {
       return data;
     }
   },
+  getUserList: async () => {
+    try {
+      const { data } = await axios.get('user');
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+  getAvatarList: async (gender) => {
+    try {
+      const { data } = await axios.get('avatar', { params: { gender } });
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
 };
 
 export const orderAPI = {

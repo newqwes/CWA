@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { isEqual, map } from 'lodash/fp';
 import { Form as FormAntd, Input, Modal } from 'antd';
 
@@ -7,23 +7,25 @@ import { KEYWORD } from '../../../constants/keyword';
 import authModalTypes from './propTypes';
 import GoogleAuth from '../../Buttons/GoogleAuth';
 
-class AuthModal extends React.Component {
-  static propTypes = authModalTypes;
+const AuthModal = ({
+  modalName,
+  initialValues,
+  onFinish,
+  setNotificationForm,
+  title,
+  visible,
+  loading,
+  width,
+  handleShow,
+  htmlType,
+  okText,
+  googleAuth,
+  cancelText,
+  formItems,
+}) => {
+  const formRef = useRef();
 
-  static defaultProps = {
-    initialAuthData: {},
-  };
-
-  formRef = React.createRef();
-
-  state = {
-    authModalVisible: false,
-    registrationModalVisible: false,
-  };
-
-  renderFormItems() {
-    const { formItems } = this.props;
-
+  const renderFormItems = () => {
     const items = map(({ name, rules, placeholder, prefix, customInput }) => {
       const Field = customInput || Input;
 
@@ -35,59 +37,45 @@ class AuthModal extends React.Component {
     }, formItems);
 
     return items;
-  }
+  };
 
-  handleKeyUp = ({ keyCode }) => {
-    const { handleShow } = this.props;
-
+  const handleKeyUp = ({ keyCode }) => {
     if (isEqual(keyCode, KEYWORD.enter)) {
-      this.formRef.current.submit();
+      formRef.current.submit();
       handleShow();
     }
   };
 
-  render() {
-    const {
-      modalName,
-      initialValues,
-      onFinish,
-      setNotificationForm,
-      title,
-      visible,
-      loading,
-      width,
-      handleShow,
-      htmlType,
-      okText,
-      googleAuth,
-      cancelText,
-    } = this.props;
+  return (
+    <FormAntd
+      name={modalName}
+      initialValues={initialValues}
+      onFinish={onFinish}
+      onKeyUp={handleKeyUp}
+      ref={formRef}
+      onFinishFailed={setNotificationForm}
+    >
+      <Modal
+        title={title}
+        visible={visible}
+        width={width}
+        onCancel={handleShow}
+        confirmLoading={loading}
+        okText={okText}
+        cancelText={cancelText}
+        okButtonProps={{ htmlType, form: modalName }}
+      >
+        {renderFormItems()}
+        <GoogleAuth handleClick={googleAuth} />
+      </Modal>
+    </FormAntd>
+  );
+};
 
-    const okButtonProps = { htmlType, form: modalName };
+AuthModal.propTypes = authModalTypes;
 
-    return (
-      <FormAntd
-        name={modalName}
-        initialValues={initialValues}
-        onFinish={onFinish}
-        onKeyUp={this.handleKeyUp}
-        ref={this.formRef}
-        onFinishFailed={setNotificationForm}>
-        <Modal
-          title={title}
-          visible={visible}
-          width={width}
-          onCancel={handleShow}
-          confirmLoading={loading}
-          okText={okText}
-          cancelText={cancelText}
-          okButtonProps={okButtonProps}>
-          {this.renderFormItems()}
-          <GoogleAuth handleClick={googleAuth} />
-        </Modal>
-      </FormAntd>
-    );
-  }
-}
+AuthModal.defaultProps = {
+  initialAuthData: {},
+};
 
 export default AuthModal;

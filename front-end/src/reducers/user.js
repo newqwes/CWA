@@ -3,6 +3,7 @@ import {
   AUTH_LOGOUT,
   DELETE_USER_FAILURE,
   DELETE_USER_SUCCESS,
+  GET_USER_LIST_SUCCESS,
   SET_USER_DATA,
   SET_USER_HISTORY,
 } from '../actions';
@@ -11,6 +12,7 @@ const initialState = {
   email: '',
   login: '',
   userType: '',
+  avatarURL: '',
   id: '',
   isActivated: false,
   list: [],
@@ -19,6 +21,7 @@ const initialState = {
   score: 0,
   lastDateUpdate: '',
   dataRefreshLimitPerMinute: 0,
+  userList: [],
 };
 
 const user = (state = initialState, { type, payload }) => {
@@ -36,6 +39,7 @@ const user = (state = initialState, { type, payload }) => {
         score,
         lastDateUpdate,
         dataRefreshLimitPerMinute,
+        avatarURL,
       } = pick(
         [
           'email',
@@ -49,6 +53,7 @@ const user = (state = initialState, { type, payload }) => {
           'list',
           'lastDateUpdate',
           'dataRefreshLimitPerMinute',
+          'avatarURL',
         ],
         payload,
       );
@@ -65,6 +70,7 @@ const user = (state = initialState, { type, payload }) => {
         assoc(['score'], score),
         assoc(['lastDateUpdate'], lastDateUpdate),
         assoc(['dataRefreshLimitPerMinute'], dataRefreshLimitPerMinute),
+        assoc(['avatarURL'], avatarURL),
       )(state);
     }
 
@@ -78,6 +84,10 @@ const user = (state = initialState, { type, payload }) => {
 
     case DELETE_USER_FAILURE: {
       return state;
+    }
+
+    case GET_USER_LIST_SUCCESS: {
+      return { ...state, userList: payload };
     }
 
     default:

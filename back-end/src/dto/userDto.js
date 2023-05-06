@@ -1,3 +1,5 @@
+import { makeAvatarURL } from '../utils/createResponse';
+
 class UserDto {
   email;
 
@@ -21,6 +23,10 @@ class UserDto {
 
   dataRefreshLimitPerMinute;
 
+  avatar;
+
+  gender;
+
   constructor(model) {
     this.email = model.email;
     this.login = model.login;
@@ -33,6 +39,8 @@ class UserDto {
     this.list = model.list;
     this.prevData = model.prevData;
     this.dataRefreshLimitPerMinute = Number(model.dataRefreshLimitPerMinute);
+    this.avatarURL = makeAvatarURL(model.avatar);
+    this.gender = model.gender;
   }
 }
 

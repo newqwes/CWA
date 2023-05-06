@@ -20,7 +20,9 @@ class AuthService {
     const user = await userService.findByKey(email, 'email');
 
     if (!user) {
-      throw ApiError.BadRequest(`Пользователь с почтовым адресом ${email} не существует`);
+      throw ApiError.BadRequest(
+        `Пользователь с почтовым адресом ${email} не существует`
+      );
     }
 
     const { password: hashPassword } = user;
@@ -54,7 +56,9 @@ class AuthService {
     const foundUser = await userService.findByKey(email, 'email');
 
     if (foundUser) {
-      throw ApiError.AlreadyExists('Пользователь с таким email-ом уже существует');
+      throw ApiError.AlreadyExists(
+        'Пользователь с таким email-ом уже существует'
+      );
     }
 
     const userDataWithHashPassword = parseUserData(registationBody);
@@ -68,7 +72,10 @@ class AuthService {
 
     await mailService.sendActivationMail(userData.email, activationLink);
 
-    const tokens = generateTokens({ id: userData.login, login: userData.login });
+    const tokens = generateTokens({
+      id: userData.login,
+      login: userData.login,
+    });
 
     await tokenService.saveToken({
       userId: userData.id,

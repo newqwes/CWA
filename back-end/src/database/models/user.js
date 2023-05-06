@@ -1,4 +1,4 @@
-import { Model, DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import { USER_ROLES } from '../../constants';
 
@@ -64,6 +64,15 @@ User.init(
     activationHash: {
       type: DataTypes.STRING(100),
     },
+    avatar: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    gender: {
+      type: DataTypes.STRING(10),
+      allowNull: true,
+    }
+
   },
   {
     sequelize,

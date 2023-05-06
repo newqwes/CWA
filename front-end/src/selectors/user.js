@@ -17,3 +17,6 @@ export const getUserPrevData = createSelector(localState, get('prevData'));
 
 export const getPrevGridRowData = createSelector(getUserPrevData, get('gridRowData'));
 export const getUserHistory = createSelector(localState, get('history'));
+export const getUserList = createSelector(localState, get('userList'));
+export const getAvatarURL = createSelector(localState, get('avatarURL'));
+export const getEmail = createSelector(localState, get('email'));

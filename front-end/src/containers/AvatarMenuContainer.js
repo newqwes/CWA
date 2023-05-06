@@ -1,21 +1,29 @@
 import { connect } from 'react-redux';
-
-import { deleteUserAC } from '../actionCreators/user';
 import { authLogoutAC } from '../actionCreators/auth';
 import { userMenuConfig } from '../configuration/userMenuConfig';
 
 import AvatarMenu from '../components/AvatarMenu';
+import { getAvatarURL, getEmail, getLogin } from '../selectors/user';
+
+const mapStateToProps = (state) => ({
+  avatarURL: getAvatarURL(state),
+  login: getLogin(state),
+  email: getEmail(state),
+});
 
 const mapDispatchToProps = {
-  deleteUser: deleteUserAC,
   authLogout: authLogoutAC,
 };
 
-const mergeProps = (_, { deleteUser, authLogout }) => ({
-  menuItems: [
-    { ...userMenuConfig.delete, onClick: userMenuConfig.delete.onClickFactory(deleteUser) },
-    { ...userMenuConfig.logout, onClick: userMenuConfig.logout.onClickFactory(authLogout) },
-  ],
+const mergeProps = (mapState, { authLogout }) =>
+   ({
+    ...mapState,
+    menuItems: [
+      userMenuConfig.edit,
+    {
+      ...userMenuConfig.logout,
+      onClick: userMenuConfig.logout.onClickFactory(authLogout),
+    },
+],
 });
-
-export default connect(null, mapDispatchToProps, mergeProps)(AvatarMenu);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(AvatarMenu);

@@ -1,6 +1,7 @@
 import { getOr, omit } from 'lodash/fp';
 import bcrypt from 'bcrypt';
 import { v4 } from 'uuid';
+import { GENDER } from '../constants/requestBody';
 
 /**
  * @description Returns the user id if authorized else return null
@@ -60,4 +61,13 @@ export const createUserDataByGoogle = ({ email, displayName }) => {
   const defaults = parseUserData(registationBody);
 
   return { defaults, randomPassword };
+};
+
+export const getGender = req => {
+  const gender = getOr(null, ['query', 'gender'], req);
+
+  if (GENDER.includes(gender)) {
+    return gender;
+  }
+  return null;
 };

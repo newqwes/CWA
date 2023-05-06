@@ -7,7 +7,7 @@ import History from '../database/models/history';
 import ApiError from '../exceptions/apiError';
 import authService from '../services/authService';
 import UserDto from '../dto/userDto';
-import userService from "../services/userService";
+import userService from '../services/userService';
 
 export const login = async (req, res, next) => {
   try {

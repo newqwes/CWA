@@ -1,12 +1,19 @@
-import { takeEvery, all, call, put } from 'redux-saga/effects';
+import { all, call, put, takeEvery } from 'redux-saga/effects';
 
-import { DELETE_USER_PENDING } from '../actions';
-import { NOTIFICATION_ERROR_MESSAGE, NOTIFICATION_TYPE } from '../constants/notification';
+import { DELETE_USER_PENDING, GET_USER_LIST_PENDING } from '../actions';
+import {
+  NOTIFICATION_ERROR_MESSAGE,
+  NOTIFICATION_TYPE,
+} from '../constants/notification';
 
-import { deleteUserFailureAC, deleteUserSuccessAC } from '../actionCreators/user';
+import {
+  deleteUserFailureAC,
+  deleteUserSuccessAC,
+  getUserListFailureAC,
+  getUserListSuccessAC,
+} from '../actionCreators/user';
 import { setNotificationAC } from '../actionCreators/aplication';
 import { authLogoutAC } from '../actionCreators/auth';
-
 import { userAPI } from '../api';
 
 function* deleteSuccess(message) {
@@ -43,6 +50,19 @@ function* deleteUserData() {
   }
 }
 
+function* getUserList() {
+  try {
+    const users = yield call(userAPI.getUserList);
+
+    yield put(getUserListSuccessAC(users.data));
+  } catch (error) {
+    yield put(getUserListFailureAC());
+  }
+}
+
 export function userSaga() {
-  return all([takeEvery(DELETE_USER_PENDING, deleteUserData)]);
+  return all([
+    takeEvery(DELETE_USER_PENDING, deleteUserData),
+    takeEvery(GET_USER_LIST_PENDING, getUserList),
+  ]);
 }

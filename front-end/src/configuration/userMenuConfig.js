@@ -1,37 +1,20 @@
 import React from 'react';
-import { DeleteOutlined, LogoutOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { LogoutOutlined, ToolOutlined } from '@ant-design/icons';
 import { Modal } from 'antd';
-
-import { MADAL_BUTTONS } from '../constants/modal';
+import { Link } from 'react-router-dom';
 import { logoutModalConfig } from './authConfig';
 
 const { confirm } = Modal;
-
-const deleteUserModalConfig = {
-  title: 'Вы действительно хотите удалить аккаунт?',
-  okType: 'danger',
-  okText: MADAL_BUTTONS.yes,
-  cancelText: MADAL_BUTTONS.no,
-  icon: <ExclamationCircleOutlined />,
-};
-
 export const userMenuConfig = {
-  delete: {
+  edit: {
     key: 0,
-    onClickFactory: onOk => () => {
-      confirm({
-        ...deleteUserModalConfig,
-        onOk: () => {
-          onOk();
-        },
-      });
-    },
-    icon: <DeleteOutlined />,
-    text: 'Удалить аккаунт',
-    danger: true,
+    icon: <ToolOutlined />,
+    text: 'Настройки',
+    component: Link,
+    to: '/settings',
   },
   logout: {
-    key: 1,
+    key: 2,
     onClickFactory: onOk => () => {
       confirm({
         ...logoutModalConfig,

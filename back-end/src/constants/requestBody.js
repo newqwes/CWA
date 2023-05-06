@@ -8,6 +8,8 @@ export const REGISTRATION_REQUEST_BODY = {
   email: 'email',
   login: 'login',
   password: 'password',
+  avatar: 'avatar',
+  gender: 'gender',
 };
 
 /**
@@ -35,3 +37,10 @@ export const ORDER_REQUEST_BODY = {
 };
 
 export const LINK_REQUEST_PARAM = 'link';
+
+export const GENDER_OBJ = {
+  male: 'male',
+  female: 'female'
+};
+
+export const GENDER = [null, GENDER_OBJ.male, GENDER_OBJ.female];

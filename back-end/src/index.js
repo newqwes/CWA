@@ -20,6 +20,7 @@ import orderRoute from './routes/orderRoute';
 import refreshRoute from './routes/refreshRoute';
 import userRoute from './routes/userRoute';
 import coinRoute from './routes/coinRoute';
+import avatarRoute from './routes/avatarRoute';
 
 import runTelegramBotService from './services/telegramBotService';
 import HistoryService from './services/historyService';
@@ -48,6 +49,7 @@ app.use('/api/order', orderRoute);
 app.use('/api/refresh', refreshRoute);
 app.use('/api/user', userRoute);
 app.use('/api/coin', coinRoute);
+app.use('/api/avatar', avatarRoute);
 
 app.use(errorMiddleware);
 

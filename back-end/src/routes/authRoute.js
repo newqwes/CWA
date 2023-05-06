@@ -3,9 +3,18 @@ import { body } from 'express-validator';
 import passport from 'passport';
 
 import { REFRESH_TOKEN_AGE } from '../constants';
-import { LINK_REQUEST_PARAM, REGISTRATION_REQUEST_BODY } from '../constants/requestBody';
+import {
+  GENDER,
+  LINK_REQUEST_PARAM,
+  REGISTRATION_REQUEST_BODY,
+} from '../constants/requestBody';
 
-import { login, registration, activate, status } from '../controllers/authController';
+import {
+  activate,
+  login,
+  registration,
+  status,
+} from '../controllers/authController';
 import authMiddleware from '../middleware/authMiddleware';
 
 const authRoute = express.Router();
@@ -17,6 +26,7 @@ authRoute.post(
   body(REGISTRATION_REQUEST_BODY.email).isEmail(),
   body(REGISTRATION_REQUEST_BODY.login).isLength({ min: 4, max: 20 }),
   body(REGISTRATION_REQUEST_BODY.password).isLength({ min: 6, max: 32 }),
+  body(REGISTRATION_REQUEST_BODY.gender).isIn(GENDER),
   registration,
 );
 
