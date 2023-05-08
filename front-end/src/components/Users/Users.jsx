@@ -38,7 +38,7 @@ const Users = ({ getUserList, userList }) => {
               ''
             ) : (
               <Profit positive={user?.profit >= 0}>
-                ({round(user?.profit, 1)}%)
+                ({(user?.profit >= 0 && '+') + round(user?.profit, 1)}%)
               </Profit>
             )}
           </Login>
