@@ -88,7 +88,6 @@ export const prepareUserList = users => users.map((user) => {
     score: rawUser.score,
     level: rawUser.level,
     userType: rawUser.userType,
-    profit: rawUser.prevData && ((100 * rawUser.prevData.netProfit) /
-      (rawUser.prevData.walletState - rawUser.prevData.netProfit))
+    profit: rawUser.prevData.netProfit
   };
 });
