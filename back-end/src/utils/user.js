@@ -2,6 +2,7 @@ import { getOr, omit } from 'lodash/fp';
 import bcrypt from 'bcrypt';
 import { v4 } from 'uuid';
 import { GENDER } from '../constants/requestBody';
+import UserDto from '../dto/userDto';
 
 /**
  * @description Returns the user id if authorized else return null
@@ -71,3 +72,23 @@ export const getGender = req => {
   }
   return null;
 };
+
+export const prepareUserList = users => users.map((user) => {
+  const rawUser = new UserDto(user);
+
+  if (!rawUser.id) return {};
+
+  return {
+    id: rawUser.id,
+    avatarURL: rawUser.avatarURL,
+    gender: rawUser.gender,
+    lastDateUpdate: rawUser.lastDateUpdate,
+    list: rawUser.list,
+    login: rawUser.login,
+    score: rawUser.score,
+    level: rawUser.level,
+    userType: rawUser.userType,
+    profit: rawUser.prevData && ((100 * rawUser.prevData.netProfit) /
+      (rawUser.prevData.walletState - rawUser.prevData.netProfit))
+  };
+});

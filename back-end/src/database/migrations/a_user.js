@@ -59,6 +59,26 @@ module.exports = {
       activationHash: {
         type: DataTypes.STRING(100),
       },
+      avatar: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+      },
+      gender: {
+        type: DataTypes.STRING(10),
+        allowNull: true,
+        defaultValue: null,
+        validate: {
+          isIn: {
+            args: [[null, 'male', 'female']],
+            msg: 'Valid values for "gender" field: male, female, or null',
+          },
+        },
+      },
+      level: {
+        type: DataTypes.TINYINT,
+        defaultValue: 1,
+        allowNull: false,
+      },
     });
   },
 

@@ -71,8 +71,12 @@ User.init(
     gender: {
       type: DataTypes.STRING(10),
       allowNull: true,
-    }
-
+    },
+    level: {
+      type: DataTypes.TINYINT,
+      defaultValue: 1,
+      allowNull: false,
+    },
   },
   {
     sequelize,

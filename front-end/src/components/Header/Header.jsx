@@ -2,7 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { floor } from 'lodash/fp';
 
-import { HeaderWrapper, Button, Text, Title, AuthBlock, Paragraph } from './styled';
+import { Tooltip } from 'antd';
+import {
+  AuthBlock,
+  Button,
+  HeaderWrapper,
+  Paragraph,
+  Text,
+  Title,
+} from './styled';
 import { getRefreshTimer } from '../../utils/refresh';
 import { AUTH_TELEGRAM_CODE_PREFIX } from '../../constants/telegram';
 
@@ -85,7 +93,7 @@ class Header extends React.Component {
         <AuthBlock>
           {authorized && (
             <>
-              <Title level={4}>Счетчик: {score}</Title>
+              <Tooltip title='Количество Вашей игровой валюты'><Title level={4}>{score} cwa</Title></Tooltip>
               {refreshDisabled ? (
                 <Text>Осталось: {time}</Text>
               ) : (

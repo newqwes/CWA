@@ -14,7 +14,7 @@ class RefreshService {
 
     const data = await getGeckoCoins(coinList);
 
-    user.score += 1;
+    user.score -= 1;
     user.prevData = prevData;
     user.lastDateUpdate = Date.now();
     user.list = data;

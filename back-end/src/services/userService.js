@@ -6,7 +6,7 @@ import Order from '../database/models/order';
 import User from '../database/models/user';
 import createResponse, { makeAvatarURL } from '../utils/createResponse';
 import { GENDER_OBJ } from '../constants/requestBody';
-import UserDto from '../dto/userDto';
+import { prepareUserList } from '../utils/user';
 
 class UserService {
   async findByKey(value, key) {
@@ -52,7 +52,7 @@ class UserService {
   async getUserList(userId) {
     try {
       const users = await User.findAll({ where: { id: { [Op.ne]: userId } } });
-      const nonSensitiveUserData = users.map((user) => new UserDto(user));
+      const nonSensitiveUserData = prepareUserList(users);
 
       return createResponse(
         200,

@@ -27,6 +27,8 @@ class UserDto {
 
   gender;
 
+  level;
+
   constructor(model) {
     this.email = model.email;
     this.login = model.login;
@@ -41,6 +43,7 @@ class UserDto {
     this.dataRefreshLimitPerMinute = Number(model.dataRefreshLimitPerMinute);
     this.avatarURL = makeAvatarURL(model.avatar);
     this.gender = model.gender;
+    this.level = model.level;
   }
 }
 
