@@ -2,13 +2,9 @@ import axios from 'axios';
 
 import { getToken } from '../utils/localStore';
 
-// NOTE: When deploying to the server, this REACT_APP_API_URL
-// variable is not needed. No need to change at release
-const baseURL = `${process.env.REACT_APP_API_URL || ''}api/`;
+const baseURL = 'api/';
 
-export const googleLoginURL = process.env.REACT_APP_API_URL
-  ? `${baseURL}auth/google`
-  : '/api/auth/google';
+export const googleLoginURL = '/api/auth/google';
 
 axios.interceptors.request.use(config => ({
   ...config,
