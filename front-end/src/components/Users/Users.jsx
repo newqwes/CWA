@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Tooltip } from 'antd';
+import { Avatar } from 'antd';
 import { QuestionOutlined, UserOutlined } from '@ant-design/icons';
 import { round } from 'lodash';
 import { formatLastDateUpdate } from '../../utils/formatLastDateUpdate';
@@ -12,6 +12,7 @@ import {
   Login,
   Profit,
   Score,
+  Tooltip,
   UserCard,
   Wrapper,
 } from './styled';
@@ -47,7 +48,7 @@ const Users = ({ getUserList, userList }) => {
           </LastUpdate>
           <Score>{user?.score} cwa</Score>
           <Avatar.Group
-            maxCount={5}
+            maxCount={6}
             maxStyle={{
               color: '#f56a00',
               backgroundColor: '#fde3cf',

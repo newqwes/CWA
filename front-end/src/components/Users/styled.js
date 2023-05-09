@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { Tooltip as TooltipAntd } from 'antd';
 
 export const UserCard = styled.div`
   display: grid;
@@ -62,4 +63,7 @@ export const AdminUser = styled.div`
 export const Profit = styled.span`
   margin-left: 5px;
   color: ${({ positive }) => (positive ? 'green' : 'red')};
+`;
+
+export const Tooltip = styled(TooltipAntd)`
 `;

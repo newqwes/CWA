@@ -206,7 +206,6 @@ function* authorizationStatusSuccess({ payload }) {
 }
 
 function* authorizationStatusFailure({ payload }) {
-  console.log(payload);
   yield put(
     setNotificationAC({
       message: payload.message,

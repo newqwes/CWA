@@ -12,6 +12,10 @@ class RefreshService {
       throw ApiError.BadRequest('Пользователь с таким ID не существует');
     }
 
+    if (user.score <= 0) {
+      throw ApiError.BadRequest('Недостаточно средств, необходимо 1 CWA');
+    }
+
     const data = await getGeckoCoins(coinList);
 
     user.score -= 1;
@@ -23,13 +27,13 @@ class RefreshService {
     await History.create({
       lastModified: prevData.netProfit,
       userId,
-      date: Date.now()
+      date: Date.now(),
     });
 
     const history = await History.findAll({
       where: { userId },
       raw: true,
-      order: [['date', 'ASC']]
+      order: [['date', 'ASC']],
     });
 
     const userDto = new UserDto(user);

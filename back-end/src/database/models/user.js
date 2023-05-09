@@ -48,9 +48,12 @@ User.init(
       allowNull: false,
     },
     score: {
-      type: DataTypes.DOUBLE,
-      defaultValue: 1,
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
       allowNull: false,
+      validate: {
+        min: 0,
+      },
     },
     userType: {
       type: DataTypes.STRING(50),
