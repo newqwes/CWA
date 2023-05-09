@@ -1,12 +1,13 @@
 import {
+  CLOSE_AUTHORIZATION_MODALS,
   GET_LOADING_PENDING,
   GET_LOADING_SUCCESS,
   HANDLE_COLLAPSE_SIDE_MENU,
-  SET_NOTIFICATION_FORM,
   HANDLE_SHOW_AUTH_MODAL,
   HANDLE_SHOW_REGISTRATION_MODAL,
+  SET_BANK_VALUE,
   SET_NOTIFICATION,
-  CLOSE_AUTHORIZATION_MODALS,
+  SET_NOTIFICATION_FORM,
 } from '../actions';
 
 export const loadingPendingAC = () => ({
@@ -41,4 +42,9 @@ export const handleShowRegistrationModalAC = () => ({
 
 export const closeAuthorizationModalsAC = () => ({
   type: CLOSE_AUTHORIZATION_MODALS,
+});
+
+export const setBankValueAC = (payload) => ({
+  type: SET_BANK_VALUE,
+  payload,
 });

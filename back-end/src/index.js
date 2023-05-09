@@ -3,11 +3,10 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import express from 'express';
 import passport from 'passport';
-import useSocket from 'socket.io';
-import { Server } from 'http';
 import cookieParser from 'cookie-parser';
-
 import cron from 'node-cron';
+
+import { app, server } from './config';
 import sequelize from './database';
 import cookieSession from './middleware/cookieSession';
 import cors from './middleware/cors';
@@ -26,9 +25,6 @@ import runTelegramBotService from './services/telegramBotService';
 import HistoryService from './services/historyService';
 
 dotenv.config();
-const app = express();
-const server = Server(app);
-const io = useSocket(server);
 
 passportJWTAndGoogle(passport);
 
@@ -53,24 +49,20 @@ app.use('/api/avatar', avatarRoute);
 
 app.use(errorMiddleware);
 
-io.on('connection', socket => {
-  console.log(socket);
-});
-
 cron.schedule('0 3 * * *', () => { HistoryService.removeDuplicateHistory(); }, {
   timeZone: 'Europe/Minsk'
 });
 const start = async () => {
   try {
     server.listen(process.env.SERVER_PORT, async () => {
-      console.log(`Server is listening on port ${process.env.SERVER_PORT}...`);
-      await sequelize.authenticate();
-      console.log('Database Connected!');
       console.log('GOOGLE_CALLBACK_URL: ', process.env.GOOGLE_CALLBACK_URL);
       console.log(`API_URL ${process.env.API_URL}`);
       console.log(`HOST_NAME ${process.env.HOST_NAME}`);
       console.log(`CLIENT_URL ${process.env.CLIENT_URL}`);
       console.log(`CLIENT_URL_VISUAL ${process.env.CLIENT_URL_VISUAL}`);
+      console.log(`Server is listening on port ${process.env.SERVER_PORT}...`);
+      await sequelize.authenticate();
+      console.log('Database Connected!');
     });
 
     await runTelegramBotService();

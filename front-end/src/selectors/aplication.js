@@ -13,3 +13,5 @@ export const isRegistrationModalVisible = createSelector(
   localState,
   get('registrationModalVisible'),
 );
+
+export const getBankValue = createSelector(localState, get('bank'));

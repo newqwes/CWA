@@ -8,6 +8,7 @@ import {
   HANDLE_SHOW_AUTH_MODAL,
   HANDLE_SHOW_REGISTRATION_MODAL,
   REGISTRATION_SUCCESS,
+  SET_BANK_VALUE,
 } from '../actions';
 
 const initialState = {
@@ -15,9 +16,10 @@ const initialState = {
   collapsedSideMenu: true,
   authModalVisible: false,
   registrationModalVisible: false,
+  bank: 0,
 };
 
-const aplication = (state = initialState, { type }) => {
+const aplication = (state = initialState, { type, payload }) => {
   switch (type) {
     case GET_LOADING_SUCCESS: {
       return assoc(['loading'], false, state);
@@ -52,6 +54,10 @@ const aplication = (state = initialState, { type }) => {
         assoc(['authModalVisible'], false),
         assoc(['registrationModalVisible'], false),
       )(state);
+    }
+
+    case SET_BANK_VALUE: {
+      return assoc(['bank'], payload, state);
     }
 
     default:

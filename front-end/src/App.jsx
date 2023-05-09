@@ -19,6 +19,7 @@ import { AppWrapper, ContentWrapper, Logo, Owerlay } from './style/AppWrapper';
 import { DEFAULT_SELECTED_MENU, MENU_KEYS } from './constants/menu';
 import ProfileContainer from './containers/ProfileContainer';
 import SettingsContainer from './containers/SettingsContainer';
+import socket from './api/socket';
 
 const { Content, Sider } = Layout;
 
@@ -28,9 +29,14 @@ const App = ({
                collapsedSideMenu,
                loading,
                authorized,
+               setBankValue,
              }) => {
   const location = useLocation();
   const [currentRoute, setCurrentRoute] = useState('');
+
+  useEffect(() => {
+    socket.on('bank', setBankValue);
+  }, []);
 
   useEffect(() => {
     setCurrentRoute(location.pathname === '/' ? MENU_KEYS.statistics : location.pathname);
@@ -119,6 +125,7 @@ App.propTypes = {
   collapsedSideMenu: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   authorized: PropTypes.bool.isRequired,
+  setBankValue: PropTypes.func.isRequired,
 };
 
 export default App;

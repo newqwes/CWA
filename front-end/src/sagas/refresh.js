@@ -1,5 +1,5 @@
-import { takeEvery, all, call, put, select } from 'redux-saga/effects';
-import { getOr, omit, map } from 'lodash/fp';
+import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import { getOr, map, omit } from 'lodash/fp';
 
 import {
   loadingPendingAC,
@@ -8,15 +8,22 @@ import {
 } from '../actionCreators/aplication';
 import { refreshAPI } from '../api';
 
-import { HANDLE_REFRESH, HANDLE_REFRESH_FAILURE, HANDLE_REFRESH_SUCCESS } from '../actions';
+import {
+  HANDLE_REFRESH,
+  HANDLE_REFRESH_FAILURE,
+  HANDLE_REFRESH_SUCCESS,
+} from '../actions';
 import { setUserDataAC, setUserHistoryAC } from '../actionCreators/user';
 import { NOTIFICATION_TYPE } from '../constants/notification';
-import { handleRefreshFailureAC, handleRefreshSuccessAC } from '../actionCreators/refresh';
 import {
-  getNetProfitPercent,
-  getWalletState,
+  handleRefreshFailureAC,
+  handleRefreshSuccessAC,
+} from '../actionCreators/refresh';
+import {
   getGridRowData,
+  getNetProfitPercent,
   getOrderCoinList,
+  getWalletState,
   isNotOrderList,
 } from '../selectors/order';
 
@@ -61,7 +68,7 @@ function* refreshSuccess({ payload }) {
 
   yield put(
     setNotificationAC({
-      message: `Твой счет: ${payload.score}`,
+      message: `Осталось средств: ${payload.score} cwa`,
       type: NOTIFICATION_TYPE.success,
     }),
   );

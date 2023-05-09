@@ -69,7 +69,7 @@ export default AvatarMenu;
 AvatarMenu.propTypes = {
   menuItems: PropTypes.arrayOf(
     PropTypes.shape({
-      key: PropTypes.string.isRequired,
+      key: PropTypes.number.isRequired,
       onClick: PropTypes.func,
       icon: PropTypes.node,
       text: PropTypes.string.isRequired,

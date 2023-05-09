@@ -26,6 +26,7 @@ class Header extends React.Component {
     authorized: PropTypes.bool.isRequired,
     userId: PropTypes.string,
     noData: PropTypes.bool,
+    bank: PropTypes.number.isRequired,
   };
 
   state = {
@@ -75,7 +76,7 @@ class Header extends React.Component {
   }
 
   render() {
-    const { score, handleRefresh, children, authorized, userId, noData } = this.props;
+    const { score, handleRefresh, children, authorized, userId, noData, bank } = this.props;
     const { refreshTimer, refreshDisabled } = this.state;
 
     const time =
@@ -83,26 +84,34 @@ class Header extends React.Component {
 
     return (
       <HeaderWrapper>
+        <Paragraph>Банк: {bank} cwa</Paragraph>
         <Paragraph
           copyable={{
             text: AUTH_TELEGRAM_CODE_PREFIX + userId,
-            tooltips: ['Скопировать Ваш личный ключ для телеграмма', 'Ключ скопирован!'],
-          }}>
+            tooltips: [
+              'Скопировать Ваш личный ключ для телеграмма',
+              'Ключ скопирован!',
+            ],
+          }}
+        >
           Ключ для авторизации в телеграм
         </Paragraph>
         <AuthBlock>
           {authorized && (
             <>
-              <Tooltip title='Количество Вашей игровой валюты'><Title level={4}>{score} cwa</Title></Tooltip>
+              <Tooltip title="Количество Вашей игровой валюты">
+                <Title level={4}>{score} cwa</Title>
+              </Tooltip>
               {refreshDisabled ? (
                 <Text>Осталось: {time}</Text>
               ) : (
                 <div>
                   <Button
                     onClick={handleRefresh}
-                    type='primary'
+                    type="primary"
                     loading={refreshDisabled}
-                    disabled={refreshDisabled || noData}>
+                    disabled={refreshDisabled || noData}
+                  >
                     Обновить
                   </Button>
                 </div>
