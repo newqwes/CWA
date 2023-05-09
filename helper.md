@@ -1,6 +1,6 @@
 установить nginx, postgres, pm2, yarn
 
-конфиг по адресу /etc/nginx/sites-available/apijira.conf
+конфиг по адресу /etc/nginx/sites-available/cwa.conf
 
 если там запущенно реакт приложение необходимо подправить работу роутинга добовляется в конфиг server... и там добавить эту првоерку
 
