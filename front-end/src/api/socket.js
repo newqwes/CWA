@@ -1,6 +1,5 @@
 import io from 'socket.io-client';
-import { baseURL } from './index';
 
-const socket = io(baseURL);
+const socket = io(`${process.env.REACT_APP_API_URL || ''}api/`);
 
 export default socket;

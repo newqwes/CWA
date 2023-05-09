@@ -4,7 +4,7 @@ import { getToken } from '../utils/localStore';
 
 // NOTE: When deploying to the server, this REACT_APP_API_URL
 // variable is not needed. No need to change at release
-export const baseURL = `${process.env.REACT_APP_API_URL || ''}api/`;
+const baseURL = `${process.env.REACT_APP_API_URL || ''}api/`;
 
 export const googleLoginURL = process.env.REACT_APP_API_URL
   ? `${baseURL}auth/google`
