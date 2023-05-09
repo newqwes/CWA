@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
 
-const socket = io('https://coinlitics.space/api/');
+const socket = io('https://coinlitics.space/');
 
 export default socket;
