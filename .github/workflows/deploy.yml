@@ -43,6 +43,8 @@ jobs:
     defaults:
       run:
         working-directory: ./front-end
+    env:
+      SERVER_URL: ${{ secrets.SERVER_URL }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
