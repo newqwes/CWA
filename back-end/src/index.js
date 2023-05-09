@@ -6,7 +6,7 @@ import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import cron from 'node-cron';
 
-import { app, server } from './config';
+import { app, connectNotificationToDatabase, server } from './config';
 import sequelize from './database';
 import cookieSession from './middleware/cookieSession';
 import cors from './middleware/cors';
@@ -62,6 +62,7 @@ const start = async () => {
       console.log(`CLIENT_URL_VISUAL ${process.env.CLIENT_URL_VISUAL}`);
       console.log(`Server is listening on port ${process.env.SERVER_PORT}...`);
       await sequelize.authenticate();
+      await connectNotificationToDatabase();
       console.log('Database Connected!');
     });
 
