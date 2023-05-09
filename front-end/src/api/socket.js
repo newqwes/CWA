@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
+import { baseURL } from './index';
 
-const socket = io('http://localhost:3015');
+const socket = io(baseURL);
 
 export default socket;
