@@ -9,6 +9,8 @@ import {
   DELETE_USER_ORDER_SUCCESS,
   DELETE_USER_ORDER_FAILURE,
   SET_USER_ORDERS_PENDING,
+  GET_BACKUP_USER_ORDERS_FAILURE,
+  GET_BACKUP_USER_ORDERS_PENDING,
 } from '../actions';
 
 export const getOrdersAC = () => ({
@@ -22,6 +24,15 @@ export const getOrdersSuccessAC = data => ({
 
 export const getOrdersFailureAC = error => ({
   type: GET_USER_ORDERS_FAILURE,
+  payload: error,
+});
+
+export const getBackupOrdersAC = () => ({
+  type: GET_BACKUP_USER_ORDERS_PENDING,
+});
+
+export const getBackupOrdersFailureAC = error => ({
+  type: GET_BACKUP_USER_ORDERS_FAILURE,
   payload: error,
 });
 

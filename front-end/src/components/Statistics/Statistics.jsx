@@ -14,6 +14,7 @@ class Statistics extends React.Component {
   static propTypes = {
     setOrder: PropTypes.func.isRequired,
     setOrders: PropTypes.func.isRequired,
+    getBackupOrders: PropTypes.func.isRequired,
     totalInvested: PropTypes.number.isRequired,
     netProfit: PropTypes.number.isRequired,
     walletState: PropTypes.number.isRequired,
@@ -41,6 +42,7 @@ class Statistics extends React.Component {
     const {
       setOrder,
       totalInvested,
+      getBackupOrders,
       netProfit,
       walletState,
       lastModified,
@@ -57,6 +59,7 @@ class Statistics extends React.Component {
       <Wrapper>
         <Description
           totalInvested={totalInvested}
+          getBackupOrders={getBackupOrders}
           currencySymbol='$'
           netProfit={netProfit}
           walletState={walletState}

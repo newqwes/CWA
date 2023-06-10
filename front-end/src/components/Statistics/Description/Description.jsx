@@ -14,6 +14,7 @@ class Description extends React.Component {
     lastModified: PropTypes.number.isRequired,
     totalTransactionCount: PropTypes.number.isRequired,
     handleDrawer: PropTypes.func.isRequired,
+    getBackupOrders: PropTypes.func.isRequired,
     precision: PropTypes.number.isRequired,
     edgeCoins: PropTypes.object.isRequired,
   };
@@ -67,6 +68,7 @@ class Description extends React.Component {
       totalTransactionCount,
       handleDrawer,
       edgeCoins,
+      getBackupOrders,
     } = this.props;
     const {
       netProfitPercent,
@@ -104,6 +106,9 @@ class Description extends React.Component {
               precision={precision}
               suffix={currencySymbol}
             />
+            <Button type='primary' onClick={getBackupOrders}>
+              Download backup
+            </Button>
           </Col>
           <Col span={3} onMouseUp={this.handleNetProfit}>
             <InteractiveStatistic

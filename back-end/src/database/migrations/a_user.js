@@ -78,7 +78,7 @@ module.exports = {
         },
       },
       level: {
-        type: DataTypes.TINYINT,
+        type: DataTypes.INTEGER,
         defaultValue: 1,
         allowNull: false,
       },
