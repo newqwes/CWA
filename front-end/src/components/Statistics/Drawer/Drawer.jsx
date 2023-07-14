@@ -1,6 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Col, DatePicker, Drawer as DrawerAntd, Form, Input, Row, Space, Spin } from 'antd';
+import {
+  Button,
+  Col,
+  DatePicker,
+  Drawer as DrawerAntd,
+  Form,
+  Input,
+  Row,
+  Space,
+  Spin,
+} from 'antd';
 import { map, take } from 'lodash/fp';
 import { isArray, round } from 'lodash';
 import debounce from 'lodash/debounce';
@@ -30,18 +40,20 @@ class Drawer extends React.Component {
     totalPrice: 0,
   };
 
-  optoinsComponents = map(
-    ({ label, value, smallImg }) => ({
-      value,
-      label: (<div key={value}>
-        <OptionImg src={smallImg} alt={label}/>
+  optoinsComponents = map(({ label, value, smallImg }) => ({
+    value,
+    label: (
+      <div key={value}>
+        <OptionImg src={smallImg} alt={label} />
         <span>{label}</span>
-      </div>),
-    }),
-  );
+      </div>
+    ),
+  }));
 
-  onSearchCoin = debounce(async (coin = ' ') => {
+  onSearchCoin = debounce(async (coin) => {
+    if (!coin) return;
     this.setState({ loading: true });
+
     const coins = await coingeckoAPI.searchCoin(coin);
 
     if (!isArray(coins)) {
@@ -50,7 +62,7 @@ class Drawer extends React.Component {
     }
 
     this.setState({ coins: take(10, coins), loading: false });
-  }, 500);
+  }, 1000);
 
   handleSubmit = () => {
     const { closeDrawer, handleAddTransaction } = this.props;
@@ -112,24 +124,29 @@ class Drawer extends React.Component {
       count: value,
       totalPrice: this.state.selectedCoinPrice * value,
     });
-  }
+  };
 
   onChangeCoinPrice = (value) => {
     this.setState({
       selectedCoinPrice: value,
       totalPrice: value * this.state.count,
     });
-  }
+  };
 
   onChangeDateTime = (value) => {
     this.setState({ dateTime: value });
-  }
+  };
 
   render() {
     const { visible, closeDrawer } = this.props;
     const {
-      selectedCoinId, coins, loading, selectedCoinPrice, dateTime,
-      count, totalPrice,
+      selectedCoinId,
+      coins,
+      loading,
+      selectedCoinPrice,
+      dateTime,
+      count,
+      totalPrice,
     } = this.state;
     return (
       <DrawerAntd
@@ -193,13 +210,16 @@ class Drawer extends React.Component {
           </Col>
         </Row>
         <Col span={7}>
-        <InputNumber
-          addonBefore="Total:" addonAfter="USD"
-          formatter={(value) => `${round(value, 2)}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-          value={totalPrice}
-          disabled
-        />
+          <InputNumber
+            addonBefore="Total:"
+            addonAfter="USD"
+            formatter={(value) =>
+              `${round(value, 2)}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            }
+            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+            value={totalPrice}
+            disabled
+          />
         </Col>
         <Form
           layout="vertical"
