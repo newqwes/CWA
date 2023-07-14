@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, DatePicker, Drawer as DrawerAntd, Form, Input, Row, Space, Spin } from 'antd';
 import { map, take } from 'lodash/fp';
-import { isArray } from 'lodash';
+import { isArray, round } from 'lodash';
 import debounce from 'lodash/debounce';
+import moment from 'moment';
 import { coingeckoAPI } from '../../../api';
 import { OptionImg } from '../../Calculator/styled';
 import { AutoComplete, InputNumber } from './styled';
@@ -24,8 +25,9 @@ class Drawer extends React.Component {
     loading: false,
     timesOnFocusMoreThanOne: false,
     selectedCoinPrice: null,
-    dateTime: null,
+    dateTime: moment(),
     count: null,
+    totalPrice: 0,
   };
 
   optoinsComponents = map(
@@ -47,8 +49,8 @@ class Drawer extends React.Component {
       return;
     }
 
-    this.setState({ coins: take(20, coins), loading: false });
-  }, 300);
+    this.setState({ coins: take(10, coins), loading: false });
+  }, 500);
 
   handleSubmit = () => {
     const { closeDrawer, handleAddTransaction } = this.props;
@@ -58,13 +60,22 @@ class Drawer extends React.Component {
       return;
     }
 
-    closeDrawer();
     handleAddTransaction({
       coinId: selectedCoinId,
       price: selectedCoinPrice,
       count,
       date: dateTime ? dateTime.format() : Date.now(),
     });
+
+    this.setState({
+      selectedCoinId: null,
+      coins: [],
+      selectedCoinPrice: null,
+      timesOnFocusMoreThanOne: false,
+      count: null,
+    });
+
+    closeDrawer();
   };
 
   handleSubmitTransactions = ({ list }) => {
@@ -78,7 +89,11 @@ class Drawer extends React.Component {
     const selectedCoin = await coingeckoAPI.getCoinData([selectedCoinId]);
 
     const selectedCoinPrice = selectedCoin[0].current_price;
-    this.setState({ selectedCoinPrice, selectedCoinId });
+    this.setState({
+      selectedCoinPrice,
+      selectedCoinId,
+      totalPrice: selectedCoinPrice * this.state.count,
+    });
   };
 
   onFocusCoin = () => {
@@ -93,11 +108,17 @@ class Drawer extends React.Component {
   };
 
   onChangeCount = (value) => {
-    this.setState({ count: value });
+    this.setState({
+      count: value,
+      totalPrice: this.state.selectedCoinPrice * value,
+    });
   }
 
   onChangeCoinPrice = (value) => {
-    this.setState({ selectedCoinPrice: value });
+    this.setState({
+      selectedCoinPrice: value,
+      totalPrice: value * this.state.count,
+    });
   }
 
   onChangeDateTime = (value) => {
@@ -108,7 +129,7 @@ class Drawer extends React.Component {
     const { visible, closeDrawer } = this.props;
     const {
       selectedCoinId, coins, loading, selectedCoinPrice, dateTime,
-      count,
+      count, totalPrice,
     } = this.state;
     return (
       <DrawerAntd
@@ -124,7 +145,8 @@ class Drawer extends React.Component {
               Принять
             </Button>
           </Space>
-        }>
+        }
+      >
         <Row gutter={16}>
           <Col span={12}>
             <AutoComplete
@@ -132,11 +154,10 @@ class Drawer extends React.Component {
               onSelect={this.onSelectCoin}
               onSearch={this.onSearchCoin}
               onFocus={this.onFocusCoin}
-              notFoundContent={loading ? <Spin size='small'/> : null}
+              notFoundContent={loading ? <Spin size="small" /> : null}
               placeholder="Введите ID монеты из coingecko.com"
             >
-              <Input.Search
-                value={selectedCoinId}/>
+              <Input.Search value={selectedCoinId} />
             </AutoComplete>
           </Col>
           <Col span={12}>
@@ -155,7 +176,7 @@ class Drawer extends React.Component {
             <InputNumber
               min="0"
               step="1"
-              placeholder='0'
+              placeholder="0"
               onChange={this.onChangeCoinPrice}
               value={selectedCoinPrice}
               stringMode
@@ -164,14 +185,22 @@ class Drawer extends React.Component {
           <Col span={12}>
             <InputNumber
               step="1"
-              placeholder='0'
+              placeholder="0"
               value={count}
               onChange={this.onChangeCount}
               stringMode
             />
           </Col>
         </Row>
-
+        <Col span={7}>
+        <InputNumber
+          addonBefore="Total:" addonAfter="USD"
+          formatter={(value) => `${round(value, 2)}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+          value={totalPrice}
+          disabled
+        />
+        </Col>
         <Form
           layout="vertical"
           name="addTransactions"
