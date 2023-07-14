@@ -76,7 +76,7 @@ User.init(
       allowNull: true,
     },
     level: {
-      type: DataTypes.TINYINT,
+      type: DataTypes.INTEGER,
       defaultValue: 1,
       allowNull: false,
     },

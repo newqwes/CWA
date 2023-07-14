@@ -6,6 +6,7 @@ import { getUserId } from '../utils/user';
 
 import ApiError from '../exceptions/apiError';
 import orderService from '../services/orderService';
+import { getBackupOrders } from '../utils/getBackupOrders';
 
 export const setUserOrder = async (req, res, next) => {
   const userId = getUserId(req);
@@ -55,4 +56,17 @@ export const setUserOrders = async (req, res, next) => {
   const { status, data } = await orderService.getUserOrders(userId);
 
   res.status(status).json(data);
+};
+
+export const getBackupUserOrders = async (req, res, next) => {
+  const userId = getUserId(req);
+
+  if (!userId) {
+    return next(ApiError.BadRequest('Пользователь не найден'));
+  }
+
+  const { status, data } = await orderService.getUserOrders(userId);
+  const result = getBackupOrders(data);
+
+  res.status(status).json({ data: result });
 };

@@ -2,7 +2,7 @@ import { all, call, put, take, takeEvery } from 'redux-saga/effects';
 import { loadingPendingAC, loadingSuccessAC } from '../actionCreators/aplication';
 import {
   deleteOrderFailureAC,
-  deleteOrderSuccessAC,
+  deleteOrderSuccessAC, getBackupOrdersFailureAC,
   getOrdersAC,
   getOrdersFailureAC,
   getOrdersSuccessAC,
@@ -12,7 +12,7 @@ import {
 import { handleRefreshAC } from '../actionCreators/refresh';
 
 import {
-  DELETE_USER_ORDER_PENDING,
+  DELETE_USER_ORDER_PENDING, GET_BACKUP_USER_ORDERS_PENDING,
   GET_USER_ORDERS_PENDING,
   GET_USER_ORDERS_SUCCESS,
   SET_USER_ORDER_PENDING,
@@ -53,6 +53,27 @@ function* getUserOrders() {
     yield put(loadingSuccessAC());
   } catch ({ response: { data } }) {
     yield put(getOrdersFailureAC(data));
+    yield put(loadingSuccessAC());
+  }
+}
+
+function* getBackupUserOrders() {
+  try {
+    yield put(loadingPendingAC());
+
+    const { data } = yield call(orderAPI.getBackupUserOrders);
+
+    yield put(loadingSuccessAC());
+
+    const element = document.createElement('a');
+    const file = new Blob([data], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = 'cwa-backup.txt';
+    document.body.appendChild(element); // Добавляем ссылку на элемент в DOM
+    element.click(); // Имитируем клик по элементу для начала загрузки файла
+    document.body.removeChild(element); // Удаляем ссылку на элемент из DOM
+  } catch ({ response: { data } }) {
+    yield put(getBackupOrdersFailureAC(data));
     yield put(loadingSuccessAC());
   }
 }
@@ -101,5 +122,6 @@ export function orderSaga() {
     takeEvery(DELETE_USER_ORDER_PENDING, deleteUserOrder),
     takeEvery(GET_USER_ORDERS_PENDING, getUserOrders),
     takeEvery(SET_USER_ORDERS_PENDING, setUserOrders),
+    takeEvery(GET_BACKUP_USER_ORDERS_PENDING, getBackupUserOrders),
   ]);
 }

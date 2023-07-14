@@ -143,6 +143,16 @@ export const orderAPI = {
       return data;
     }
   },
+
+  getBackupUserOrders: async () => {
+    try {
+      const { data } = await axios.get('order/backup');
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
 };
 
 export const coingeckoAPI = {
