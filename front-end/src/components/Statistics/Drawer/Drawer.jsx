@@ -1,6 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Col, DatePicker, Drawer as DrawerAntd, Form, Input, Row, Space, Spin } from 'antd';
+import {
+  Button,
+  Col,
+  DatePicker,
+  Drawer as DrawerAntd,
+  Form,
+  Input,
+  Row,
+  Space,
+  Spin,
+} from 'antd';
 import { map, take } from 'lodash/fp';
 import { isArray, round } from 'lodash';
 import debounce from 'lodash/debounce';
@@ -40,8 +50,10 @@ class Drawer extends React.Component {
     }),
   );
 
-  onSearchCoin = debounce(async (coin = ' ') => {
+  onSearchCoin = debounce(async (coin) => {
     this.setState({ loading: true });
+    if (!coin) return;
+
     const coins = await coingeckoAPI.searchCoin(coin);
 
     if (!isArray(coins)) {
@@ -50,7 +62,7 @@ class Drawer extends React.Component {
     }
 
     this.setState({ coins: take(10, coins), loading: false });
-  }, 500);
+  }, 1000);
 
   handleSubmit = () => {
     const { closeDrawer, handleAddTransaction } = this.props;
