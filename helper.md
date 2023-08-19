@@ -13,6 +13,7 @@ if (!-e $request_filename){
 после сохранения конфига првоерить синтакс
 nginx -t
 
+
 перезапуск nginx
 service nginx restart
 
