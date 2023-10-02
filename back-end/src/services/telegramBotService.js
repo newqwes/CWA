@@ -178,28 +178,33 @@ const runTelegramBotService = async () => {
             const [mes1, mes2] = chunk(round(arrOfMessages.length / 2), arrOfMessages);
 
             await MyBot.sendMessage(id, mes1.join('\n'), MESSAGE_OPTIONS);
-            await MyBot.sendMessage(
-              myChatId,
-              `Пользователь ${firstName}, только что проверил баланс.\n ${mes1.join('\n')}`,
-              MESSAGE_OPTIONS
-            );
-
-            setTimeout(async () => {
-              await MyBot.sendMessage(id, `${mes2.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
+            if (id !== myChatId) {
               await MyBot.sendMessage(
                 myChatId,
-                `${mes2.join('\n')}${sumMessage}`,
+                `Пользователь ${firstName}, только что проверил баланс.\n ${mes1.join('\n')}`,
                 MESSAGE_OPTIONS
               );
+            }
+            setTimeout(async () => {
+              await MyBot.sendMessage(id, `${mes2.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
+              if (id !== myChatId) {
+                await MyBot.sendMessage(
+                  myChatId,
+                  `${mes2.join('\n')}${sumMessage}`,
+                  MESSAGE_OPTIONS
+                );
+              }
             }, 500);
 
             return;
           }
-          await MyBot.sendMessage(
-            myChatId,
-            `Пользователь ${firstName}, только что проверил баланс.\n ${arrOfMessages.join('\n')}${sumMessage}`,
-            MESSAGE_OPTIONS
-          );
+          if (id !== myChatId) {
+            await MyBot.sendMessage(
+              myChatId,
+              `Пользователь ${firstName}, только что проверил баланс.\n ${arrOfMessages.join('\n')}${sumMessage}`,
+              MESSAGE_OPTIONS
+            );
+          }
           return MyBot.sendMessage(id, `${arrOfMessages.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
         }
 
