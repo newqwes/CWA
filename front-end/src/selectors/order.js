@@ -288,7 +288,7 @@ export const getChartData = createSelector(
                 return moment().format(TIME_FORMAT);
               }
 
-              return moment(userHistory[value].date).format(TIME_FORMAT);
+              return `${moment(userHistory[value].date).format(TIME_FORMAT)} ${round(userHistory[value].priceAmount, 0)}$`;
             },
           },
         },

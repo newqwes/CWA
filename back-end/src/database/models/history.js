@@ -31,6 +31,10 @@ History.init(
       type: DataTypes.DOUBLE,
       allowNull: false,
     },
+    priceAmount: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
   },
   {
     sequelize,

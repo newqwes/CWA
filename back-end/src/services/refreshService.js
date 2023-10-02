@@ -27,6 +27,7 @@ class RefreshService {
     await History.create({
       lastModified: prevData.netProfit,
       userId,
+      priceAmount: prevData.walletState,
       date: Date.now(),
     });
 

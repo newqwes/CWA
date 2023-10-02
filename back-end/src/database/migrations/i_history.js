@@ -28,6 +28,10 @@ module.exports = {
         type: DataTypes.DOUBLE,
         allowNull: false,
       },
+      price_amount: {
+        type: DataTypes.DOUBLE,
+        allowNull: true,
+      },
     });
   },
 
