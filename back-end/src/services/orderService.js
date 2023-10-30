@@ -4,9 +4,9 @@ import Order from '../database/models/order';
 import { parseRawOrderList } from '../utils/parseRawOrderList';
 
 class OrderService {
-  async setUserOrder({ userId, count, coinId, price, date = Date.now() }) {
+  async setUserOrder({ userId, count, coinId, price, place, date = Date.now() }) {
     try {
-      await Order.create({ userId, date, name: coinId, count, price });
+      await Order.create({ userId, date, name: coinId, count, price, place });
 
       return createResponse(201, 'Данные успешно добавленны!');
     } catch (error) {
@@ -28,7 +28,7 @@ class OrderService {
     try {
       return Order.findAll({
         where: { userId },
-        attributes: ['name', 'price', 'count', 'date', 'id'],
+        attributes: ['name', 'price', 'count', 'date', 'id', 'place'],
         raw: true,
       });
     } catch (error) {

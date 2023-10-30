@@ -4,6 +4,7 @@ import {
   Button,
   Col,
   DatePicker,
+  Divider,
   Drawer as DrawerAntd,
   Form,
   Input,
@@ -11,22 +12,25 @@ import {
   Space,
   Spin,
 } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { map, take } from 'lodash/fp';
 import { isArray, round } from 'lodash';
 import debounce from 'lodash/debounce';
 import moment from 'moment';
 import { coingeckoAPI } from '../../../api';
 import { OptionImg } from '../../Calculator/styled';
-import { AutoComplete, InputNumber } from './styled';
+import { AutoComplete, InputNumber, Select } from './styled';
 import { someFalsey } from '../../../utils/aggFunc';
 import { getNotification } from '../../../utils/notification';
 
 class Drawer extends React.Component {
   static propTypes = {
     visible: PropTypes.bool.isRequired,
+    placeList: PropTypes.array,
     closeDrawer: PropTypes.func.isRequired,
     handleAddTransaction: PropTypes.func.isRequired,
     handleAddTransactions: PropTypes.func.isRequired,
+    handleAddPlace: PropTypes.func.isRequired,
   };
 
   state = {
@@ -38,6 +42,8 @@ class Drawer extends React.Component {
     dateTime: moment(),
     count: null,
     totalPrice: 0,
+    newPlaceName: '',
+    place: '',
   };
 
   optoinsComponents = map(({ label, value, smallImg }) => ({
@@ -66,8 +72,9 @@ class Drawer extends React.Component {
 
   handleSubmit = () => {
     const { closeDrawer, handleAddTransaction } = this.props;
-    const { selectedCoinId, dateTime, selectedCoinPrice, count } = this.state;
-    if (someFalsey([selectedCoinId, count, selectedCoinPrice])) {
+    const { selectedCoinId, dateTime, selectedCoinPrice, count, place } = this.state;
+
+    if (someFalsey([selectedCoinId, count, selectedCoinPrice, place])) {
       getNotification({ message: 'Не все значения введены!' });
       return;
     }
@@ -76,6 +83,7 @@ class Drawer extends React.Component {
       coinId: selectedCoinId,
       price: selectedCoinPrice,
       count,
+      place,
       date: dateTime ? dateTime.format() : Date.now(),
     });
 
@@ -85,6 +93,7 @@ class Drawer extends React.Component {
       selectedCoinPrice: null,
       timesOnFocusMoreThanOne: false,
       count: null,
+      place: '',
     });
 
     closeDrawer();
@@ -137,8 +146,26 @@ class Drawer extends React.Component {
     this.setState({ dateTime: value });
   };
 
+  onChangeNewPlaceName = (event) => {
+    this.setState({ newPlaceName: event.target.value });
+  };
+
+  onAddNewPlaceName = () => {
+    const { newPlaceName } = this.state;
+    const { handleAddPlace } = this.props;
+    handleAddPlace(newPlaceName);
+
+    this.setState({ newPlaceName: '' });
+  };
+
+  onChangePlace = (value) => {
+    this.setState({
+      place: value,
+    });
+  };
+
   render() {
-    const { visible, closeDrawer } = this.props;
+    const { visible, closeDrawer, placeList } = this.props;
     const {
       selectedCoinId,
       coins,
@@ -147,6 +174,8 @@ class Drawer extends React.Component {
       dateTime,
       count,
       totalPrice,
+      newPlaceName,
+      place,
     } = this.state;
     return (
       <DrawerAntd
@@ -209,18 +238,48 @@ class Drawer extends React.Component {
             />
           </Col>
         </Row>
-        <Col span={7}>
-          <InputNumber
-            addonBefore="Total:"
-            addonAfter="USD"
-            formatter={(value) =>
-              `${round(value, 2)}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-            }
-            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-            value={totalPrice}
-            disabled
-          />
-        </Col>
+        <Row gutter={16}>
+          <Col span={12}>
+            <InputNumber
+              addonBefore="Total:"
+              addonAfter="USD"
+              formatter={(value) =>
+                `${round(value, 2)}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              }
+              parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+              value={totalPrice}
+              disabled
+            />
+          </Col>
+          <Col span={12}>
+            <Select
+              placeholder="Binance"
+              value={place}
+              onChange={this.onChangePlace}
+              dropdownRender={(menu) => (
+                <>
+                  {menu}
+                  <Divider />
+                  <Space>
+                    <Input
+                      placeholder="Binance"
+                      value={newPlaceName}
+                      onChange={this.onChangeNewPlaceName}
+                    />
+                    <Button
+                      type="text"
+                      icon={<PlusOutlined />}
+                      onClick={this.onAddNewPlaceName}
+                    >
+                      Add item
+                    </Button>
+                  </Space>
+                </>
+              )}
+              options={placeList}
+            />
+          </Col>
+        </Row>
         <Form
           layout="vertical"
           name="addTransactions"

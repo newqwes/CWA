@@ -1,7 +1,14 @@
 import { connect } from 'react-redux';
 
 import Statistics from '../components/Statistics';
-import { deleteOrderAC, getBackupOrdersAC, setOrderAC, setOrdersAC } from '../actionCreators/order';
+import {
+  deleteOrderAC,
+  getBackupOrdersAC,
+  setOrderAC,
+  setOrdersAC,
+  setNewPlaceAC,
+  getUserPlaceListAC,
+} from '../actionCreators/order';
 import {
   getTotalInvested,
   getNetProfit,
@@ -12,6 +19,7 @@ import {
   getChartData,
   getEdgeCoins,
 } from '../selectors/order';
+import { getPlaceList } from '../selectors/user';
 
 const mapStateToProps = state => ({
   totalInvested: getTotalInvested(state),
@@ -22,6 +30,7 @@ const mapStateToProps = state => ({
   rowData: getGridRowData(state),
   chartData: getChartData(state),
   edgeCoins: getEdgeCoins(state),
+  placeList: getPlaceList(state),
 });
 
 const mapDispatchToProps = {
@@ -29,6 +38,8 @@ const mapDispatchToProps = {
   setOrders: setOrdersAC,
   deleteOrder: deleteOrderAC,
   getBackupOrders: getBackupOrdersAC,
+  setNewPlace: setNewPlaceAC,
+  getUserPlaceList: getUserPlaceListAC,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Statistics);

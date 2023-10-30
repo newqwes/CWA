@@ -44,6 +44,7 @@ class UserDto {
     this.avatarURL = makeAvatarURL(model.avatar);
     this.gender = model.gender;
     this.level = model.level;
+    this.placeList = model.placeList;
   }
 }
 

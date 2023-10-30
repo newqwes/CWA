@@ -1,7 +1,7 @@
 import { complement, get, isEmpty, reduce, some } from 'lodash/fp';
 import { toNormalNumber } from './toNormalNumber';
 
-export const getPriceAvg = params => {
+export const getPriceAvg = (params) => {
   const allLeafChildren = get(['rowNode', 'allLeafChildren'], params);
 
   if (isEmpty(allLeafChildren)) return 0;
@@ -27,7 +27,7 @@ export const getPriceAvg = params => {
   return result;
 };
 
-export const getSellPrice = params => {
+export const getSellPrice = (params) => {
   const avgPrice = getPriceAvg(params);
 
   const sellPrice = avgPrice * 3;
@@ -35,7 +35,7 @@ export const getSellPrice = params => {
   return `${toNormalNumber(sellPrice)} $`;
 };
 
-export const getlastModifiedPercentAvg = params => {
+export const getlastModifiedPercentAvg = (params) => {
   const allLeafChildren = get(['rowNode', 'allLeafChildren'], params);
 
   if (isEmpty(allLeafChildren)) return 0;
@@ -46,7 +46,7 @@ export const getlastModifiedPercentAvg = params => {
   return (lastModified * 100) / totalBuyActual;
 };
 
-export const getProfitPercentAvg = params => {
+export const getProfitPercentAvg = (params) => {
   const allLeafChildren = get(['rowNode', 'allLeafChildren'], params);
 
   if (isEmpty(allLeafChildren)) return 0;
@@ -58,3 +58,11 @@ export const getProfitPercentAvg = params => {
 };
 
 export const someFalsey = some(complement(Boolean));
+
+export const getPlaceNames = (params) => {
+  const allLeafChildren = get(['rowNode', 'allLeafChildren'], params);
+
+  if (isEmpty(allLeafChildren)) return '';
+
+  return allLeafChildren.map(({ data }) => data.place);
+};

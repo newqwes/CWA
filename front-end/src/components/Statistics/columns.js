@@ -2,7 +2,7 @@ import {
   getPriceAvg,
   getProfitPercentAvg,
   getSellPrice,
-  getlastModifiedPercentAvg,
+  getlastModifiedPercentAvg, getPlaceNames,
 } from '../../utils/aggFunc';
 
 export const columnDefs = ({ deleteOrder }) => [
@@ -91,6 +91,13 @@ export const columnDefs = ({ deleteOrder }) => [
     aggFunc: getlastModifiedPercentAvg,
     cellRenderer: 'percentCellRenderer',
     sort: 'desc',
+    minWidth: 100,
+  },
+  {
+    headerName: 'Место',
+    field: 'place',
+    sortable: true,
+    aggFunc: getPlaceNames,
     minWidth: 100,
   },
   {

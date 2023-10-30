@@ -11,13 +11,13 @@ import { getBackupOrders } from '../utils/getBackupOrders';
 export const setUserOrder = async (req, res, next) => {
   const userId = getUserId(req);
 
-  const { count, coinId, price, date } = pick(values(ORDER_REQUEST_BODY), req.body);
+  const { count, coinId, price, date, place } = pick(values(ORDER_REQUEST_BODY), req.body);
 
-  if (someFalsey([userId, count, coinId, price])) {
+  if (someFalsey([userId, count, coinId, price, place])) {
     return next(ApiError.BadRequest('Ошибка при валидации'));
   }
 
-  await orderService.setUserOrder({ userId, count, coinId, price, date });
+  await orderService.setUserOrder({ userId, count, coinId, price, date, place });
 
   const { status, data } = await orderService.getUserOrders(userId);
 

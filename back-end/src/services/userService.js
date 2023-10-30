@@ -7,6 +7,9 @@ import User from '../database/models/user';
 import createResponse, { makeAvatarURL } from '../utils/createResponse';
 import { GENDER_OBJ } from '../constants/requestBody';
 import { prepareUserList } from '../utils/user';
+import ApiError from '../exceptions/apiError';
+import { getGeckoCoins } from '../utils/coinGeckoClient';
+import UserDto from '../dto/userDto';
 
 class UserService {
   async findByKey(value, key) {
@@ -96,6 +99,54 @@ class UserService {
       return createResponse(200, 'Данные успешно получены!', avatarURLs);
     } catch (error) {
       return createResponse(500, 'Server Error getAvailableAvatars', error);
+    }
+  }
+
+  async getUserPlaceList(userId) {
+    try {
+      const user = await this.findByKey(userId, 'id');
+
+      if (!user) {
+        throw ApiError.BadRequest('Пользователь с таким ID не существует');
+      }
+
+      const { placeList } = new UserDto(user);
+
+      return createResponse(
+        200,
+        'Данные успешно получены!',
+        placeList
+      );
+    } catch (error) {
+      createResponse(500, 'Server Error getUserList', error);
+    }
+  }
+
+  async setUserPlace(userId, place) {
+    try {
+      const user = await this.findByKey(userId, 'id');
+
+      if (!user) {
+        throw ApiError.BadRequest('Пользователь с таким ID не существует');
+      }
+
+      if (user.placeList) {
+        user.placeList = [...user.placeList, place];
+      } else {
+        user.placeList = [place];
+      }
+
+      await user.save();
+
+      const { placeList } = new UserDto(user);
+
+      return createResponse(
+        200,
+        'Данные успешно записаны!',
+        placeList
+      );
+    } catch (error) {
+      createResponse(500, 'Server Error getUserList', error);
     }
   }
 }

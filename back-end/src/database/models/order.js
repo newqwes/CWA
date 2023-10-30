@@ -31,6 +31,10 @@ Order.init(
       type: DataTypes.STRING(100),
       allowNull: false,
     },
+    place: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+    },
     price: {
       type: DataTypes.DOUBLE,
       allowNull: false,
