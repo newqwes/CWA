@@ -80,6 +80,9 @@ User.init(
       defaultValue: 1,
       allowNull: false,
     },
+    placeList: {
+      type: DataTypes.JSON,
+    }
   },
   {
     sequelize,

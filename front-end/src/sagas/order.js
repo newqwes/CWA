@@ -25,13 +25,14 @@ function* setUserOrder({ payload }) {
   try {
     yield put(loadingPendingAC());
 
-    const { count, coinId, price, date } = payload;
+    const { count, coinId, price, date, place } = payload;
 
     const { data } = yield call(orderAPI.setUserOrder, {
       count,
       coinId,
       price,
       date,
+      place,
     });
     yield put(getOrdersAC());
     yield put(setOrderSuccessAC(data));

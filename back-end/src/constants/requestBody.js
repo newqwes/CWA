@@ -34,6 +34,7 @@ export const ORDER_REQUEST_BODY = {
   coinId: 'coinId',
   price: 'price',
   date: 'date',
+  place: 'place'
 };
 
 export const LINK_REQUEST_PARAM = 'link';

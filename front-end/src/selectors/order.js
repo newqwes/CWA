@@ -42,7 +42,7 @@ export const getComparisonOrdersAndPriceList = createSelector(
     if (isEmpty(orderList)) return {};
 
     return reduce(
-      (acc, { name, price, count }) => {
+      (acc, { name, price, count, place }) => {
         const coin = find(['id', name], priceList);
 
         if (!coin) return acc;
@@ -55,11 +55,13 @@ export const getComparisonOrdersAndPriceList = createSelector(
         if (acc[name]) {
           acc[name].netProfit += netProfit;
           acc[name].totalBuy += totalBuy;
+          acc[name].place += place;
         } else {
           acc[name] = {
             name: coin.name,
             netProfit,
             totalBuy,
+            place,
           };
         }
 
@@ -112,7 +114,7 @@ export const getGridRowData = createSelector(
   getUserLastPriceList,
   getPrevGridRowData,
   (orders, priceList, prevGridRowData) =>
-    map(({ name, price, count, date, id }) => {
+    map(({ name, price, count, date, id, place }) => {
       const coin = find(['id', name], priceList);
 
       if (!coin) return {};
@@ -143,6 +145,7 @@ export const getGridRowData = createSelector(
         amount: count,
         totalBuy,
         totalBuyActual,
+        place,
         date: formatDate,
         totalProfit,
         totalProfitPercent,

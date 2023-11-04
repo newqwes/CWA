@@ -20,3 +20,4 @@ export const getUserHistory = createSelector(localState, get('history'));
 export const getUserList = createSelector(localState, get('userList'));
 export const getAvatarURL = createSelector(localState, get('avatarURL'));
 export const getEmail = createSelector(localState, get('email'));
+export const getPlaceList = createSelector(localState, get('placeList'));

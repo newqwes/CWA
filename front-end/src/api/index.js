@@ -103,12 +103,30 @@ export const userAPI = {
       return data;
     }
   },
+  setUserNewPlace: async (place) => {
+    try {
+      const { data } = await axios.post('user/place', { place });
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+  getUserPlaceList: async () => {
+    try {
+      const { data } = await axios.get('user/place');
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
 };
 
 export const orderAPI = {
-  setUserOrder: async ({ count, coinId, price, date }) => {
+  setUserOrder: async ({ count, coinId, price, date, place }) => {
     try {
-      const { data } = await axios.post('order', { count, coinId, price, date });
+      const { data } = await axios.post('order', { count, coinId, price, date, place });
 
       return data;
     } catch ({ response: { data } }) {

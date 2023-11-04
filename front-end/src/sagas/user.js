@@ -1,6 +1,11 @@
 import { all, call, put, takeEvery } from 'redux-saga/effects';
 
-import { DELETE_USER_PENDING, GET_USER_LIST_PENDING } from '../actions';
+import {
+  DELETE_USER_PENDING,
+  GET_USER_LIST_PENDING,
+  GET_USER_PLACE_LIST_PENDING,
+  SET_USER_NEW_PLACE,
+} from '../actions';
 import {
   NOTIFICATION_ERROR_MESSAGE,
   NOTIFICATION_TYPE,
@@ -12,9 +17,15 @@ import {
   getUserListFailureAC,
   getUserListSuccessAC,
 } from '../actionCreators/user';
-import { setNotificationAC } from '../actionCreators/aplication';
+import { loadingPendingAC, loadingSuccessAC, setNotificationAC } from '../actionCreators/aplication';
 import { authLogoutAC } from '../actionCreators/auth';
 import { userAPI } from '../api';
+import {
+  getUserPlaceListAC, getUserPlaceListFailureAC,
+  getUserPlaceListSuccessAC,
+  setNewPlaceFailureAC,
+  setNewPlaceSuccessAC,
+} from '../actionCreators/order';
 
 function* deleteSuccess(message) {
   yield put(
@@ -60,9 +71,36 @@ function* getUserList() {
   }
 }
 
+function* setUserNewPlace({ payload }) {
+  try {
+    yield put(loadingPendingAC());
+    const { data } = yield call(userAPI.setUserNewPlace, payload);
+    yield put(getUserPlaceListAC());
+    yield put(setNewPlaceSuccessAC(data));
+  } catch ({ response: { data } }) {
+    yield put(setNewPlaceFailureAC(data));
+  } finally {
+    yield put(loadingSuccessAC());
+  }
+}
+
+function* getUserPlaceList() {
+  try {
+    yield put(loadingPendingAC());
+    const { data } = yield call(userAPI.getUserPlaceList);
+    yield put(getUserPlaceListSuccessAC(data));
+  } catch (error) {
+    yield put(getUserPlaceListFailureAC(error));
+  } finally {
+    yield put(loadingSuccessAC());
+  }
+}
+
 export function userSaga() {
   return all([
     takeEvery(DELETE_USER_PENDING, deleteUserData),
     takeEvery(GET_USER_LIST_PENDING, getUserList),
+    takeEvery(SET_USER_NEW_PLACE, setUserNewPlace),
+    takeEvery(GET_USER_PLACE_LIST_PENDING, getUserPlaceList),
   ]);
 }

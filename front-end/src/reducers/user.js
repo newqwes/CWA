@@ -4,6 +4,7 @@ import {
   DELETE_USER_FAILURE,
   DELETE_USER_SUCCESS,
   GET_USER_LIST_SUCCESS,
+  GET_USER_PLACE_LIST_SUCCESS,
   SET_USER_DATA,
   SET_USER_HISTORY,
 } from '../actions';
@@ -22,6 +23,7 @@ const initialState = {
   lastDateUpdate: '',
   dataRefreshLimitPerMinute: 0,
   userList: [],
+  placeList: [],
 };
 
 const user = (state = initialState, { type, payload }) => {
@@ -88,6 +90,16 @@ const user = (state = initialState, { type, payload }) => {
 
     case GET_USER_LIST_SUCCESS: {
       return { ...state, userList: payload };
+    }
+
+    case GET_USER_PLACE_LIST_SUCCESS: {
+      return {
+        ...state,
+        placeList: payload?.map((place) => ({
+          label: place,
+          value: place,
+        })),
+      };
     }
 
     default:

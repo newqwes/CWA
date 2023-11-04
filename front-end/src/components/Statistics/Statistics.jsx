@@ -1,7 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { columnDefs, defaultColDef, autoGroupColumnDef, groupDisplayType } from './columns';
+import {
+  columnDefs,
+  defaultColDef,
+  autoGroupColumnDef,
+  groupDisplayType,
+} from './columns';
 
 import Description from './Description';
 import Chart from './Chart';
@@ -15,12 +20,15 @@ class Statistics extends React.Component {
     setOrder: PropTypes.func.isRequired,
     setOrders: PropTypes.func.isRequired,
     getBackupOrders: PropTypes.func.isRequired,
+    setNewPlace: PropTypes.func.isRequired,
     totalInvested: PropTypes.number.isRequired,
     netProfit: PropTypes.number.isRequired,
     walletState: PropTypes.number.isRequired,
     lastModified: PropTypes.number.isRequired,
     totalTransactionCount: PropTypes.number.isRequired,
     rowData: PropTypes.array.isRequired,
+    placeList: PropTypes.array,
+    getUserPlaceList: PropTypes.func.isRequired,
     chartData: PropTypes.object.isRequired,
     deleteOrder: PropTypes.func.isRequired,
     edgeCoins: PropTypes.object.isRequired,
@@ -31,7 +39,14 @@ class Statistics extends React.Component {
   };
 
   handleDrawer = () => {
-    this.setState({ drawerVisible: !this.state.drawerVisible });
+    const { drawerVisible } = this.state;
+    const { getUserPlaceList } = this.props;
+
+    if (!drawerVisible) {
+      getUserPlaceList();
+    }
+
+    this.setState({ drawerVisible: !drawerVisible });
   };
 
   closeDrawer = () => {
@@ -52,6 +67,8 @@ class Statistics extends React.Component {
       deleteOrder,
       setOrders,
       edgeCoins,
+      setNewPlace,
+      placeList,
     } = this.props;
     const { drawerVisible } = this.state;
 
@@ -60,7 +77,7 @@ class Statistics extends React.Component {
         <Description
           totalInvested={totalInvested}
           getBackupOrders={getBackupOrders}
-          currencySymbol='$'
+          currencySymbol="$"
           netProfit={netProfit}
           walletState={walletState}
           precision={2}
@@ -82,6 +99,8 @@ class Statistics extends React.Component {
           handleAddTransaction={setOrder}
           visible={drawerVisible}
           handleAddTransactions={setOrders}
+          handleAddPlace={setNewPlace}
+          placeList={placeList}
         />
       </Wrapper>
     );
