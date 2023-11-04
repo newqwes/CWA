@@ -1,6 +1,6 @@
 import { map } from 'lodash/fp';
 
-export const PARSE_STRING_REGEX = /\S{1,}\s(-?)\d{0,}(\.|)(\d{0,}|)\s=\s\d{0,}(\.|)(\d{0,})/gm;
+export const PARSE_STRING_REGEX = /\S{1,}\s(-?)\d{0,}(\.|)(\d{0,}|)\s=\s\d{0,}(\.|)(\d{0,})\s(\S+)/gm;
 
 export const parseRawOrderList = (stringData, userId) => {
   const data = stringData.match(PARSE_STRING_REGEX);
@@ -8,7 +8,7 @@ export const parseRawOrderList = (stringData, userId) => {
   if (!data) return;
 
   const orders = map(order => {
-    const [name, count, , price] = order.split(' ');
+    const [name, count, , price, place] = order.split(' ');
 
     return {
       userId,
@@ -16,6 +16,7 @@ export const parseRawOrderList = (stringData, userId) => {
       name,
       count,
       price,
+      place
     };
   }, data);
 
