@@ -64,5 +64,5 @@ export const getPlaceNames = (params) => {
 
   if (isEmpty(allLeafChildren)) return '';
 
-  return allLeafChildren.map(({ data }) => data.place);
+  return allLeafChildren[0].data.place || '-';
 };

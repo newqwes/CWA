@@ -2,7 +2,8 @@ import {
   getPriceAvg,
   getProfitPercentAvg,
   getSellPrice,
-  getlastModifiedPercentAvg, getPlaceNames,
+  getlastModifiedPercentAvg,
+  getPlaceNames,
 } from '../../utils/aggFunc';
 
 export const columnDefs = ({ deleteOrder }) => [
