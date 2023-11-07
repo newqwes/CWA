@@ -10,7 +10,8 @@ import {
   generateCoinCardsSuccessAC,
   generateCoinCardsFailureAC,
 } from '../actionCreators/search';
-import { getSelectedCoins } from '../selectors/calculator';
+import { getListPercentOptions, getSelectedCoins } from '../selectors/calculator';
+import { getGridRowData } from '../selectors/order';
 
 function* getCoinList({ payload }) {
   try {
@@ -30,8 +31,12 @@ function* generateCoinCards() {
       coingeckoAPI.getCoinData,
       map(({ id }) => id, selectedCoins),
     );
+    const gridRowData = yield select(getGridRowData);
+    const listPercentOptions = yield select(getListPercentOptions);
 
-    yield put(generateCoinCardsSuccessAC(coins));
+    yield put(generateCoinCardsSuccessAC(
+      { coins, gridRowData, listPercentOptions },
+    ));
   } catch (error) {
     yield put(generateCoinCardsFailureAC());
   }

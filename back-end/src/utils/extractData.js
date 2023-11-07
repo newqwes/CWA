@@ -33,9 +33,9 @@ export const getGridRowData = (orders, priceList, prevGridRowData) =>
     const actualPrice = get(['current_price'], coin);
     const coinName = get(['name'], coin);
     const coinId = get(['id'], coin);
-    const totalBuy = round(count * price, 2);
-    const totalBuyActual = round(count * actualPrice, 2);
-    const totalProfit = round((actualPrice - price) * count, 2);
+    const totalBuy = round(count * price, 3);
+    const totalBuyActual = round(count * actualPrice, 3);
+    const totalProfit = round((actualPrice - price) * count, 3);
     const prevCell = find(['id', id], prevGridRowData);
     const formatDate = moment(date).format(TIME_FORMAT);
 
@@ -46,7 +46,7 @@ export const getGridRowData = (orders, priceList, prevGridRowData) =>
     if (!prevCell) {
       lastModified = 0;
     } else {
-      lastModified = round(totalProfit - prevCell.totalProfit, 2);
+      lastModified = round(totalProfit - prevCell.totalProfit, 3);
     }
 
     return {

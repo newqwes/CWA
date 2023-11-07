@@ -21,6 +21,7 @@ export const InputNumber = styled(InputNumberAnt)`
 export const CardWrapper = styled.div`
   margin-top: 20px;
   display: flex;
+  flex-wrap: wrap;
 `;
 
 export const Card = styled(CardAnt)`

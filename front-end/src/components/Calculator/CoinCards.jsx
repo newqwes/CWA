@@ -9,12 +9,12 @@ const { Meta } = Card;
 
 const CoinCards = ({ coins }) =>
   map(
-    ({ label, price, src, id, priceChange, ammount }) => (
+    ({ label, price, src, id, priceChange, amount }) => (
       <Card key={id}>
         <Meta avatar={<Avatar src={src} />} title={label} />
         <div>Цена: {price}$</div>
         <div>Изменение: {priceChange}%</div>
-        {ammount && <div>Купить на: {ammount}$</div>}
+        {amount && <div>Купить на: {amount}$</div>}
       </Card>
     ),
     coins,

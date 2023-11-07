@@ -123,9 +123,9 @@ export const getGridRowData = createSelector(
       const coinName = get(['name'], coin);
       const icon = get(['image'], coin);
       const coinId = get(['id'], coin);
-      const totalBuy = round(count * price, 2);
-      const totalBuyActual = round(count * actualPrice, 2);
-      const totalProfit = round((actualPrice - price) * count, 2);
+      const totalBuy = round(count * price, 3);
+      const totalBuyActual = round(count * actualPrice, 3);
+      const totalProfit = round((actualPrice - price) * count, 3);
       const prevCell = find(['id', id], prevGridRowData);
       const formatDate = moment(date).format(TIME_FORMAT);
 
@@ -136,7 +136,7 @@ export const getGridRowData = createSelector(
       if (!prevCell) {
         lastModified = 0;
       } else {
-        lastModified = round(totalProfit - prevCell.totalProfit, 2);
+        lastModified = round(totalProfit - prevCell.totalProfit, 3);
       }
 
       return {
@@ -201,7 +201,7 @@ export const getChartData = createSelector(
 
     const donut = reduce(
       (acc, { totalBuy, name }) => {
-        const price = round(totalBuy, 1);
+        const price = round(totalBuy, 2);
 
         if (isEqual(price, 0)) {
           return acc;
@@ -248,7 +248,7 @@ export const getChartData = createSelector(
 
     const seriesData = map(
       // eslint-disable-next-line no-plusplus
-      ({ lastModified }) => ({ x: x++, y: round(lastModified, 1) }),
+      ({ lastModified }) => ({ x: x++, y: round(lastModified, 2) }),
       userHistory,
     );
 
@@ -257,7 +257,7 @@ export const getChartData = createSelector(
         {
           name: 'Чистая прибыль',
           // eslint-disable-next-line no-plusplus
-          data: drop(1, [...seriesData, { x: x++, y: round(netProfitPercent, 1) }]),
+          data: drop(1, [...seriesData, { x: x++, y: round(netProfitPercent, 2) }]),
         },
       ],
       options: {
