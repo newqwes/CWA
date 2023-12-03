@@ -1,10 +1,13 @@
 import {
-  InputNumber as InputNumberAnt,
-  Card as CardAnt,
-  Select as SelectAnt,
   Button as ButtonAnt,
+  Card as CardAnt,
+  InputNumber as InputNumberAnt,
+  Select as SelectAnt,
+  Typography,
 } from 'antd';
 import styled from 'styled-components';
+
+const { Paragraph: ParagraphAnt } = Typography;
 
 export const Wrapper = styled.div``;
 
@@ -20,16 +23,20 @@ export const InputNumber = styled(InputNumberAnt)`
 
 export const CardWrapper = styled.div`
   margin-top: 20px;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 15px;
 `;
 
 export const Card = styled(CardAnt)`
-  width: 250px;
-  margin: 10px;
+  background-color: ${({ amount }) => (amount === 0 ? '#ffadad' : 'white')};
 
   .ant-card-meta {
     padding-bottom: 15px;
+  }
+
+  .ant-card-body {
+    padding: 15px;
   }
 `;
 
@@ -46,4 +53,15 @@ export const HeaderWrapper = styled.div`
 
 export const InputNumberWrapper = styled.div`
   width: 60%;
+
+  button {
+    margin-left: 20px;
+    margin-top: 5px;
+  }
 `;
+
+export const PriceChange = styled.div`
+  color: ${({ priceChange }) => (priceChange > 0 ? 'green' : 'red')};
+`;
+
+export const Paragraph = styled(ParagraphAnt)``;

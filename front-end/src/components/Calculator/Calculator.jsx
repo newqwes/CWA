@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { map } from 'lodash/fp';
 import PropTypes from 'prop-types';
 import { Switch } from 'antd';
@@ -6,13 +6,13 @@ import { Switch } from 'antd';
 import CoinCards from './CoinCards.jsx';
 import DebounceSelect from './DebounceSelect.jsx';
 import {
-  Wrapper,
-  InputNumber,
+  Button,
   CardWrapper,
   HeaderWrapper,
-  Select,
-  Button,
+  InputNumber,
   InputNumberWrapper,
+  Select,
+  Wrapper,
 } from './styled';
 
 const Calculator = ({
@@ -31,44 +31,75 @@ const Calculator = ({
   listPercentOptions,
   gap,
   changeGap,
-}) => (
-  <Wrapper>
-    <HeaderWrapper>
-      <InputNumberWrapper>
-        <InputNumber addonBefore='Бюджет' prefix='$' value={budget} onChange={changeBudget} />
-        {isPercent || (
-          <InputNumber addonBefore='Разница' prefix='$' value={gap} onChange={changeGap} />
-        )}
-        <Switch checked={isPercent} onChange={changeIsPercent} checkedChildren="%" unCheckedChildren="$" />
-      </InputNumberWrapper>
-      <Button type='primary' onClick={generateCoinCards} disabled={isPercent && listPercentOptions.length !== selectedCoins.length}>
-        Посчитать
-      </Button>
-    </HeaderWrapper>
-    <DebounceSelect
-      mode='multiple'
-      value={map(({ id }) => id, selectedCoins)}
-      placeholder='Выберите криптовалюту'
-      getCoinList={getCoinList}
-      onChange={selectCoins}
-      options={searchInputCoins}
-      loading={loading}
-    />
-    {isPercent && (
-      <Select
-        mode="tags"
-        onChange={handleChangeListPercent}
-        tokenSeparators={[' ']}
-        options={listPercentOptions}
+}) => {
+  const [isSortByAmount, setIsSortByAmount] = useState(true);
+
+  return (
+    <Wrapper>
+      <HeaderWrapper>
+        <InputNumberWrapper>
+          <InputNumber
+            addonBefore="Бюджет"
+            prefix="$"
+            value={budget}
+            onChange={changeBudget}
+          />
+          {isPercent || (
+            <InputNumber
+              addonBefore="Разница"
+              prefix="$"
+              value={gap}
+              onChange={changeGap}
+            />
+          )}
+          <Switch
+            checked={isPercent}
+            onChange={changeIsPercent}
+            checkedChildren="%"
+            unCheckedChildren="$"
+          />
+          <Switch
+            checked={isSortByAmount}
+            onChange={(checked) => setIsSortByAmount(checked)}
+            checkedChildren="amount"
+            unCheckedChildren="change"
+          />
+        </InputNumberWrapper>
+        <Button
+          type="primary"
+          onClick={generateCoinCards}
+          disabled={
+            isPercent && listPercentOptions.length !== selectedCoins.length
+          }
+        >
+          Посчитать
+        </Button>
+      </HeaderWrapper>
+      <DebounceSelect
+        mode="multiple"
+        value={map(({ id }) => id, selectedCoins)}
+        placeholder="Выберите криптовалюту"
+        getCoinList={getCoinList}
+        onChange={selectCoins}
+        options={searchInputCoins}
+        loading={loading}
       />
-    )}
-    {showCards && (
-      <CardWrapper>
-        <CoinCards coins={selectedCoins} />
-      </CardWrapper>
-    )}
-  </Wrapper>
-);
+      {isPercent && (
+        <Select
+          mode="tags"
+          onChange={handleChangeListPercent}
+          tokenSeparators={[' ']}
+          options={listPercentOptions}
+        />
+      )}
+      {showCards && (
+        <CardWrapper>
+          <CoinCards coins={selectedCoins} isSortByAmount={isSortByAmount} />
+        </CardWrapper>
+      )}
+    </Wrapper>
+  );
+};
 
 Calculator.propTypes = {
   getCoinList: PropTypes.func.isRequired,

@@ -3,13 +3,15 @@ import { round, sumBy } from 'lodash';
 
 import { toNormalNumber } from '../utils/toNormalNumber';
 import {
+  CHANGE_BUDGET,
+  CHANGE_GAP,
+  CHANGE_IS_PERCENT,
+  CHANGE_LIST_PERCENT,
+  GENERATE_COIN_CARDS_SUCCESS,
+  GET_COIN_LIST_FAILURE,
   GET_COIN_LIST_PENDING,
   GET_COIN_LIST_SUCCESS,
-  GET_COIN_LIST_FAILURE,
   SELECT_COINS,
-  GENERATE_COIN_CARDS_SUCCESS,
-  CHANGE_BUDGET,
-  CHANGE_GAP, CHANGE_IS_PERCENT, CHANGE_LIST_PERCENT,
 } from '../actions';
 
 const initialState = {
@@ -94,7 +96,10 @@ const calculator = (state = initialState, { type, payload }) => {
     }
 
     case GET_COIN_LIST_SUCCESS: {
-      return compose(assoc(['coins'], payload), assoc(['loading'], false))(state);
+      return compose(
+        assoc(['coins'], payload),
+        assoc(['loading'], false),
+      )(state);
     }
 
     case GET_COIN_LIST_PENDING: {
@@ -106,7 +111,7 @@ const calculator = (state = initialState, { type, payload }) => {
     }
 
     case SELECT_COINS: {
-      const selectedCoins = map(id => ({ id }), payload);
+      const selectedCoins = map((id) => ({ id }), payload);
 
       return assoc(['selectedCoins'], selectedCoins, state);
     }
@@ -116,63 +121,80 @@ const calculator = (state = initialState, { type, payload }) => {
     }
 
     case CHANGE_LIST_PERCENT: {
-      const selectedPercent = map(value => ({ value }), payload);
+      const selectedPercent = map((value) => ({ value }), payload);
 
       return assoc(['listPercentOptions'], selectedPercent, state);
     }
 
     case GENERATE_COIN_CARDS_SUCCESS: {
       let selectedCoins = map.convert({ cap: false })(({ id }, key) => {
-        const rawCoin = find(coin => isEqual(coin.id, id), payload.coins);
+        const rawCoin = find((coin) => isEqual(coin.id, id), payload.coins);
 
         let multiplier = Math.floor(state.selectedCoins.length / 2) - key;
 
         if (!(state.selectedCoins.length % 2) && multiplier > 0) {
           multiplier -= 1;
         }
-        const amount = state.budget / state.selectedCoins.length + multiplier * state.gap;
+        const amount =
+          state.budget / state.selectedCoins.length + multiplier * state.gap;
 
         return {
           id,
           label: rawCoin.name,
           src: rawCoin.image,
           price: toNormalNumber(rawCoin.current_price),
-          priceChange: round(rawCoin.price_change_percentage_24h, 3),
+          priceChange: round(
+            rawCoin.price_change_percentage_30d_in_currency,
+            2,
+          ),
           amount: round(amount, 3),
         };
       }, state.selectedCoins);
 
       if (state.isPercent) {
-        const totalSum = sumBy(payload.gridRowData, 'totalBuyActual') + state.budget;
+        const totalSum =
+          sumBy(payload.gridRowData, 'totalBuyActual') + state.budget;
 
         const selectedCoinsSum = state.selectedCoins.map(({ id }, index) => {
-          const coinSum =
-            sumBy(payload.gridRowData.filter(({ coinId }) => coinId === id), 'totalBuyActual');
+          const coinSum = sumBy(
+            payload.gridRowData.filter(({ coinId }) => coinId === id),
+            'totalBuyActual',
+          );
 
           const coinPercentTotal =
-            state.listPercentOptions[index].value - ((coinSum * 100) / totalSum);
+            state.listPercentOptions[index].value - (coinSum * 100) / totalSum;
 
           const coinPercentGlobal = coinPercentTotal < 0 ? 0 : coinPercentTotal;
 
-          const rawCoin = find(coin => isEqual(coin.id, id), payload.coins);
+          const rawCoin = find((coin) => isEqual(coin.id, id), payload.coins);
           return { coinPercentGlobal, rawCoin, id };
         });
         const coinsSumGlobal = sumBy(selectedCoinsSum, 'coinPercentGlobal');
 
-        selectedCoins = selectedCoinsSum.map(({ coinPercentGlobal, id, rawCoin }) => {
-          const amount = (((coinPercentGlobal * 100) / coinsSumGlobal) * state.budget) / 100;
-          return {
-            id,
-            label: rawCoin.name,
-            src: rawCoin.image,
-            price: toNormalNumber(rawCoin.current_price),
-            priceChange: round(rawCoin.price_change_percentage_24h, 3),
-            amount: amount < 0 ? 0 : round(amount, 1),
-          };
-        });
+        selectedCoins = selectedCoinsSum.map(
+          ({ coinPercentGlobal, id, rawCoin }) => {
+            const amount =
+              (((coinPercentGlobal * 100) / coinsSumGlobal) * state.budget) /
+              100;
+            return {
+              id,
+              label: rawCoin.name,
+              src: rawCoin.image,
+              price: toNormalNumber(rawCoin.current_price),
+              priceChange: round(
+                rawCoin.price_change_percentage_30d_in_currency,
+                2,
+              ),
+              amount: amount < 0 ? 0 : round(amount, 1),
+            };
+          },
+        );
       }
 
-      return compose(assoc(['selectedCoins'], selectedCoins), assoc(['showCards'], true))(state);
+      return compose(
+        assoc(['selectedCoins'], selectedCoins),
+        assoc(['showCards'], true),
+      )(state);
     }
 
     default:

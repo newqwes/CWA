@@ -2,6 +2,13 @@
   "name": "front-end",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext=js --ext=jsx ."
+  },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
     "@babel/helper-builder-react-jsx": "^7.12.13",
@@ -56,13 +63,6 @@
     "husky": "^4.3.5",
     "lint-staged": "^10.5.3",
     "prettier": "^2.2.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint --ext=js --ext=jsx ."
   },
   "eslintConfig": {
     "extends": [
