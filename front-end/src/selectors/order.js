@@ -17,19 +17,32 @@ import { round } from 'lodash';
 import { createSelector } from 'reselect';
 import moment from 'moment';
 
-import { getPrevGridRowData, getUserHistory, getUserLastPriceList, getUserPrevData } from './user';
+import {
+  getPrevGridRowData,
+  getUserHistory,
+  getUserLastPriceList,
+  getUserPrevData,
+} from './user';
 import { MAX_PIE_LENGTH } from '../constants/chart';
 import { TIME_FORMAT } from '../constants/time';
 
 const localState = get('order');
 
 export const getOrderList = createSelector(localState, get('list'));
+export const getOriginOrderList = createSelector(localState, get('originList'));
 
+export const getCoinHoldPlace = createSelector(
+  localState,
+  get('coinHoldPlace'),
+);
 export const isNotOrderList = createSelector(getOrderList, isEmpty);
 
-export const getOrderCoinList = createSelector(getOrderList, compose(uniq, map('name')));
+export const getOrderCoinList = createSelector(
+  getOrderList,
+  compose(uniq, map('name')),
+);
 
-export const getTotalInvested = createSelector(getOrderList, orderList => {
+export const getTotalInvested = createSelector(getOrderList, (orderList) => {
   if (isEmpty(orderList)) return 0;
 
   return reduce((acc, { price, count }) => acc + price * count, 0, orderList);
@@ -75,10 +88,14 @@ export const getComparisonOrdersAndPriceList = createSelector(
 
 export const getNetProfit = createSelector(
   getComparisonOrdersAndPriceList,
-  comparisonOrdersAndPriceList => {
+  (comparisonOrdersAndPriceList) => {
     if (isEmpty(comparisonOrdersAndPriceList)) return 0;
 
-    return reduce((acc, { netProfit }) => acc + netProfit, 0, comparisonOrdersAndPriceList);
+    return reduce(
+      (acc, { netProfit }) => acc + netProfit,
+      0,
+      comparisonOrdersAndPriceList,
+    );
   },
 );
 
@@ -94,13 +111,17 @@ export const getNetProfitPercent = createSelector(
   (netProfit, totalInvested) => (netProfit * 100) / totalInvested,
 );
 
-export const getTotalTransactionCount = createSelector(getOrderList, list => list.length);
+export const getTotalTransactionCount = createSelector(
+  getOrderList,
+  (list) => list.length,
+);
 
 export const getLastModified = createSelector(
   getWalletState,
   getUserPrevData,
   (walletState, prevData) => {
-    const walletStateEmpty = walletState === 0 || isEmpty(prevData) || prevData.walletState === 0;
+    const walletStateEmpty =
+      walletState === 0 || isEmpty(prevData) || prevData.walletState === 0;
     if (walletStateEmpty) return 0;
 
     const lastModified = (walletState * 100) / prevData.walletState - 100;
@@ -129,7 +150,8 @@ export const getGridRowData = createSelector(
       const prevCell = find(['id', id], prevGridRowData);
       const formatDate = moment(date).format(TIME_FORMAT);
 
-      const totalProfitPercent = count > 0 ? ((actualPrice - price) / price) * 100 : 0;
+      const totalProfitPercent =
+        count > 0 ? ((actualPrice - price) / price) * 100 : 0;
 
       let lastModified;
 
@@ -158,43 +180,52 @@ export const getGridRowData = createSelector(
     }, orders),
 );
 
-export const getFilteredGridData = createSelector(getGridRowData, gridData => {
-  const groupedByCoinId = reduce(
-    (acc, { coinId, lastModified, totalBuyActual, name, icon }) => {
-      if (acc[coinId]) {
-        acc[coinId].lastModified += lastModified;
-        acc[coinId].totalBuyActual += totalBuyActual;
-        acc[coinId].differenceChange =
-          (acc[coinId].lastModified * 100) / acc[coinId].totalBuyActual;
-      } else {
-        acc[coinId] = {
-          lastModified,
-          name,
-          icon,
-          totalBuyActual,
-          differenceChange: (lastModified * 100) / totalBuyActual,
-        };
-      }
+export const getFilteredGridData = createSelector(
+  getGridRowData,
+  (gridData) => {
+    const groupedByCoinId = reduce(
+      (acc, { coinId, lastModified, totalBuyActual, name, icon }) => {
+        if (acc[coinId]) {
+          acc[coinId].lastModified += lastModified;
+          acc[coinId].totalBuyActual += totalBuyActual;
+          acc[coinId].differenceChange =
+            (acc[coinId].lastModified * 100) / acc[coinId].totalBuyActual;
+        } else {
+          acc[coinId] = {
+            lastModified,
+            name,
+            icon,
+            totalBuyActual,
+            differenceChange: (lastModified * 100) / totalBuyActual,
+          };
+        }
 
-      return acc;
-    },
-    {},
-    gridData,
-  );
+        return acc;
+      },
+      {},
+      gridData,
+    );
 
-  const filteredGridData = toArray(groupedByCoinId).filter(
-    ({ totalBuyActual, lastModified }) => totalBuyActual > 1 && Math.abs(lastModified) >= 0.01,
-  );
+    const filteredGridData = toArray(groupedByCoinId).filter(
+      ({ totalBuyActual, lastModified }) =>
+        totalBuyActual > 1 && Math.abs(lastModified) >= 0.01,
+    );
 
-  return filteredGridData;
-});
+    return filteredGridData;
+  },
+);
 
 export const getChartData = createSelector(
   getComparisonOrdersAndPriceList,
   getUserHistory,
   getNetProfitPercent,
   getFilteredGridData,
-  (comparisonOrdersAndPriceList, userHistory, netProfitPercent, filteredGridData) => {
+  (
+    comparisonOrdersAndPriceList,
+    userHistory,
+    netProfitPercent,
+    filteredGridData,
+  ) => {
     const sortedOrders = toArray(comparisonOrdersAndPriceList).sort(
       ({ totalBuy }, b) => b.totalBuy - totalBuy,
     );
@@ -231,7 +262,7 @@ export const getChartData = createSelector(
                 labels: {
                   show: true,
                   name: {},
-                  value: { formatter: n => `${n} $` },
+                  value: { formatter: (n) => `${n} $` },
                 },
               },
               expandOnClick: false,
@@ -257,7 +288,11 @@ export const getChartData = createSelector(
         {
           name: 'Чистая прибыль',
           // eslint-disable-next-line no-plusplus
-          data: drop(1, [...seriesData, { x: x++, y: round(netProfitPercent, 2) }]),
+          data: drop(1, [
+            ...seriesData,
+            // eslint-disable-next-line no-plusplus
+            { x: x++, y: round(netProfitPercent, 2) },
+          ]),
         },
       ],
       options: {
@@ -286,12 +321,14 @@ export const getChartData = createSelector(
           x: {
             show: true,
             format: 'dd MMM',
-            formatter: value => {
+            formatter: (value) => {
               if (userHistory.length <= value) {
                 return moment().format(TIME_FORMAT);
               }
 
-              return `${moment(userHistory[value].date).format(TIME_FORMAT)} ${round(userHistory[value].priceAmount, 0)}$`;
+              return `${moment(userHistory[value].date).format(
+                TIME_FORMAT,
+              )} ${round(userHistory[value].priceAmount, 0)}$`;
             },
           },
         },
@@ -311,7 +348,7 @@ export const getChartData = createSelector(
             offsetX: 0,
             offsetY: 0,
             rotate: 0,
-            formatter: value => `${round(value, 2)} %`,
+            formatter: (value) => `${round(value, 2)} %`,
           },
         },
         legend: {
@@ -347,7 +384,7 @@ export const getChartData = createSelector(
         },
         tooltip: {
           y: {
-            formatter: value => `${value}$`,
+            formatter: (value) => `${value}$`,
           },
         },
         plotOptions: {
@@ -373,7 +410,12 @@ export const getChartData = createSelector(
         },
       },
       series: [
-        { data: map(({ name, lastModified }) => ({ x: name, y: lastModified }), sortedGridData) },
+        {
+          data: map(
+            ({ name, lastModified }) => ({ x: name, y: lastModified }),
+            sortedGridData,
+          ),
+        },
       ],
     };
 
@@ -385,23 +427,47 @@ export const getChartData = createSelector(
   },
 );
 
-export const getEdgeCoins = createSelector(getFilteredGridData, filteredGridData => {
-  const sortedGridData = toArray(filteredGridData).sort(
-    ({ differenceChange }, b) => b.differenceChange - differenceChange,
-  );
+export const getEdgeCoins = createSelector(
+  getFilteredGridData,
+  (filteredGridData) => {
+    const sortedGridData = toArray(filteredGridData).sort(
+      ({ differenceChange }, b) => b.differenceChange - differenceChange,
+    );
 
-  const bestCoin = head(sortedGridData);
-  const worstCoin = last(sortedGridData);
+    const bestCoin = head(sortedGridData);
+    const worstCoin = last(sortedGridData);
 
-  if (!bestCoin || !worstCoin) {
+    if (!bestCoin || !worstCoin) {
+      return {
+        best: { name: '', differenceChange: 0, icon: '' },
+        worst: { name: '', differenceChange: 0, icon: '' },
+      };
+    }
+
     return {
-      best: { name: '', differenceChange: 0, icon: '' },
-      worst: { name: '', differenceChange: 0, icon: '' },
+      best: bestCoin,
+      worst: worstCoin,
     };
-  }
+  },
+);
 
-  return {
-    best: bestCoin,
-    worst: worstCoin,
-  };
-});
+export const getCoinHoldPlaceOptions = createSelector(
+  getOriginOrderList,
+  (list) => {
+    if (!list || list.length === 0) {
+      return [{ label: 'All', value: 'All' }];
+    }
+
+    return reduce(
+      (acc, { place }) => {
+        const found = acc.find(({ value }) => value === place);
+        if (!found) {
+          acc.push({ label: place, value: place });
+        }
+        return acc;
+      },
+      [{ label: 'All', value: 'All' }],
+      list,
+    );
+  },
+);

@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
+  autoGroupColumnDef,
   columnDefs,
   defaultColDef,
-  autoGroupColumnDef,
   groupDisplayType,
 } from './columns';
 
@@ -32,6 +32,9 @@ class Statistics extends React.Component {
     chartData: PropTypes.object.isRequired,
     deleteOrder: PropTypes.func.isRequired,
     edgeCoins: PropTypes.object.isRequired,
+    coinHoldPlaceOptions: PropTypes.array.isRequired,
+    handleCoinHoldPlace: PropTypes.func.isRequired,
+    coinHoldPlace: PropTypes.string.isRequired,
   };
 
   state = {
@@ -69,6 +72,9 @@ class Statistics extends React.Component {
       edgeCoins,
       setNewPlace,
       placeList,
+      coinHoldPlaceOptions,
+      handleCoinHoldPlace,
+      coinHoldPlace,
     } = this.props;
     const { drawerVisible } = this.state;
 
@@ -85,6 +91,9 @@ class Statistics extends React.Component {
           totalTransactionCount={totalTransactionCount}
           handleDrawer={this.handleDrawer}
           edgeCoins={edgeCoins}
+          coinHoldPlaceOptions={coinHoldPlaceOptions}
+          handleCoinHoldPlace={handleCoinHoldPlace}
+          coinHoldPlace={coinHoldPlace}
         />
         <Chart chartData={chartData} />
         <Grid

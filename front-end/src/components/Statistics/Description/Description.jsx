@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Col, Row, Statistic, Button } from 'antd';
-import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
-
-import { Text, InteractiveStatistic, InteractiveDescriptions } from './styled';
+import { Button, Col, Radio, Row, Statistic } from 'antd';
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import { InteractiveDescriptions, InteractiveStatistic, Text } from './styled';
 
 class Description extends React.Component {
   static propTypes = {
@@ -17,6 +16,9 @@ class Description extends React.Component {
     getBackupOrders: PropTypes.func.isRequired,
     precision: PropTypes.number.isRequired,
     edgeCoins: PropTypes.object.isRequired,
+    coinHoldPlaceOptions: PropTypes.array.isRequired,
+    handleCoinHoldPlace: PropTypes.func.isRequired,
+    coinHoldPlace: PropTypes.string.isRequired,
   };
 
   state = {
@@ -69,6 +71,9 @@ class Description extends React.Component {
       handleDrawer,
       edgeCoins,
       getBackupOrders,
+      coinHoldPlaceOptions,
+      handleCoinHoldPlace,
+      coinHoldPlace,
     } = this.props;
     const {
       netProfitPercent,
@@ -79,9 +84,13 @@ class Description extends React.Component {
     } = this.state;
 
     const positiveNetProfit = netProfit >= 0;
-    const netProfitValue = netProfitPercent ? (netProfit * 100) / totalInvested : netProfit;
+    const netProfitValue = netProfitPercent
+      ? (netProfit * 100) / totalInvested
+      : netProfit;
 
-    const walletStateValue = walletStatePercent ? (walletState * 100) / totalInvested : walletState;
+    const walletStateValue = walletStatePercent
+      ? (walletState * 100) / totalInvested
+      : walletState;
 
     const positiveLastModified = lastModified >= 0;
     const lastModifiedValue = lastModifiedPercent
@@ -91,32 +100,38 @@ class Description extends React.Component {
     const { best, worst } = edgeCoins;
 
     const positiveBest = best.differenceChange >= 0;
-    const bestEdgeCoinValue = bestEdgeCoinPercent ? best.differenceChange : best.lastModified;
+    const bestEdgeCoinValue = bestEdgeCoinPercent
+      ? best.differenceChange
+      : best.lastModified;
 
     const positiveWorst = worst.differenceChange >= 0;
-    const worstEdgeCoinValue = worstEdgeCoinPercent ? worst.differenceChange : worst.lastModified;
+    const worstEdgeCoinValue = worstEdgeCoinPercent
+      ? worst.differenceChange
+      : worst.lastModified;
 
     return (
-      <InteractiveDescriptions title='Последняя обновленная статистика'>
+      <InteractiveDescriptions title="Последняя обновленная статистика">
         <Row gutter={16}>
           <Col span={3}>
             <Statistic
-              title='Всего вложил:'
+              title="Всего вложил:"
               value={totalInvested}
               precision={precision}
               suffix={currencySymbol}
             />
-            <Button type='primary' onClick={getBackupOrders}>
+            <Button type="primary" onClick={getBackupOrders}>
               Download backup
             </Button>
           </Col>
           <Col span={3} onMouseUp={this.handleNetProfit}>
             <InteractiveStatistic
-              title='Чистая прибыль'
-              className='hoverable'
+              title="Чистая прибыль"
+              className="hoverable"
               value={netProfitValue}
               precision={precision}
-              prefix={positiveNetProfit ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+              prefix={
+                positiveNetProfit ? <ArrowUpOutlined /> : <ArrowDownOutlined />
+              }
               suffix={netProfitPercent ? '%' : currencySymbol}
               positive={positiveNetProfit}
             />
@@ -124,7 +139,7 @@ class Description extends React.Component {
           <Col span={3} onMouseUp={this.handleBestEdgeCoin}>
             <InteractiveStatistic
               title={`Лучшая: ${best.name}`}
-              className='hoverable'
+              className="hoverable"
               value={bestEdgeCoinValue}
               precision={precision}
               prefix={<img src={best.icon} alt={best.name} />}
@@ -136,7 +151,7 @@ class Description extends React.Component {
           <Col span={3} onMouseUp={this.handleWorstEdgeCoin}>
             <InteractiveStatistic
               title={`Худшая: ${worst.name}`}
-              className='hoverable'
+              className="hoverable"
               value={worstEdgeCoinValue}
               precision={precision}
               prefix={<img src={worst.icon} alt={worst.name} />}
@@ -147,8 +162,8 @@ class Description extends React.Component {
 
           <Col span={3} onMouseUp={this.handleWalletState}>
             <Statistic
-              title='Состояние кошелька:'
-              className='hoverable'
+              title="Состояние кошелька:"
+              className="hoverable"
               value={walletStateValue}
               precision={precision}
               suffix={walletStatePercent ? '%' : currencySymbol}
@@ -156,21 +171,33 @@ class Description extends React.Component {
           </Col>
           <Col span={3} onMouseUp={this.handleLastModified}>
             <InteractiveStatistic
-              title='Последнее изменение:'
-              className='hoverable'
+              title="Последнее изменение:"
+              className="hoverable"
               value={lastModifiedValue}
               precision={precision}
-              prefix={positiveLastModified ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+              prefix={
+                positiveLastModified ? (
+                  <ArrowUpOutlined />
+                ) : (
+                  <ArrowDownOutlined />
+                )
+              }
               suffix={lastModifiedPercent ? '%' : currencySymbol}
               positive={positiveLastModified}
             />
           </Col>
           <Col span={4}>
-            <Statistic title='Всего транзакций' value={totalTransactionCount} />
+            <Statistic title="Всего транзакций" value={totalTransactionCount} />
+            <Radio.Group
+              options={coinHoldPlaceOptions}
+              onChange={(event) => handleCoinHoldPlace(event.target.value)}
+              value={coinHoldPlace}
+              optionType="button"
+            />
           </Col>
           <Col span={2}>
-            <Text type='secondary'>Транзакция</Text>
-            <Button type='primary' onClick={handleDrawer}>
+            <Text type="secondary">Транзакция</Text>
+            <Button type="primary" onClick={handleDrawer}>
               Добавить
             </Button>
           </Col>

@@ -26,9 +26,11 @@ import {
   getWalletState,
   isNotOrderList,
 } from '../selectors/order';
+import { handleCoinHoldPlaceAC } from '../actionCreators/order';
 
 function* refresh() {
   try {
+    yield put(handleCoinHoldPlaceAC('All'));
     yield put(loadingPendingAC());
 
     const noData = yield select(isNotOrderList);
@@ -42,7 +44,11 @@ function* refresh() {
     const gridRowData = yield select(getGridRowData);
     const coinList = yield select(getOrderCoinList);
 
-    const prevData = { netProfit, walletState, gridRowData: map(omit(['icon']), gridRowData) };
+    const prevData = {
+      netProfit,
+      walletState,
+      gridRowData: map(omit(['icon']), gridRowData),
+    };
 
     const data = yield call(refreshAPI.refresh, { prevData, coinList });
 

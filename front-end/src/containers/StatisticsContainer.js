@@ -4,24 +4,27 @@ import Statistics from '../components/Statistics';
 import {
   deleteOrderAC,
   getBackupOrdersAC,
+  getUserPlaceListAC,
+  handleCoinHoldPlaceAC,
+  setNewPlaceAC,
   setOrderAC,
   setOrdersAC,
-  setNewPlaceAC,
-  getUserPlaceListAC,
 } from '../actionCreators/order';
 import {
-  getTotalInvested,
-  getNetProfit,
-  getWalletState,
-  getLastModified,
-  getTotalTransactionCount,
-  getGridRowData,
   getChartData,
+  getCoinHoldPlace,
+  getCoinHoldPlaceOptions,
   getEdgeCoins,
+  getGridRowData,
+  getLastModified,
+  getNetProfit,
+  getTotalInvested,
+  getTotalTransactionCount,
+  getWalletState,
 } from '../selectors/order';
 import { getPlaceList } from '../selectors/user';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   totalInvested: getTotalInvested(state),
   netProfit: getNetProfit(state),
   walletState: getWalletState(state),
@@ -31,6 +34,8 @@ const mapStateToProps = state => ({
   chartData: getChartData(state),
   edgeCoins: getEdgeCoins(state),
   placeList: getPlaceList(state),
+  coinHoldPlaceOptions: getCoinHoldPlaceOptions(state),
+  coinHoldPlace: getCoinHoldPlace(state),
 });
 
 const mapDispatchToProps = {
@@ -40,6 +45,7 @@ const mapDispatchToProps = {
   getBackupOrders: getBackupOrdersAC,
   setNewPlace: setNewPlaceAC,
   getUserPlaceList: getUserPlaceListAC,
+  handleCoinHoldPlace: handleCoinHoldPlaceAC,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Statistics);
