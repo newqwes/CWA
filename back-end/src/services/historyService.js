@@ -1,7 +1,7 @@
 import History from '../database/models/history';
 
-const MIN_TIME_DIFF_MS = 20 * 60 * 1000;
-const MIN_PROFIT_PERCENT_DIFF_TO_DELETE = 0.05;
+const MIN_TIME_DIFF_MS = 24 * 60 * 60 * 1000;
+const MIN_PROFIT_PERCENT_DIFF_TO_DELETE = 0.2;
 
 // Determine if the current history should be deleted based on
 // time difference and profit percentage difference
@@ -10,14 +10,20 @@ const shouldDeleteHistory = (current, previous) => {
   const { date: previousDate, lastModified: previousLastModified } = previous;
 
   const timeDiffMs = currentDate - previousDate;
-  const profitPercentDiff = Math.abs(currentLastModified - previousLastModified);
+  const profitPercentDiff = Math.abs(
+    currentLastModified - previousLastModified
+  );
 
-  return timeDiffMs < MIN_TIME_DIFF_MS || profitPercentDiff < MIN_PROFIT_PERCENT_DIFF_TO_DELETE;
+  return (
+    timeDiffMs < MIN_TIME_DIFF_MS ||
+    profitPercentDiff < MIN_PROFIT_PERCENT_DIFF_TO_DELETE
+  );
 };
 
 // Remove duplicate history if it matches the deletion criteria
 const removeDuplicateHistory = async (previous, current) => {
-  const shouldDelete = previous &&
+  const shouldDelete =
+    previous &&
     current.userId === previous.userId &&
     shouldDeleteHistory(current, previous);
   if (shouldDelete) {
@@ -32,7 +38,10 @@ class HistoryService {
     try {
       // Fetch all history records, ordered by user ID and date
       const historyList = await History.findAll({
-        order: [['userId', 'ASC'], ['date', 'ASC']],
+        order: [
+          ['userId', 'ASC'],
+          ['date', 'ASC'],
+        ],
       });
 
       // Initialize deleted flag and previousHistory variable
@@ -49,7 +58,9 @@ class HistoryService {
 
       // Log the result of duplicate removal
       if (deleted) {
-        console.log('___removeDuplicateHistoryTask___: Duplicates removed successfully!');
+        console.log(
+          '___removeDuplicateHistoryTask___: Duplicates removed successfully!'
+        );
       } else {
         console.log('___removeDuplicateHistoryTask___: No duplicates found!');
       }
