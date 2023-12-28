@@ -148,7 +148,12 @@ class Description extends React.Component {
         </Property>
         <Property onMouseUp={this.handleBestEdgeCoin}>
           <InteractiveStatistic
-            title={`Лучшая: ${best.name}`}
+            title={
+              <span>
+                Лучшая:
+                <span className="line-break">{best.name.slice(0, 9)}</span>
+              </span>
+            }
             className="hoverable"
             value={bestEdgeCoinValue}
             precision={precision}
@@ -160,7 +165,12 @@ class Description extends React.Component {
 
         <Property onMouseUp={this.handleWorstEdgeCoin}>
           <InteractiveStatistic
-            title={`Худшая: ${worst.name}`}
+            title={
+              <span>
+                Худшая:
+                <span className="line-break">{worst.name.slice(0, 9)}</span>
+              </span>
+            }
             className="hoverable"
             value={worstEdgeCoinValue}
             precision={precision}

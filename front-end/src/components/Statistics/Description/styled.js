@@ -24,6 +24,15 @@ export const InteractiveStatistic = styled(Statistic)`
       }
     }
   }
+
+  @media (max-width: 1000px) {
+    .ant-statistic-title {
+      .line-break {
+        display: block;
+        white-space: nowrap;
+      }
+    }
+  }
 `;
 
 export const InteractiveDescriptions = styled.div`

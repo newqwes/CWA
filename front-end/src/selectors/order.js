@@ -316,6 +316,7 @@ export const getChartData = createSelector(
           labels: {
             show: false,
           },
+          // range: 15,
         },
         tooltip: {
           x: {
