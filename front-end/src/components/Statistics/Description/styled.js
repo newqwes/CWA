@@ -17,6 +17,11 @@ export const InteractiveStatistic = styled(Statistic)`
     img {
       height: 24px;
       margin: 0 5px 4px 0;
+
+      @media (max-width: 1000px) {
+        height: 68px;
+        margin: 0 15px 4px 0;
+      }
     }
   }
 `;
@@ -38,6 +43,7 @@ export const InteractiveDescriptions = styled.div`
 
   @media (max-width: 1000px) {
     flex-wrap: wrap;
+    margin-top: 40px;
 
     .show-for-mobile {
       display: flex;
@@ -71,8 +77,8 @@ export const Property = styled.div`
   display: flex;
   flex-direction: column;
   @media (max-width: 1000px) {
-    flex: 30%;
+    flex: 32%;
   }
 
-  margin: 25px;
+  margin: 35px;
 `;

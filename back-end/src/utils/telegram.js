@@ -175,7 +175,7 @@ export const getResultMessage = ({
   ${netProfit >= 0 ? 'Доход' : 'Убыток'}: ${round(netProfit, 2)}% (${round(
     diffNetProfit,
     2
-  )}%, ${diffWalletState}$) ${diffNetProfitIcon}`;
+  )}%, ${round(diffWalletState, 2)}$) ${diffNetProfitIcon}`;
 
   const messageResult = `${arrOfMessages.join('\n')}${sumMessage}`;
 
