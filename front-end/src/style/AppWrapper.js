@@ -12,7 +12,7 @@ const logoParagraph = css`
 `;
 
 export const Logo = styled.div`
-  font-family: 'Inter';
+  font-family: "Inter";
   height: 28px;
   margin: 16px;
   display: flex;
@@ -52,7 +52,9 @@ export const Owerlay = styled.div`
 `;
 
 const animationOpacity = keyframes`
-  50% { opacity: 0.85; }
+    50% {
+        opacity: 0.85;
+    }
 `;
 
 const appLoading = css`

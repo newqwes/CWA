@@ -1,8 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Col, Radio, Row, Statistic } from 'antd';
+import { Button, Radio, Statistic } from 'antd';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
-import { InteractiveDescriptions, InteractiveStatistic, Text } from './styled';
+import {
+  InteractiveDescriptions,
+  InteractiveStatistic,
+  Property,
+  Text,
+} from './styled';
 
 class Description extends React.Component {
   static propTypes = {
@@ -19,6 +24,7 @@ class Description extends React.Component {
     coinHoldPlaceOptions: PropTypes.array.isRequired,
     handleCoinHoldPlace: PropTypes.func.isRequired,
     coinHoldPlace: PropTypes.string.isRequired,
+    handleRefresh: PropTypes.func.isRequired,
   };
 
   state = {
@@ -74,6 +80,7 @@ class Description extends React.Component {
       coinHoldPlaceOptions,
       handleCoinHoldPlace,
       coinHoldPlace,
+      handleRefresh,
     } = this.props;
     const {
       netProfitPercent,
@@ -110,98 +117,109 @@ class Description extends React.Component {
       : worst.lastModified;
 
     return (
-      <InteractiveDescriptions title="Последняя обновленная статистика">
-        <Row gutter={16}>
-          <Col span={3}>
-            <Statistic
-              title="Всего вложил:"
-              value={totalInvested}
-              precision={precision}
-              suffix={currencySymbol}
-            />
-            <Button type="primary" onClick={getBackupOrders}>
-              Download backup
-            </Button>
-          </Col>
-          <Col span={3} onMouseUp={this.handleNetProfit}>
-            <InteractiveStatistic
-              title="Чистая прибыль"
-              className="hoverable"
-              value={netProfitValue}
-              precision={precision}
-              prefix={
-                positiveNetProfit ? <ArrowUpOutlined /> : <ArrowDownOutlined />
-              }
-              suffix={netProfitPercent ? '%' : currencySymbol}
-              positive={positiveNetProfit}
-            />
-          </Col>
-          <Col span={3} onMouseUp={this.handleBestEdgeCoin}>
-            <InteractiveStatistic
-              title={`Лучшая: ${best.name}`}
-              className="hoverable"
-              value={bestEdgeCoinValue}
-              precision={precision}
-              prefix={<img src={best.icon} alt={best.name} />}
-              suffix={bestEdgeCoinPercent ? '%' : currencySymbol}
-              positive={positiveBest}
-            />
-          </Col>
+      <InteractiveDescriptions>
+        <Property>
+          <Statistic
+            title="Всего вложил:"
+            value={totalInvested}
+            precision={precision}
+            suffix={currencySymbol}
+          />
+          <Button
+            type="primary"
+            className="hide-for-mobile"
+            onClick={getBackupOrders}
+          >
+            Download backup
+          </Button>
+        </Property>
+        <Property onMouseUp={this.handleNetProfit}>
+          <InteractiveStatistic
+            title="Чистая прибыль"
+            className="hoverable"
+            value={netProfitValue}
+            precision={precision}
+            prefix={
+              positiveNetProfit ? <ArrowUpOutlined /> : <ArrowDownOutlined />
+            }
+            suffix={netProfitPercent ? '%' : currencySymbol}
+            positive={positiveNetProfit}
+          />
+        </Property>
+        <Property onMouseUp={this.handleBestEdgeCoin}>
+          <InteractiveStatistic
+            title={`Лучшая: ${best.name}`}
+            className="hoverable"
+            value={bestEdgeCoinValue}
+            precision={precision}
+            prefix={<img src={best.icon} alt={best.name} />}
+            suffix={bestEdgeCoinPercent ? '%' : currencySymbol}
+            positive={positiveBest}
+          />
+        </Property>
 
-          <Col span={3} onMouseUp={this.handleWorstEdgeCoin}>
-            <InteractiveStatistic
-              title={`Худшая: ${worst.name}`}
-              className="hoverable"
-              value={worstEdgeCoinValue}
-              precision={precision}
-              prefix={<img src={worst.icon} alt={worst.name} />}
-              suffix={worstEdgeCoinPercent ? '%' : currencySymbol}
-              positive={positiveWorst}
-            />
-          </Col>
+        <Property onMouseUp={this.handleWorstEdgeCoin}>
+          <InteractiveStatistic
+            title={`Худшая: ${worst.name}`}
+            className="hoverable"
+            value={worstEdgeCoinValue}
+            precision={precision}
+            prefix={<img src={worst.icon} alt={worst.name} />}
+            suffix={worstEdgeCoinPercent ? '%' : currencySymbol}
+            positive={positiveWorst}
+          />
+        </Property>
 
-          <Col span={3} onMouseUp={this.handleWalletState}>
-            <Statistic
-              title="Состояние кошелька:"
-              className="hoverable"
-              value={walletStateValue}
-              precision={precision}
-              suffix={walletStatePercent ? '%' : currencySymbol}
-            />
-          </Col>
-          <Col span={3} onMouseUp={this.handleLastModified}>
-            <InteractiveStatistic
-              title="Последнее изменение:"
-              className="hoverable"
-              value={lastModifiedValue}
-              precision={precision}
-              prefix={
-                positiveLastModified ? (
-                  <ArrowUpOutlined />
-                ) : (
-                  <ArrowDownOutlined />
-                )
-              }
-              suffix={lastModifiedPercent ? '%' : currencySymbol}
-              positive={positiveLastModified}
-            />
-          </Col>
-          <Col span={4}>
-            <Statistic title="Всего транзакций" value={totalTransactionCount} />
-            <Radio.Group
-              options={coinHoldPlaceOptions}
-              onChange={(event) => handleCoinHoldPlace(event.target.value)}
-              value={coinHoldPlace}
-              optionType="button"
-            />
-          </Col>
-          <Col span={2}>
-            <Text type="secondary">Транзакция</Text>
-            <Button type="primary" onClick={handleDrawer}>
-              Добавить
-            </Button>
-          </Col>
-        </Row>
+        <Property onMouseUp={this.handleWalletState}>
+          <Statistic
+            title="Состояние кошелька:"
+            className="hoverable"
+            value={walletStateValue}
+            precision={precision}
+            suffix={walletStatePercent ? '%' : currencySymbol}
+          />
+        </Property>
+        <Property onMouseUp={this.handleLastModified}>
+          <InteractiveStatistic
+            title="Последнее изменение:"
+            className="hoverable"
+            value={lastModifiedValue}
+            precision={precision}
+            prefix={
+              positiveLastModified ? <ArrowUpOutlined /> : <ArrowDownOutlined />
+            }
+            suffix={lastModifiedPercent ? '%' : currencySymbol}
+            positive={positiveLastModified}
+          />
+        </Property>
+        <Property>
+          <Statistic
+            title="Всего транзакций"
+            value={totalTransactionCount}
+            className="hide-for-mobile"
+          />
+          <Radio.Group
+            options={coinHoldPlaceOptions}
+            onChange={(event) => handleCoinHoldPlace(event.target.value)}
+            value={coinHoldPlace}
+            optionType="button"
+          />
+        </Property>
+        <Property className="hide-for-mobile">
+          <Text type="secondary">Транзакция</Text>
+          <Button type="primary" onClick={handleDrawer}>
+            Добавить
+          </Button>
+        </Property>
+        <Property className="show-for-mobile">
+          <Button
+            type="primary"
+            className="refresh-button"
+            onClick={handleRefresh}
+          >
+            Обновить
+          </Button>
+        </Property>
       </InteractiveDescriptions>
     );
   }

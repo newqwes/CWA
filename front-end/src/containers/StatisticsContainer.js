@@ -23,6 +23,7 @@ import {
   getWalletState,
 } from '../selectors/order';
 import { getPlaceList } from '../selectors/user';
+import { handleRefreshAC } from '../actionCreators/refresh';
 
 const mapStateToProps = (state) => ({
   totalInvested: getTotalInvested(state),
@@ -46,6 +47,7 @@ const mapDispatchToProps = {
   setNewPlace: setNewPlaceAC,
   getUserPlaceList: getUserPlaceListAC,
   handleCoinHoldPlace: handleCoinHoldPlaceAC,
+  handleRefresh: handleRefreshAC,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Statistics);

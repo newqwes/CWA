@@ -34,6 +34,7 @@ class Statistics extends React.Component {
     edgeCoins: PropTypes.object.isRequired,
     coinHoldPlaceOptions: PropTypes.array.isRequired,
     handleCoinHoldPlace: PropTypes.func.isRequired,
+    handleRefresh: PropTypes.func.isRequired,
     coinHoldPlace: PropTypes.string.isRequired,
   };
 
@@ -75,6 +76,7 @@ class Statistics extends React.Component {
       coinHoldPlaceOptions,
       handleCoinHoldPlace,
       coinHoldPlace,
+      handleRefresh,
     } = this.props;
     const { drawerVisible } = this.state;
 
@@ -94,6 +96,7 @@ class Statistics extends React.Component {
           coinHoldPlaceOptions={coinHoldPlaceOptions}
           handleCoinHoldPlace={handleCoinHoldPlace}
           coinHoldPlace={coinHoldPlace}
+          handleRefresh={handleRefresh}
         />
         <Chart chartData={chartData} />
         <Grid

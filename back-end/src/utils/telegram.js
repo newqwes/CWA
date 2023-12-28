@@ -1,16 +1,17 @@
 /* eslint-disable indent */
-import { get, map, find, sortBy, reduce, findIndex, meanBy } from 'lodash/fp';
+import { find, findIndex, get, map, meanBy, reduce, sortBy } from 'lodash/fp';
 import { round } from 'lodash';
 
 import { AUTH_TELEGRAM_CODE_REGEX, TELEGRAM_MESSAGE_MAX_LIMIT } from '../constants/telegram';
 
-export const isAuthCode = text => AUTH_TELEGRAM_CODE_REGEX.test(text);
+export const isAuthCode = (text) => AUTH_TELEGRAM_CODE_REGEX.test(text);
 
-export const removeAuthCode = text => text.replace(AUTH_TELEGRAM_CODE_REGEX, '');
+export const removeAuthCode = (text) =>
+  text.replace(AUTH_TELEGRAM_CODE_REGEX, '');
 
-const getDffIcon = number => (number >= 0 ? '📈' : '📉');
+const getDffIcon = (number) => (number >= 0 ? '📈' : '📉');
 
-export const compareResults = refreshData => {
+export const compareResults = (refreshData) => {
   const newList = get(['list'], refreshData);
   const oldList = get(['prevData', 'gridRowData'], refreshData);
 
@@ -36,7 +37,8 @@ export const compareResults = refreshData => {
           amount: acc[coinExistIndex].amount + oldItem.amount,
           price,
           totalBuy: acc[coinExistIndex].totalBuy + oldItem.totalBuy,
-          totalBuyActual: acc[coinExistIndex].totalBuyActual + oldItem.totalBuyActual,
+          totalBuyActual:
+            acc[coinExistIndex].totalBuyActual + oldItem.totalBuyActual,
           totalProfit: acc[coinExistIndex].totalProfit + oldItem.totalProfit,
         };
 
@@ -47,10 +49,10 @@ export const compareResults = refreshData => {
       return acc;
     },
     [],
-    oldList,
+    oldList
   );
 
-  const listResult = map(oldItem => {
+  const listResult = map((oldItem) => {
     const newItem = find(['id', oldItem.coinId], newList);
 
     if (!newItem) {
@@ -89,7 +91,7 @@ export const compareResults = refreshData => {
       return acc;
     },
     0,
-    listResult,
+    listResult
   );
 
   const walletState = reduce(
@@ -100,7 +102,7 @@ export const compareResults = refreshData => {
       return acc;
     },
     0,
-    listResult,
+    listResult
   );
 
   const netProfit = (walletState * 100) / totalAllBuy - 100;
@@ -120,9 +122,10 @@ export const compareResults = refreshData => {
   };
 };
 
-export const getStatusEmoji = value => (value >= 0 ? '🟢' : '🔴');
+export const getStatusEmoji = (value) => (value >= 0 ? '🟢' : '🔴');
 
-const isMessageResultOverThanLimit = message => message.length >= TELEGRAM_MESSAGE_MAX_LIMIT;
+const isMessageResultOverThanLimit = (message) =>
+  message.length >= TELEGRAM_MESSAGE_MAX_LIMIT;
 
 export const getResultMessage = ({
   listResult,
@@ -131,7 +134,7 @@ export const getResultMessage = ({
   diffNetProfit,
   walletState,
   diffNetProfitIcon,
-  // diffWalletState,
+  diffWalletState,
 }) => {
   const sortedResult = sortBy(['lastModifiedPercent'], listResult).reverse();
 
@@ -153,12 +156,17 @@ export const getResultMessage = ({
       actualPrice,
     }) =>
       `${name}: ${actualPrice}$
-Вложил: ${round(totalBuy, 2)}$ (${round(totalProfit, 2)}$) ${getStatusEmoji(totalProfit)}
+Вложил: ${round(totalBuy, 2)}$ (${round(totalProfit, 2)}$) ${getStatusEmoji(
+        totalProfit
+      )}
 Состояние: ${round(totalBuyActual, 1)}$ (${round(totalProfitPercent, 1)}%) ${
         meanTotal < totalBuyActual ? '💰' : ''
       }
-Изменение: ${round(lastModified, 2)}$ (${round(lastModifiedPercent, 2)}%) ${lastModifiedIcon}\n`,
-    sortedResult,
+Изменение: ${round(lastModified, 2)}$ (${round(
+        lastModifiedPercent,
+        2
+      )}%) ${lastModifiedIcon}\n`,
+    sortedResult
   );
 
   const sumMessage = `
@@ -166,8 +174,8 @@ export const getResultMessage = ({
   Состояние кошелька: ${round(walletState, 2)}$
   ${netProfit >= 0 ? 'Доход' : 'Убыток'}: ${round(netProfit, 2)}% (${round(
     diffNetProfit,
-    2,
-  )}%) ${diffNetProfitIcon}`;
+    2
+  )}%, ${diffWalletState}$) ${diffNetProfitIcon}`;
 
   const messageResult = `${arrOfMessages.join('\n')}${sumMessage}`;
 

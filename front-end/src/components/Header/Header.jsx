@@ -17,21 +17,24 @@ import { AUTH_TELEGRAM_CODE_PREFIX } from '../../constants/telegram';
 const UPDATE_TIMER_MILLISECONDS = 1000;
 
 const Header = ({
-                  handleRefresh,
-                  lastDateUpdate,
-                  score,
-                  dataRefreshLimitPerMinute,
-                  children,
-                  authorized,
-                  userId,
-                  noData,
-                  bank,
-                }) => {
+  handleRefresh,
+  lastDateUpdate,
+  score,
+  dataRefreshLimitPerMinute,
+  children,
+  authorized,
+  userId,
+  noData,
+  bank,
+}) => {
   const [refreshTimer, setRefreshTimer] = useState(0);
   const [refreshDisabled, setRefreshDisabled] = useState(false);
 
   useEffect(() => {
-    const refreshTimerValue = getRefreshTimer(lastDateUpdate, dataRefreshLimitPerMinute);
+    const refreshTimerValue = getRefreshTimer(
+      lastDateUpdate,
+      dataRefreshLimitPerMinute,
+    );
 
     if (refreshTimerValue <= 0) {
       return;
@@ -58,20 +61,30 @@ const Header = ({
   }, [lastDateUpdate, dataRefreshLimitPerMinute]);
 
   useEffect(() => {
-    const refreshTimerValue = getRefreshTimer(lastDateUpdate, dataRefreshLimitPerMinute);
+    const refreshTimerValue = getRefreshTimer(
+      lastDateUpdate,
+      dataRefreshLimitPerMinute,
+    );
     setRefreshTimer(refreshTimerValue);
     setRefreshDisabled(refreshTimerValue > 0);
   }, [lastDateUpdate, dataRefreshLimitPerMinute]);
 
-  const time = refreshTimer > 100 ? `${floor(refreshTimer / 60)} мин.` : `${floor(refreshTimer)} сек.`;
+  const time =
+    refreshTimer > 100
+      ? `${floor(refreshTimer / 60)} мин.`
+      : `${floor(refreshTimer)} сек.`;
 
   return (
     <HeaderWrapper>
-      <Paragraph>Банк: {bank} cwa</Paragraph>
+      <Paragraph className="hide-for-mobile">Банк: {bank} cwa</Paragraph>
       <Paragraph
+        className="hide-for-mobile"
         copyable={{
           text: AUTH_TELEGRAM_CODE_PREFIX + userId,
-          tooltips: ['Скопировать Ваш личный ключ для телеграмма', 'Ключ скопирован!'],
+          tooltips: [
+            'Скопировать Ваш личный ключ для телеграмма',
+            'Ключ скопирован!',
+          ],
         }}
       >
         Ключ для авторизации в телеграм
@@ -89,6 +102,7 @@ const Header = ({
                 <Button
                   onClick={handleRefresh}
                   type="primary"
+                  className="hide-for-mobile"
                   loading={refreshDisabled}
                   disabled={refreshDisabled || noData}
                 >

@@ -24,13 +24,13 @@ import socket from './api/socket';
 const { Content, Sider } = Layout;
 
 const App = ({
-               handleCollapseSideMenu,
-               getAutharizationStatus,
-               collapsedSideMenu,
-               loading,
-               authorized,
-               setBankValue,
-             }) => {
+  handleCollapseSideMenu,
+  getAutharizationStatus,
+  collapsedSideMenu,
+  loading,
+  authorized,
+  setBankValue,
+}) => {
   const location = useLocation();
   const [currentRoute, setCurrentRoute] = useState('');
 
@@ -39,7 +39,9 @@ const App = ({
   }, []);
 
   useEffect(() => {
-    setCurrentRoute(location.pathname === '/' ? MENU_KEYS.statistics : location.pathname);
+    setCurrentRoute(
+      location.pathname === '/' ? MENU_KEYS.statistics : location.pathname,
+    );
     getAutharizationStatus();
   }, [getAutharizationStatus]);
 
@@ -49,6 +51,7 @@ const App = ({
         collapsible
         collapsed={collapsedSideMenu}
         onCollapse={handleCollapseSideMenu}
+        collapsedWidth="0"
       >
         <Link to={DEFAULT_SELECTED_MENU}>
           <Logo collapsed={collapsedSideMenu}>
@@ -107,7 +110,7 @@ const App = ({
               authorized={authorized}
             />
             <PrivateRoute
-              path='settings'
+              path="settings"
               component={SettingsContainer}
               authorized={authorized}
             />
