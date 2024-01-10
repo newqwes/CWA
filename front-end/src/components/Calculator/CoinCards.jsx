@@ -9,7 +9,7 @@ const { Meta } = Card;
 const CoinCards = ({ coins, isSortByAmount }) =>
   map(
     ({ label, price, src, id, priceChange, amount }) => {
-      const textToWallet = `${id} ${amount * price} = ${price} binance`;
+      const textToWallet = `${id} ${amount / price} = ${price} binance`;
       return (
         <Card key={id} amount={amount}>
           <Meta

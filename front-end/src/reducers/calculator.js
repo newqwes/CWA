@@ -49,7 +49,7 @@ const initialState = {
     { id: 'siacoin' },
   ],
   showCards: false,
-  budget: 200,
+  budget: 300,
   gap: 5,
   isPercent: true,
   listPercentOptions: [
