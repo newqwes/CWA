@@ -36,6 +36,7 @@ class Statistics extends React.Component {
     handleCoinHoldPlace: PropTypes.func.isRequired,
     handleRefresh: PropTypes.func.isRequired,
     coinHoldPlace: PropTypes.string.isRequired,
+    updateCellValue: PropTypes.func.isRequired,
   };
 
   state = {
@@ -77,6 +78,7 @@ class Statistics extends React.Component {
       handleCoinHoldPlace,
       coinHoldPlace,
       handleRefresh,
+      updateCellValue,
     } = this.props;
     const { drawerVisible } = this.state;
 
@@ -105,6 +107,7 @@ class Statistics extends React.Component {
           defaultColDef={defaultColDef}
           autoGroupColumnDef={autoGroupColumnDef}
           groupDisplayType={groupDisplayType}
+          updateCellValue={updateCellValue}
         />
         <Drawer
           closeDrawer={this.closeDrawer}

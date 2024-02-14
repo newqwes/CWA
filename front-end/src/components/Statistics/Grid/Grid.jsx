@@ -14,6 +14,15 @@ import IconCellRenderer from '../../frameworkComponents/IconCellRenderer';
 import { Wrapper } from './styled';
 
 class Grid extends React.Component {
+  static propTypes = {
+    columnDefs: PropTypes.array.isRequired,
+    rowData: PropTypes.array.isRequired,
+    defaultColDef: PropTypes.object.isRequired,
+    autoGroupColumnDef: PropTypes.object.isRequired,
+    groupDisplayType: PropTypes.string.isRequired,
+    updateCellValue: PropTypes.func.isRequired,
+  };
+
   frameworkComponents = {
     totalBuyCellRenderer: TotalBuyCellRenderer,
     priceCellRenderer: PriceCellRenderer,
@@ -25,19 +34,24 @@ class Grid extends React.Component {
     iconCellRenderer: IconCellRenderer,
   };
 
-  static propTypes = {
-    columnDefs: PropTypes.array.isRequired,
-    rowData: PropTypes.array.isRequired,
-    defaultColDef: PropTypes.object.isRequired,
-    autoGroupColumnDef: PropTypes.object.isRequired,
-    groupDisplayType: PropTypes.string.isRequired,
+  onCellValueChanged = (event) => {
+    const { field } = event.colDef;
+    const orderId = event.data.id;
+    const { value } = event;
+    this.props.updateCellValue({ field, orderId, value });
   };
 
   render() {
-    const { columnDefs, rowData, defaultColDef, autoGroupColumnDef, groupDisplayType } = this.props;
+    const {
+      columnDefs,
+      rowData,
+      defaultColDef,
+      autoGroupColumnDef,
+      groupDisplayType,
+    } = this.props;
 
     return (
-      <Wrapper className='ag-theme-material'>
+      <Wrapper className="ag-theme-material">
         <AgGridReact
           columnDefs={columnDefs}
           rowData={rowData}
@@ -45,10 +59,11 @@ class Grid extends React.Component {
           frameworkComponents={this.frameworkComponents}
           autoGroupColumnDef={autoGroupColumnDef}
           groupDisplayType={groupDisplayType}
+          onCellValueChanged={this.onCellValueChanged}
           suppressAggFuncInHeader
           animateRows
           showOpenedGroup
-          domLayout='autoHeight'
+          domLayout="autoHeight"
         />
       </Wrapper>
     );

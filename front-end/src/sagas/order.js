@@ -1,8 +1,12 @@
 import { all, call, put, take, takeEvery } from 'redux-saga/effects';
-import { loadingPendingAC, loadingSuccessAC } from '../actionCreators/aplication';
+import {
+  loadingPendingAC,
+  loadingSuccessAC,
+} from '../actionCreators/aplication';
 import {
   deleteOrderFailureAC,
-  deleteOrderSuccessAC, getBackupOrdersFailureAC,
+  deleteOrderSuccessAC,
+  getBackupOrdersFailureAC,
   getOrdersAC,
   getOrdersFailureAC,
   getOrdersSuccessAC,
@@ -12,11 +16,13 @@ import {
 import { handleRefreshAC } from '../actionCreators/refresh';
 
 import {
-  DELETE_USER_ORDER_PENDING, GET_BACKUP_USER_ORDERS_PENDING,
+  DELETE_USER_ORDER_PENDING,
+  GET_BACKUP_USER_ORDERS_PENDING,
   GET_USER_ORDERS_PENDING,
   GET_USER_ORDERS_SUCCESS,
   SET_USER_ORDER_PENDING,
   SET_USER_ORDERS_PENDING,
+  UPDATE_USER_ORDER_PENDING,
 } from '../actions';
 
 import { orderAPI } from '../api';
@@ -117,12 +123,25 @@ function* setUserOrders({ payload }) {
   }
 }
 
+function* updateUserOrder({ payload }) {
+  try {
+    yield put(loadingPendingAC());
+
+    yield call(orderAPI.updateUserOrder, payload);
+    yield put(getOrdersAC());
+    yield put(loadingSuccessAC());
+  } catch ({ response: { data } }) {
+    yield put(loadingSuccessAC());
+  }
+}
+
 export function orderSaga() {
   return all([
     takeEvery(SET_USER_ORDER_PENDING, setUserOrder),
     takeEvery(DELETE_USER_ORDER_PENDING, deleteUserOrder),
     takeEvery(GET_USER_ORDERS_PENDING, getUserOrders),
     takeEvery(SET_USER_ORDERS_PENDING, setUserOrders),
+    takeEvery(UPDATE_USER_ORDER_PENDING, updateUserOrder),
     takeEvery(GET_BACKUP_USER_ORDERS_PENDING, getBackupUserOrders),
   ]);
 }

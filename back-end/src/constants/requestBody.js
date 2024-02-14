@@ -34,14 +34,15 @@ export const ORDER_REQUEST_BODY = {
   coinId: 'coinId',
   price: 'price',
   date: 'date',
-  place: 'place'
+  place: 'place',
+  note: 'note',
 };
 
 export const LINK_REQUEST_PARAM = 'link';
 
 export const GENDER_OBJ = {
   male: 'male',
-  female: 'female'
+  female: 'female',
 };
 
 export const GENDER = [null, GENDER_OBJ.male, GENDER_OBJ.female];

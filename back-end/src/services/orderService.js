@@ -4,13 +4,33 @@ import Order from '../database/models/order';
 import { parseRawOrderList } from '../utils/parseRawOrderList';
 
 class OrderService {
-  async setUserOrder({ userId, count, coinId, price, place, date = Date.now() }) {
+  async setUserOrder({
+    userId,
+    count,
+    coinId,
+    price,
+    place,
+    note,
+    date = Date.now(),
+  }) {
     try {
-      await Order.create({ userId, date, name: coinId, count, price, place });
+      await Order.create({
+        userId,
+        date,
+        name: coinId,
+        count,
+        price,
+        place,
+        note,
+      });
 
       return createResponse(201, 'Данные успешно добавленны!');
     } catch (error) {
-      return createResponse(500, 'Server Error OrderService setUserOrder', error);
+      return createResponse(
+        500,
+        'Server Error OrderService setUserOrder',
+        error
+      );
     }
   }
 
@@ -20,7 +40,11 @@ class OrderService {
 
       return createResponse(200, 'Данные успешно получены!', orders);
     } catch (error) {
-      return createResponse(500, 'Server Error OrderService getUserOrders', error);
+      return createResponse(
+        500,
+        'Server Error OrderService getUserOrders',
+        error
+      );
     }
   }
 
@@ -28,7 +52,7 @@ class OrderService {
     try {
       return Order.findAll({
         where: { userId },
-        attributes: ['name', 'price', 'count', 'date', 'id', 'place'],
+        attributes: ['name', 'price', 'count', 'date', 'id', 'place', 'note'],
         raw: true,
       });
     } catch (error) {
@@ -44,7 +68,44 @@ class OrderService {
 
       return createResponse(404, 'Такой ордер не найден!', orderId);
     } catch (error) {
-      return createResponse(500, 'Server Error OrderService getUserOrders', error);
+      return createResponse(
+        500,
+        'Server Error OrderService getUserOrders',
+        error
+      );
+    }
+  }
+
+  async editUserOrder({ orderId, field, value }) {
+    try {
+      const conf = { where: { id: orderId }, returning: true, plain: true };
+      let isFound;
+      switch (field) {
+        case 'amount':
+          isFound = await Order.update({ count: Number(value) }, conf);
+          break;
+        case 'price':
+          isFound = await Order.update({ price: Number(value) }, conf);
+          break;
+        case 'date':
+          isFound = await Order.update({ date: new Date(value) }, conf);
+          break;
+        case 'note':
+          isFound = await Order.update({ note: value }, conf);
+          break;
+        default:
+          isFound = await Order.update({ [field]: value }, conf);
+      }
+
+      if (isFound) return createResponse(200, 'Данные успешно изменены!', orderId);
+
+      return createResponse(404, 'Такой ордер не найден!', orderId);
+    } catch (error) {
+      return createResponse(
+        500,
+        'Server Error OrderService getUserOrders',
+        error
+      );
     }
   }
 
@@ -56,7 +117,11 @@ class OrderService {
 
       return createResponse(201, 'Данные успешно добавленны!');
     } catch (error) {
-      return createResponse(500, 'Server Error OrderService setUserOrder', error);
+      return createResponse(
+        500,
+        'Server Error OrderService setUserOrder',
+        error
+      );
     }
   }
 }

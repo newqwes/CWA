@@ -9,6 +9,7 @@ import {
   setNewPlaceAC,
   setOrderAC,
   setOrdersAC,
+  updateCellValueAC,
 } from '../actionCreators/order';
 import {
   getChartData,
@@ -48,6 +49,7 @@ const mapDispatchToProps = {
   getUserPlaceList: getUserPlaceListAC,
   handleCoinHoldPlace: handleCoinHoldPlaceAC,
   handleRefresh: handleRefreshAC,
+  updateCellValue: updateCellValueAC,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Statistics);

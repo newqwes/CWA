@@ -18,6 +18,7 @@ import {
   SET_USER_ORDER_PENDING,
   SET_USER_ORDER_SUCCESS,
   SET_USER_ORDERS_PENDING,
+  UPDATE_USER_ORDER_PENDING,
 } from '../actions';
 
 export const getOrdersAC = () => ({
@@ -76,6 +77,11 @@ export const deleteOrderFailureAC = (error) => ({
 export const setOrdersAC = (orders) => ({
   type: SET_USER_ORDERS_PENDING,
   payload: orders,
+});
+
+export const updateCellValueAC = ({ field, orderId, value }) => ({
+  type: UPDATE_USER_ORDER_PENDING,
+  payload: { field, orderId, value },
 });
 
 export const setNewPlaceAC = (place) => ({

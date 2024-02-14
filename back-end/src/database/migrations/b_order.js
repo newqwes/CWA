@@ -39,10 +39,14 @@ module.exports = {
         type: DataTypes.DOUBLE,
         allowNull: false,
       },
+      note: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
     });
   },
 
-  down: async queryInterface => {
+  down: async (queryInterface) => {
     await queryInterface.dropTable('order');
   },
 };

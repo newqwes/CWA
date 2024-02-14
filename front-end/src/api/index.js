@@ -10,7 +10,7 @@ export const googleLoginURL = process.env.REACT_APP_API_URL
   ? `${baseURL}auth/google`
   : '/api/auth/google';
 
-axios.interceptors.request.use(config => ({
+axios.interceptors.request.use((config) => ({
   ...config,
   baseURL,
   withCredentials: true,
@@ -36,7 +36,11 @@ export const authAPI = {
    */
   registration: async ({ email, password, login }) => {
     try {
-      const { data } = await axios.post('auth/registration', { email, password, login });
+      const { data } = await axios.post('auth/registration', {
+        email,
+        password,
+        login,
+      });
 
       return data;
     } catch ({ response: { data } }) {
@@ -126,7 +130,13 @@ export const userAPI = {
 export const orderAPI = {
   setUserOrder: async ({ count, coinId, price, date, place }) => {
     try {
-      const { data } = await axios.post('order', { count, coinId, price, date, place });
+      const { data } = await axios.post('order', {
+        count,
+        coinId,
+        price,
+        date,
+        place,
+      });
 
       return data;
     } catch ({ response: { data } }) {
@@ -144,7 +154,7 @@ export const orderAPI = {
     }
   },
 
-  deleteUserOrder: async id => {
+  deleteUserOrder: async (id) => {
     try {
       const { data } = await axios.delete(`order/delete/${id}`);
 
@@ -154,7 +164,21 @@ export const orderAPI = {
     }
   },
 
-  setUserOrders: async orders => {
+  updateUserOrder: async ({ field, orderId, value }) => {
+    try {
+      const { data } = await axios.put(`order/update/${orderId}`, {
+        field,
+        orderId,
+        value,
+      });
+
+      return data;
+    } catch ({ response: { data } }) {
+      return data;
+    }
+  },
+
+  setUserOrders: async (orders) => {
     try {
       await axios.post('order/upload', orders);
     } catch ({ response: { data } }) {
@@ -174,12 +198,12 @@ export const orderAPI = {
 };
 
 export const coingeckoAPI = {
-  searchCoin: async coinname => {
+  searchCoin: async (coinname) => {
     try {
       return fetch(`https://api.coingecko.com/api/v3/search?query=${coinname}`)
-        .then(response => response.json())
-        .then(body =>
-          body.coins.map(coin => ({
+        .then((response) => response.json())
+        .then((body) =>
+          body.coins.map((coin) => ({
             ...coin,
             label: coin.name,
             value: coin.id,
@@ -191,7 +215,7 @@ export const coingeckoAPI = {
       return data;
     }
   },
-  getCoinData: async coins => {
+  getCoinData: async (coins) => {
     try {
       const { data } = await axios.post('coin', coins);
 

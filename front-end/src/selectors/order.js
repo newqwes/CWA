@@ -135,7 +135,7 @@ export const getGridRowData = createSelector(
   getUserLastPriceList,
   getPrevGridRowData,
   (orders, priceList, prevGridRowData) =>
-    map(({ name, price, count, date, id, place }) => {
+    map(({ name, price, count, date, id, place, note }) => {
       const coin = find(['id', name], priceList);
 
       if (!coin) return {};
@@ -172,6 +172,7 @@ export const getGridRowData = createSelector(
         totalProfit,
         totalProfitPercent,
         lastModified,
+        note,
         actualPrice,
         icon,
         coinId,

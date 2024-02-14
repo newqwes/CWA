@@ -1,9 +1,10 @@
 import {
+  getlastModifiedPercentAvg,
+  getPlaceNames,
+  getPlaceNotes,
   getPriceAvg,
   getProfitPercentAvg,
   getSellPrice,
-  getlastModifiedPercentAvg,
-  getPlaceNames,
 } from '../../utils/aggFunc';
 
 export const columnDefs = ({ deleteOrder }) => [
@@ -33,6 +34,7 @@ export const columnDefs = ({ deleteOrder }) => [
     headerName: 'Ср. Цена покупки',
     field: 'price',
     sortable: true,
+    editable: true,
     cellRenderer: 'totalBuyCellRenderer',
     aggFunc: getPriceAvg,
     minWidth: 120,
@@ -41,6 +43,7 @@ export const columnDefs = ({ deleteOrder }) => [
     headerName: 'Количество',
     field: 'amount',
     sortable: true,
+    editable: true,
     aggFunc: 'sum',
     cellRenderer: 'amountCellRenderer',
     minWidth: 120,
@@ -98,13 +101,24 @@ export const columnDefs = ({ deleteOrder }) => [
     headerName: 'Место',
     field: 'place',
     sortable: true,
+    editable: true,
     aggFunc: getPlaceNames,
     minWidth: 100,
+  },
+
+  {
+    headerName: 'Заметка',
+    field: 'note',
+    sortable: true,
+    editable: true,
+    aggFunc: getPlaceNotes,
+    minWidth: 300,
   },
   {
     headerName: 'Дата',
     field: 'date',
     sortable: true,
+    editable: true,
     aggFunc: 'last',
     minWidth: 100,
   },

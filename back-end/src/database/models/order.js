@@ -1,4 +1,4 @@
-import { Model, DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 
 import sequelize from '..';
@@ -43,13 +43,17 @@ Order.init(
       type: DataTypes.DOUBLE,
       allowNull: false,
     },
+    note: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   },
   {
     sequelize,
     tableName: 'order',
     timestamps: false,
     underscored: true,
-  },
+  }
 );
 
 export default Order;
