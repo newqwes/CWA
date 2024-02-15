@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Radio, Statistic } from 'antd';
-import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Menu, Space, Statistic } from 'antd';
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  DownOutlined,
+} from '@ant-design/icons';
 import {
   InteractiveDescriptions,
   InteractiveStatistic,
@@ -116,6 +120,16 @@ class Description extends React.Component {
       ? worst.differenceChange
       : worst.lastModified;
 
+    const menu = (
+      <Menu>
+        {coinHoldPlaceOptions.map(({ value, label }) => (
+          <Menu.Item key={value}>
+            <p onClick={() => handleCoinHoldPlace(value)}>{label}</p>
+          </Menu.Item>
+        ))}
+      </Menu>
+    );
+
     return (
       <InteractiveDescriptions>
         <Property>
@@ -145,7 +159,16 @@ class Description extends React.Component {
             suffix={netProfitPercent ? '%' : currencySymbol}
             positive={positiveNetProfit}
           />
+          <Dropdown overlay={menu}>
+            <a onClick={(e) => e.preventDefault()}>
+              <Space>
+                {coinHoldPlace}
+                <DownOutlined />
+              </Space>
+            </a>
+          </Dropdown>
         </Property>
+
         <Property onMouseUp={this.handleBestEdgeCoin}>
           <InteractiveStatistic
             title={
@@ -207,12 +230,6 @@ class Description extends React.Component {
             title="Всего транзакций"
             value={totalTransactionCount}
             className="hide-for-mobile"
-          />
-          <Radio.Group
-            options={coinHoldPlaceOptions}
-            onChange={(event) => handleCoinHoldPlace(event.target.value)}
-            value={coinHoldPlace}
-            optionType="button"
           />
         </Property>
         <Property className="hide-for-mobile">

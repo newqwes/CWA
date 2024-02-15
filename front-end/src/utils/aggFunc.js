@@ -71,6 +71,5 @@ export const getPlaceNotes = (params) => {
   const allLeafChildren = get(['rowNode', 'allLeafChildren'], params);
 
   if (isEmpty(allLeafChildren)) return '';
-
-  return allLeafChildren[0].data.note || '-';
+  return allLeafChildren.map(({ data }) => data.note).join(' ');
 };

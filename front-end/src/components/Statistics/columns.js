@@ -105,15 +105,6 @@ export const columnDefs = ({ deleteOrder }) => [
     aggFunc: getPlaceNames,
     minWidth: 100,
   },
-
-  {
-    headerName: 'Заметка',
-    field: 'note',
-    sortable: true,
-    editable: true,
-    aggFunc: getPlaceNotes,
-    minWidth: 300,
-  },
   {
     headerName: 'Дата',
     field: 'date',
@@ -121,6 +112,16 @@ export const columnDefs = ({ deleteOrder }) => [
     editable: true,
     aggFunc: 'last',
     minWidth: 100,
+  },
+  {
+    headerName: 'Заметка',
+    field: 'note',
+    sortable: true,
+    editable: true,
+    cellEditorPopup: true,
+    cellEditor: 'agLargeTextCellEditor',
+    aggFunc: getPlaceNotes,
+    minWidth: 150,
   },
   {
     headerName: 'Продать',
