@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { get } from 'lodash/fp';
-import { Statistic, Typography } from 'antd';
+import { Select as SelectAnt, Statistic, Typography } from 'antd';
 
 const { Text: TextAntd } = Typography;
 
@@ -90,4 +90,21 @@ export const Property = styled.div`
   }
 
   margin: 35px;
+`;
+
+export const Select = styled(SelectAnt)`
+  margin-top: 10px;
+  @media (max-width: 1000px) {
+    position: absolute;
+    bottom: 52%;
+    left: 8%;
+    font-size: 40px;
+  }
+`;
+export const PSizeForMobile = styled.p`
+  @media (max-width: 1000px) {
+    font-size: 32px;
+    line-height: 32px;
+    width: 300px;
+  }
 `;

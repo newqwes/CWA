@@ -12,6 +12,7 @@ import ActualPriceCellRenderer from '../../frameworkComponents/ActualPriceCellRe
 import PercentCellRenderer from '../../frameworkComponents/PercentCellRenderer';
 import IconCellRenderer from '../../frameworkComponents/IconCellRenderer';
 import { Wrapper } from './styled';
+import NoteCellRenderer from '../../frameworkComponents/NoteCellRenderer';
 
 class Grid extends React.Component {
   static propTypes = {
@@ -32,6 +33,7 @@ class Grid extends React.Component {
     actualPriceCellRenderer: ActualPriceCellRenderer,
     percentCellRenderer: PercentCellRenderer,
     iconCellRenderer: IconCellRenderer,
+    noteCellRenderer: NoteCellRenderer,
   };
 
   onCellValueChanged = (event) => {

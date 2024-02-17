@@ -119,6 +119,7 @@ export const columnDefs = ({ deleteOrder }) => [
     sortable: true,
     editable: true,
     cellEditorPopup: true,
+    cellRenderer: 'noteCellRenderer',
     cellEditor: 'agLargeTextCellEditor',
     aggFunc: getPlaceNotes,
     minWidth: 150,

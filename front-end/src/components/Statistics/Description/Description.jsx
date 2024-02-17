@@ -1,15 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Dropdown, Menu, Space, Statistic } from 'antd';
-import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  DownOutlined,
-} from '@ant-design/icons';
+import { Button, Statistic } from 'antd';
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import {
   InteractiveDescriptions,
   InteractiveStatistic,
   Property,
+  PSizeForMobile,
+  Select,
   Text,
 } from './styled';
 
@@ -120,16 +118,15 @@ class Description extends React.Component {
       ? worst.differenceChange
       : worst.lastModified;
 
-    const menu = (
-      <Menu>
-        {coinHoldPlaceOptions.map(({ value, label }) => (
-          <Menu.Item key={value}>
-            <p onClick={() => handleCoinHoldPlace(value)}>{label}</p>
-          </Menu.Item>
-        ))}
-      </Menu>
-    );
+    const menu = coinHoldPlaceOptions.map(({ value, label }) => (
+      <Select.Option value={value} key={value}>
+        <PSizeForMobile>{label}</PSizeForMobile>
+      </Select.Option>
+    ));
 
+    const handlePlaceChange = (value) => {
+      handleCoinHoldPlace(value);
+    };
     return (
       <InteractiveDescriptions>
         <Property>
@@ -159,14 +156,6 @@ class Description extends React.Component {
             suffix={netProfitPercent ? '%' : currencySymbol}
             positive={positiveNetProfit}
           />
-          <Dropdown overlay={menu}>
-            <a onClick={(e) => e.preventDefault()}>
-              <Space>
-                {coinHoldPlace}
-                <DownOutlined />
-              </Space>
-            </a>
-          </Dropdown>
         </Property>
 
         <Property onMouseUp={this.handleBestEdgeCoin}>
@@ -212,18 +201,31 @@ class Description extends React.Component {
             suffix={walletStatePercent ? '%' : currencySymbol}
           />
         </Property>
-        <Property onMouseUp={this.handleLastModified}>
-          <InteractiveStatistic
-            title="Последнее изменение:"
-            className="hoverable"
-            value={lastModifiedValue}
-            precision={precision}
-            prefix={
-              positiveLastModified ? <ArrowUpOutlined /> : <ArrowDownOutlined />
-            }
-            suffix={lastModifiedPercent ? '%' : currencySymbol}
-            positive={positiveLastModified}
-          />
+        <Property>
+          <div onMouseUp={this.handleLastModified}>
+            <InteractiveStatistic
+              title="Последнее изменение:"
+              className="hoverable"
+              value={lastModifiedValue}
+              precision={precision}
+              prefix={
+                positiveLastModified ? (
+                  <ArrowUpOutlined />
+                ) : (
+                  <ArrowDownOutlined />
+                )
+              }
+              suffix={lastModifiedPercent ? '%' : currencySymbol}
+              positive={positiveLastModified}
+            />
+          </div>
+          <Select
+            onChange={handlePlaceChange}
+            size="large"
+            defaultValue={coinHoldPlace}
+          >
+            {menu}
+          </Select>
         </Property>
         <Property>
           <Statistic
