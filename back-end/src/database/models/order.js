@@ -47,6 +47,14 @@ Order.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    priceToSell: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
+    priceToBuy: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
   },
   {
     sequelize,

@@ -43,6 +43,14 @@ module.exports = {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      price_to_sell: {
+        type: DataTypes.DOUBLE,
+        allowNull: true,
+      },
+      price_to_buy: {
+        type: DataTypes.DOUBLE,
+        allowNull: true,
+      },
     });
   },
 

@@ -135,50 +135,65 @@ export const getGridRowData = createSelector(
   getUserLastPriceList,
   getPrevGridRowData,
   (orders, priceList, prevGridRowData) =>
-    map(({ name, price, count, date, id, place, note }) => {
-      const coin = find(['id', name], priceList);
-
-      if (!coin) return {};
-
-      const actualPrice = get(['current_price'], coin);
-      const coinName = get(['name'], coin);
-      const icon = get(['image'], coin);
-      const coinId = get(['id'], coin);
-      const totalBuy = round(count * price, 3);
-      const totalBuyActual = round(count * actualPrice, 3);
-      const totalProfit = round((actualPrice - price) * count, 3);
-      const prevCell = find(['id', id], prevGridRowData);
-      const formatDate = moment(date).format(TIME_FORMAT);
-
-      const totalProfitPercent =
-        count > 0 ? ((actualPrice - price) / price) * 100 : 0;
-
-      let lastModified;
-
-      if (!prevCell) {
-        lastModified = 0;
-      } else {
-        lastModified = round(totalProfit - prevCell.totalProfit, 3);
-      }
-
-      return {
-        name: coinName,
+    map(
+      ({
+        name,
         price,
-        amount: count,
-        totalBuy,
-        totalBuyActual,
-        place,
-        date: formatDate,
-        totalProfit,
-        totalProfitPercent,
-        lastModified,
-        note,
-        actualPrice,
-        icon,
-        coinId,
+        count,
+        date,
         id,
-      };
-    }, orders),
+        place,
+        note,
+        priceToSell,
+        priceToBuy,
+      }) => {
+        const coin = find(['id', name], priceList);
+
+        if (!coin) return {};
+
+        const actualPrice = get(['current_price'], coin);
+        const coinName = get(['name'], coin);
+        const icon = get(['image'], coin);
+        const coinId = get(['id'], coin);
+        const totalBuy = round(count * price, 3);
+        const totalBuyActual = round(count * actualPrice, 3);
+        const totalProfit = round((actualPrice - price) * count, 3);
+        const prevCell = find(['id', id], prevGridRowData);
+        const formatDate = moment(date).format(TIME_FORMAT);
+
+        const totalProfitPercent =
+          count > 0 ? ((actualPrice - price) / price) * 100 : 0;
+
+        let lastModified;
+
+        if (!prevCell) {
+          lastModified = 0;
+        } else {
+          lastModified = round(totalProfit - prevCell.totalProfit, 3);
+        }
+
+        return {
+          name: coinName,
+          price,
+          amount: count,
+          totalBuy,
+          totalBuyActual,
+          place,
+          date: formatDate,
+          totalProfit,
+          totalProfitPercent,
+          lastModified,
+          note,
+          priceToSell,
+          priceToBuy,
+          actualPrice,
+          icon,
+          coinId,
+          id,
+        };
+      },
+      orders,
+    ),
 );
 
 export const getFilteredGridData = createSelector(

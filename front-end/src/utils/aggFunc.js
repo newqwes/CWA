@@ -1,5 +1,4 @@
 import { complement, get, isEmpty, reduce, some } from 'lodash/fp';
-import { toNormalNumber } from './toNormalNumber';
 
 export const getPriceAvg = (params) => {
   const allLeafChildren = get(['rowNode', 'allLeafChildren'], params);
@@ -25,14 +24,6 @@ export const getPriceAvg = (params) => {
   const result = amountAndPurchase.purchase / amountAndPurchase.amount;
 
   return result;
-};
-
-export const getSellPrice = (params) => {
-  const avgPrice = getPriceAvg(params);
-
-  const sellPrice = avgPrice * 3;
-
-  return `${toNormalNumber(sellPrice)} $`;
 };
 
 export const getlastModifiedPercentAvg = (params) => {

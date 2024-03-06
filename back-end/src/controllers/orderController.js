@@ -11,10 +11,8 @@ import { getBackupOrders } from '../utils/getBackupOrders';
 export const setUserOrder = async (req, res, next) => {
   const userId = getUserId(req);
 
-  const { count, coinId, price, date, place, note } = pick(
-    values(ORDER_REQUEST_BODY),
-    req.body
-  );
+  const { count, coinId, price, date, place, note, priceToSell, priceToBuy } =
+    pick(values(ORDER_REQUEST_BODY), req.body);
 
   if (someFalsey([userId, count, coinId, price, place])) {
     return next(ApiError.BadRequest('Ошибка при валидации'));
@@ -28,6 +26,8 @@ export const setUserOrder = async (req, res, next) => {
     date,
     place,
     note,
+    priceToSell,
+    priceToBuy,
   });
 
   const { status, data } = await orderService.getUserOrders(userId);

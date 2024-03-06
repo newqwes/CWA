@@ -11,6 +11,8 @@ class OrderService {
     price,
     place,
     note,
+    priceToSell,
+    priceToBuy,
     date = Date.now(),
   }) {
     try {
@@ -22,6 +24,8 @@ class OrderService {
         price,
         place,
         note,
+        priceToSell,
+        priceToBuy,
       });
 
       return createResponse(201, 'Данные успешно добавленны!');
@@ -52,7 +56,17 @@ class OrderService {
     try {
       return Order.findAll({
         where: { userId },
-        attributes: ['name', 'price', 'count', 'date', 'id', 'place', 'note'],
+        attributes: [
+          'name',
+          'price',
+          'count',
+          'date',
+          'id',
+          'place',
+          'note',
+          'priceToSell',
+          'priceToBuy',
+        ],
         raw: true,
       });
     } catch (error) {
@@ -92,6 +106,12 @@ class OrderService {
           break;
         case 'note':
           isFound = await Order.update({ note: value }, conf);
+          break;
+        case 'priceToSell':
+          isFound = await Order.update({ priceToSell: Number(value) }, conf);
+          break;
+        case 'priceToBuy':
+          isFound = await Order.update({ priceToBuy: Number(value) }, conf);
           break;
         default:
           isFound = await Order.update({ [field]: value }, conf);

@@ -36,6 +36,8 @@ export const ORDER_REQUEST_BODY = {
   date: 'date',
   place: 'place',
   note: 'note',
+  priceToSell: 'priceToSell',
+  priceToBuy: 'priceToBuy',
 };
 
 export const LINK_REQUEST_PARAM = 'link';

@@ -4,7 +4,6 @@ import {
   getPlaceNotes,
   getPriceAvg,
   getProfitPercentAvg,
-  getSellPrice,
 } from '../../utils/aggFunc';
 
 export const columnDefs = ({ deleteOrder }) => [
@@ -128,8 +127,19 @@ export const columnDefs = ({ deleteOrder }) => [
     headerName: 'Продать',
     field: 'priceToSell',
     sortable: true,
-    aggFunc: getSellPrice,
+    aggFunc: 'max',
     minWidth: 100,
+    editable: true,
+    cellRenderer: 'actualPriceCellRenderer',
+  },
+  {
+    headerName: 'Купить',
+    field: 'priceToBuy',
+    sortable: true,
+    aggFunc: 'min',
+    minWidth: 100,
+    editable: true,
+    cellRenderer: 'actualPriceCellRenderer',
   },
   {
     headerName: 'Иконка',

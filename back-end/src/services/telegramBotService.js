@@ -3,8 +3,22 @@ import { forEach, isEmpty, isFinite, round } from 'lodash';
 import { chunk, get, isEqual, pick } from 'lodash/fp';
 import cron from 'node-cron';
 
-import { AGAIN_MESSAGE_OPTIONS, MESSAGE_OPTIONS, MINUTE, TEN_MINUTE } from '../constants/telegram';
-import { compareResults, getResultMessage, isAuthCode, removeAuthCode } from '../utils/telegram';
+import {
+  AGAIN_MESSAGE_OPTIONS,
+  DAILY_UPDATES_BTN,
+  MESSAGE_OPTIONS,
+  MINUTE,
+  NOTIFY_BUY_SELL_BTN,
+  NOTIFY_CHANGES_BTN,
+  REFRESH_BTN,
+  TEN_MINUTE,
+} from '../constants/telegram';
+import {
+  compareResults,
+  getResultMessage,
+  isAuthCode,
+  removeAuthCode,
+} from '../utils/telegram';
 import userService from './userService';
 import orderService from './orderService';
 
@@ -15,7 +29,7 @@ import {
   getNetProfitPercent,
   getTotalInvested,
   getUniqNameOrders,
-  getWalletState
+  getWalletState,
 } from '../utils/extractData';
 import refreshService from './refreshService';
 import { getRemainingTime, isTimeLimitOver } from '../utils/toMinute';
@@ -25,8 +39,14 @@ const MyBot = new TelegraAPI(process.env.BOT_TOKEN, { polling: true });
 
 let timeoutId = null;
 let remainderTask = null;
+let buySellTask = null;
 
-const runNotification = async (userId, triggerPercent, chatId, oldPriceList) => {
+const runNotification = async (
+  userId,
+  triggerPercent,
+  chatId,
+  oldPriceList
+) => {
   const orders = await orderService.getRawUserOrders(userId);
 
   const coinNameList = getUniqNameOrders(orders);
@@ -35,7 +55,7 @@ const runNotification = async (userId, triggerPercent, chatId, oldPriceList) => 
 
   const result = {};
 
-  coinNameList.forEach(myCoinName => {
+  coinNameList.forEach((myCoinName) => {
     const currency = listCoin.find(({ id }) => isEqual(id, myCoinName));
 
     const currentPrice = get(['current_price'], currency);
@@ -45,7 +65,10 @@ const runNotification = async (userId, triggerPercent, chatId, oldPriceList) => 
 
     if (!currentPrice || !prevCurrentPrice) return;
 
-    const changesPricePercent = round((currentPrice * 100) / prevCurrentPrice - 100, 4);
+    const changesPricePercent = round(
+      (currentPrice * 100) / prevCurrentPrice - 100,
+      4
+    );
 
     if (changesPricePercent > triggerPercent) {
       result[currency.name] = changesPricePercent;
@@ -74,9 +97,15 @@ const runNotification = async (userId, triggerPercent, chatId, oldPriceList) => 
 const runTelegramBotService = async () => {
   MyBot.on(
     'message',
-    async ({ text, chat: { id, first_name: firstName }, from: { id: telegramUserId } }) => {
+    async ({
+      text,
+      chat: { id, first_name: firstName },
+      from: { id: telegramUserId },
+    }) => {
       try {
-        const userExist = await userService.findByTelegramUserId(telegramUserId);
+        const userExist = await userService.findByTelegramUserId(
+          telegramUserId
+        );
 
         const textLikeNumber = Number(text);
 
@@ -110,7 +139,11 @@ const runTelegramBotService = async () => {
           user.telegramUserId = telegramUserId;
           await user.save();
 
-          return MyBot.sendMessage(id, 'Код авторизации принят успешно!', MESSAGE_OPTIONS);
+          return MyBot.sendMessage(
+            id,
+            'Код авторизации принят успешно!',
+            MESSAGE_OPTIONS
+          );
         }
 
         if (!userExist) {
@@ -121,14 +154,20 @@ const runTelegramBotService = async () => {
           );
         }
 
-        if (text === '🔄🔄🔄') {
+        if (text === REFRESH_BTN) {
           const { dataRefreshLimitPerMinute, lastDateUpdate } = pick(
             ['dataRefreshLimitPerMinute', 'lastDateUpdate'],
             userExist
           );
 
-          const timeLimitOver = isTimeLimitOver(dataRefreshLimitPerMinute, lastDateUpdate);
-          const remainingTime = getRemainingTime(dataRefreshLimitPerMinute, lastDateUpdate);
+          const timeLimitOver = isTimeLimitOver(
+            dataRefreshLimitPerMinute,
+            lastDateUpdate
+          );
+          const remainingTime = getRemainingTime(
+            dataRefreshLimitPerMinute,
+            lastDateUpdate
+          );
 
           if (!timeLimitOver) {
             return MyBot.sendMessage(
@@ -155,43 +194,62 @@ const runTelegramBotService = async () => {
           const netProfitRaw = getNetProfit(comparisonOrdersAndPriceList);
           const totalInvested = getTotalInvested(orders);
 
-          const netProfitPercent = getNetProfitPercent(netProfitRaw, totalInvested);
+          const netProfitPercent = getNetProfitPercent(
+            netProfitRaw,
+            totalInvested
+          );
           const walletState = getWalletState(netProfitRaw, totalInvested);
 
           const prevData = {
             netProfit: netProfitPercent,
             walletState,
-            gridRowData
+            gridRowData,
           };
 
           const refreshData = await refreshService.refresh({
             userId: userExist.id,
             prevData,
-            coinList: coinNameList
+            coinList: coinNameList,
           });
 
           const result = compareResults(refreshData);
-          const { arrOfMessages, sumMessage, overThanLimit } = getResultMessage(result);
+          const { arrOfMessages, sumMessage, overThanLimit } =
+            getResultMessage(result);
 
           if (overThanLimit) {
-            const [mes1, mes2] = chunk(round(arrOfMessages.length / 2), arrOfMessages);
+            const [mes1, mes2] = chunk(
+              round(arrOfMessages.length / 2),
+              arrOfMessages
+            );
 
             await MyBot.sendMessage(id, mes1.join('\n'), MESSAGE_OPTIONS);
             setTimeout(async () => {
-              await MyBot.sendMessage(id, `${mes2.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
+              await MyBot.sendMessage(
+                id,
+                `${mes2.join('\n')}${sumMessage}`,
+                MESSAGE_OPTIONS
+              );
             }, 500);
 
             return;
           }
-          return MyBot.sendMessage(id, `${arrOfMessages.join('\n')}${sumMessage}`, MESSAGE_OPTIONS);
+          return MyBot.sendMessage(
+            id,
+            `${arrOfMessages.join('\n')}${sumMessage}`,
+            MESSAGE_OPTIONS
+          );
         }
 
-        if (text === '⏰⏰⏰') {
+        if (text === NOTIFY_CHANGES_BTN) {
           if (timeoutId) {
             clearTimeout(timeoutId);
             timeoutId = null;
 
-            return MyBot.sendMessage(id, 'Оповещение остановленно!', MESSAGE_OPTIONS);
+            return MyBot.sendMessage(
+              id,
+              'Оповещение остановленно!',
+              MESSAGE_OPTIONS
+            );
           }
 
           return MyBot.sendMessage(
@@ -201,54 +259,159 @@ const runTelegramBotService = async () => {
           );
         }
 
-        if (text === '⏰⏰') {
+        if (text === DAILY_UPDATES_BTN) {
           if (remainderTask) {
             remainderTask.stop();
             remainderTask = null;
-            MyBot.sendMessage(id, 'Изменения за день отключены!', MESSAGE_OPTIONS);
+            MyBot.sendMessage(
+              id,
+              'Изменения за день отключены!',
+              MESSAGE_OPTIONS
+            );
           } else {
             remainderTask = cron.schedule(
               '0 19 * * *',
               async () => {
-                const orders = await orderService.getRawUserOrders(userExist.id);
+                const orders = await orderService.getRawUserOrders(
+                  userExist.id
+                );
                 const coinNameList = getUniqNameOrders(orders);
                 const gridRowData = getGridRowData(
                   orders,
                   userExist.list,
                   userExist.prevData.gridRowData
                 );
-                const comparisonOrdersAndPriceList = getComparisonOrdersAndPriceList(
-                  orders,
-                  userExist.list
-                );
+                const comparisonOrdersAndPriceList =
+                  getComparisonOrdersAndPriceList(orders, userExist.list);
                 const netProfitRaw = getNetProfit(comparisonOrdersAndPriceList);
                 const totalInvested = getTotalInvested(orders);
-                const netProfitPercent = getNetProfitPercent(netProfitRaw, totalInvested);
-                const oldWalletState = getWalletState(netProfitRaw, totalInvested);
+                const netProfitPercent = getNetProfitPercent(
+                  netProfitRaw,
+                  totalInvested
+                );
+                const oldWalletState = getWalletState(
+                  netProfitRaw,
+                  totalInvested
+                );
                 const prevData = {
                   netProfit: netProfitPercent,
                   walletState: oldWalletState,
-                  gridRowData
+                  gridRowData,
                 };
                 const refreshData = await refreshService.refresh({
                   userId: userExist.id,
                   prevData,
-                  coinList: coinNameList
+                  coinList: coinNameList,
                 });
-                const { diffWalletState, walletState, diffNetProfit } = compareResults(refreshData);
+                const { diffWalletState, walletState, diffNetProfit } =
+                  compareResults(refreshData);
                 await MyBot.sendMessage(
                   id,
                   `Было: ${round(oldWalletState, 2)}$\nCтало: ${round(
                     walletState,
                     2
-                  )}$\nРазница: ${round(diffWalletState, 2)}$(${round(diffNetProfit, 2)}%)`,
+                  )}$\nРазница: ${round(diffWalletState, 2)}$(${round(
+                    diffNetProfit,
+                    2
+                  )}%)`,
                   MESSAGE_OPTIONS
                 );
               },
               { timezone: 'Europe/Minsk' }
             );
 
-            await MyBot.sendMessage(id, 'Изменения за день включены!', MESSAGE_OPTIONS);
+            await MyBot.sendMessage(
+              id,
+              'Изменения за день включены!',
+              MESSAGE_OPTIONS
+            );
+          }
+
+          return;
+        }
+
+        if (text === NOTIFY_BUY_SELL_BTN) {
+          if (buySellTask) {
+            buySellTask.stop();
+            buySellTask = null;
+            MyBot.sendMessage(
+              id,
+              'Проверка на покупку и продажу отключены!',
+              MESSAGE_OPTIONS
+            );
+          } else {
+            buySellTask = cron.schedule(
+              '*/30 * * * *',
+              async () => {
+                const notifyBuySellMessages = [];
+
+                const orders = await orderService.getRawUserOrders(
+                  userExist.id
+                );
+
+                //   'name',
+                //   'price',
+                //   'count',
+                //   'date',
+                //   'id',
+                //   'place',
+                //   'note',
+                //   'priceToSell',
+                //   'priceToBuy',
+                const ordersWithBuyAndSellPrice = orders.filter(
+                  (order) => order.priceToSell || order.priceToBuy
+                );
+
+                const coinNameList = getUniqNameOrders(
+                  ordersWithBuyAndSellPrice
+                );
+
+                // "id": "bitcoin",
+                // "current_price": 51700,
+                const geckoCoins = await getGeckoCoins(coinNameList);
+                if (!geckoCoins || !geckoCoins[0]) return;
+
+                geckoCoins.forEach((geckoCoin) => {
+                  const resultOrder = ordersWithBuyAndSellPrice.find(
+                    (myOrder) => myOrder.name === geckoCoin.id
+                  );
+
+                  if (!resultOrder) return;
+
+                  const actualPrice = get(['current_price'], geckoCoin);
+
+                  if (
+                    resultOrder.priceToSell &&
+                    resultOrder.priceToSell <= actualPrice
+                  ) {
+                    notifyBuySellMessages.push(
+                      `📈 Продай ${geckoCoin.name}, эта монета уже по ${actualPrice}, а ты хотел продать по ${resultOrder.priceToSell};`
+                    );
+                  }
+                  if (
+                    resultOrder.priceToBuy &&
+                    resultOrder.priceToBuy >= actualPrice
+                  ) {
+                    notifyBuySellMessages.push(
+                      `📉 Покупай ${geckoCoin.name}, эта монета уже по ${actualPrice}, а ты хотел купить по ${resultOrder.priceToBuy};`
+                    );
+                  }
+                });
+
+                await MyBot.sendMessage(
+                  id,
+                  notifyBuySellMessages.join('\n\n'),
+                  MESSAGE_OPTIONS
+                );
+              },
+              { timezone: 'Europe/Minsk' }
+            );
+
+            await MyBot.sendMessage(
+              id,
+              'Проверка на покупку и продажу включены!',
+              MESSAGE_OPTIONS
+            );
           }
 
           return;
@@ -268,14 +431,24 @@ const runTelegramBotService = async () => {
 
           return MyBot.sendMessage(
             id,
-            `Оповещение задано на каждые ${TEN_MINUTE / MINUTE} минут при изменение в ${text}%!`,
+            `Оповещение задано на каждые ${
+              TEN_MINUTE / MINUTE
+            } минут при изменение в ${text}%!`,
             MESSAGE_OPTIONS
           );
         }
 
-        return MyBot.sendMessage(id, 'Я тебя не понимаю, попробуй еще раз!)', MESSAGE_OPTIONS);
+        return MyBot.sendMessage(
+          id,
+          'Я тебя не понимаю, попробуй еще раз!)',
+          MESSAGE_OPTIONS
+        );
       } catch (error) {
-        return MyBot.sendMessage(id, 'Произошла какая то ошибочка!)', MESSAGE_OPTIONS);
+        return MyBot.sendMessage(
+          id,
+          `Произошла какая то ошибочка!) ${error}`,
+          MESSAGE_OPTIONS
+        );
       }
     }
   );
