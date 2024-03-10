@@ -1,7 +1,7 @@
 import History from '../database/models/history';
 
-const MIN_TIME_DIFF_MS = 24 * 60 * 60 * 1000;
-const MIN_PROFIT_PERCENT_DIFF_TO_DELETE = 0.2;
+const MIN_TIME_DIFF_MS = 6 * 60 * 60 * 1000;
+const MIN_PROFIT_PERCENT_DIFF_TO_DELETE = 0.1;
 
 // Determine if the current history should be deleted based on
 // time difference and profit percentage difference
