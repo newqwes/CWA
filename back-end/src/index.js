@@ -5,6 +5,7 @@ import express from 'express';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import cron from 'node-cron';
+import bodyParser from 'body-parser';
 
 import { app, connectNotificationToDatabase, server } from './config';
 import sequelize from './database';
@@ -28,6 +29,8 @@ dotenv.config();
 
 passportJWTAndGoogle(passport);
 
+app.use(bodyParser.json({ limit: '100mb' }));
+app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors);
