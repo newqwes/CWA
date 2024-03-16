@@ -5,6 +5,7 @@ import refreshService from '../services/refreshService';
 
 export const refresh = async (req, res, next) => {
   try {
+    console.log('req.body:', req.body);
     const { prevData, coinList } = pick(['prevData', 'coinList'], req.body);
 
     const user = await refreshService.refresh({

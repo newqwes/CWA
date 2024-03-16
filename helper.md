@@ -1,3 +1,5 @@
+Для node нужна 16 версия не ниже.
+
 установить nginx, postgres, pm2, yarn
 
 конфиг по адресу /etc/nginx/sites-available/cwa.conf
@@ -31,5 +33,3 @@ pm2 monit
 pm2 status
 pm2 delete
 pm2 save
-
-yrr
