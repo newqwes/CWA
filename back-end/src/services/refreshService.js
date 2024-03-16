@@ -18,11 +18,15 @@ class RefreshService {
 
     const data = await getGeckoCoins(coinList);
 
+    console.log('getGeckoCoins прошел!');
+
     user.score -= 1;
     user.prevData = prevData;
     user.lastDateUpdate = Date.now();
     user.list = data;
     await user.save();
+
+    console.log('user.save() прошел!');
 
     await History.create({
       lastModified: prevData.netProfit,
@@ -31,11 +35,15 @@ class RefreshService {
       date: Date.now(),
     });
 
+    console.log('History.create прошел!');
+
     const history = await History.findAll({
       where: { userId },
       raw: true,
       order: [['date', 'ASC']],
     });
+
+    console.log('History.findAll прошел!');
 
     const userDto = new UserDto(user);
     return { ...userDto, history };
